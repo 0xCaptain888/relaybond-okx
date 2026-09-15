@@ -12,6 +12,38 @@ export type OnchainOsEnvelope = {
   error?: unknown;
 };
 
+export type PaidScenario = "accepted" | "empty" | "stale";
+
+export function buildPaymentReplayArguments(input: {
+  paymentId: string;
+  selectedIndex: string;
+  symbol: string;
+  scenario: PaidScenario;
+}): string[] {
+  return [
+    "payment",
+    "pay",
+    "--payment-id",
+    input.paymentId,
+    "--selected-index",
+    input.selectedIndex,
+    "--param",
+    `symbol=${input.symbol}`,
+    "--param",
+    `scenario=${input.scenario}`,
+    "--yes",
+  ];
+}
+
+export function paidEvidencePath(expectedStatus: "ACCEPTED" | "BREACH", actualStatus: "ACCEPTED" | "BREACH"): string {
+  if (expectedStatus !== actualStatus) {
+    return `evidence/live/agentic-wallet-unexpected-${actualStatus.toLowerCase()}.json`;
+  }
+  return actualStatus === "ACCEPTED"
+    ? "evidence/live/agentic-wallet-paid-delivery.json"
+    : "evidence/live/agentic-wallet-paid-breach.json";
+}
+
 export async function runOnchainOs(arguments_: string[]): Promise<OnchainOsEnvelope> {
   let executable = process.env.ONCHAINOS_BIN || "onchainos";
   if (!process.env.ONCHAINOS_BIN) {

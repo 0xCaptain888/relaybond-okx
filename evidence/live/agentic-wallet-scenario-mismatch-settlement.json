@@ -1,0 +1,20 @@
+{
+  "evidenceVersion": "1",
+  "mode": "OKX_AGENTIC_WALLET_XLAYER_TESTNET",
+  "status": "SETTLEMENT_CONFIRMED_EXPECTED_BREACH_NOT_OBSERVED",
+  "honestyNote": "The operator approved a stale-scenario test, but the v0.2.2 pay runner did not forward the reviewed business parameters during paid replay. The provider therefore returned its default accepted scenario. The runner rejected the result because it was not BREACH, but payment had already settled. This artifact proves settlement only and is not claimed as BREACH evidence.",
+  "rootCause": "Business parameters were present during quote but omitted from the payment replay command.",
+  "fixVersion": "0.2.3",
+  "network": "eip155:1952",
+  "token": "0x9e29b3AaDa05Bf2D2c827Af80Bd28Dc0b9b4FB0c",
+  "payer": "0xcb83AF485c066add3eca9041a78Ea7c14e3F15F4",
+  "payTo": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+  "amountAtomic": "10000",
+  "amountDisplay": "0.01 USD₮0",
+  "transactionHash": "0x438616931bfcca24e7da37a0f3683dbb8db360081a8fb249982d238851595304",
+  "blockNumber": "41021541",
+  "onchainStatus": "success",
+  "payerBalanceAfterAtomic": "20000",
+  "providerBalanceAfterAtomic": "4980000",
+  "recordedAt": "2026-09-15T13:55:07.582Z"
+}

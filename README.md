@@ -104,7 +104,7 @@ The preferred two-phase Agentic Wallet path delegates custody, signing, request 
 ```bash
 npm run buyer:okx -- quote --symbol BTC-USDT
 # review network, token, amount, balance and payee
-npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --expect accepted --yes
+npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --symbol BTC-USDT --scenario accepted --expect accepted --yes
 ```
 
 The quote command never signs. The pay command requires the operator's explicit `--yes`, requires a decoded final-success settlement receipt, then independently checks the returned Service Promise and Delivery Receipt before writing portable evidence. A merchant response without final settlement is rejected and cannot become live evidence.
@@ -113,7 +113,7 @@ The repository also contains a guarded breach path. It is disabled in production
 
 ```bash
 npm run buyer:okx -- quote --symbol BTC-USDT --scenario stale
-npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --expect breach --yes
+npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --symbol BTC-USDT --scenario stale --expect breach --yes
 npm run rebate:live-breach -- --confirm
 ```
 
@@ -127,9 +127,10 @@ npm run rebate:live-breach -- --confirm
 - Agentic Wallet funding: `0.05 Testnet USD₮0`, transaction `0x2e83c5fd8e19bc5f813c662ca9dd2dea30abafacba968341b7080300b6352eaf`
 - First Agentic Wallet settlement: `0.01 Testnet USD₮0`, transaction `0x2a9b32e353a93179f6f811b687051382ce9de782c9fd4f3bc3058b0c9d2bd125`. Settlement is independently confirmed; the merchant delivery body was not persisted by the previous runner, so this is deliberately **not** labeled `ACCEPTED`.
 - Complete Agentic Wallet paid delivery: `0.01 Testnet USD₮0`, transaction [`0xfd1e…e4bf`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xfd1e25e2415a79eff8e8d981d9e5f97efe8f9136ce026b1cf1e5ac872c8ee4bf), block `41018044`, evidence hash `0x39a67bcde940b07e429aee35fbef6fe260dcc2e0aecae6e3013f124cfa57dde8`, independently verified `ACCEPTED` with all 9 SLA checks passing.
-- Agentic Wallet balance after both calls: `0.03 Testnet USD₮0` at block `41018376`.
+- Scenario-mismatch settlement: `0.01 Testnet USD₮0`, transaction [`0x4386…5304`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x438616931bfcca24e7da37a0f3683dbb8db360081a8fb249982d238851595304). The v0.2.2 runner omitted `stale` during paid replay, so this is deliberately recorded as settlement-only evidence and **not** claimed as `BREACH`.
+- Agentic Wallet balance after three explicit calls: `0.02 Testnet USD₮0` at block `41021541`.
 - Verified source: `QualityBondVault`, Solidity `0.8.28`, optimizer `200`, EVM `paris`
-- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json), [`agentic-wallet-paid-delivery.json`](./evidence/live/agentic-wallet-paid-delivery.json), [`agentic-wallet-balance.json`](./evidence/live/agentic-wallet-balance.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
+- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json), [`agentic-wallet-paid-delivery.json`](./evidence/live/agentic-wallet-paid-delivery.json), [`agentic-wallet-scenario-mismatch-settlement.json`](./evidence/live/agentic-wallet-scenario-mismatch-settlement.json), [`agentic-wallet-balance.json`](./evidence/live/agentic-wallet-balance.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
 
 ## Repository map
 

@@ -45,13 +45,18 @@ const verification = await verifyDelivery({
   receipt: evidence.delivery.deliveryReceipt,
   checkedAt: evidence.verification.checkedAt,
 });
+const failedChecks = Object.entries(verification.checks).filter(([, passed]) => !passed).map(([name]) => name).sort();
+const reportedViolations = [...verification.violations].sort();
+const decisionConsistent = verification.status === "ACCEPTED"
+  ? failedChecks.length === 0 && reportedViolations.length === 0
+  : failedChecks.length > 0 && JSON.stringify(failedChecks) === JSON.stringify(reportedViolations);
 const promise = evidence.delivery.servicePromise.payload;
 const settlement = evidence.payment.onchainSettlement;
 const localChecks = {
   evidenceHash: calculatedEvidenceHash === evidenceHash,
   portableHash: calculatedPortableHash === portableIntegrity.hash,
   verificationResult: hashCanonical(verification) === hashCanonical(evidence.verification),
-  accepted: verification.status === "ACCEPTED" && Object.values(verification.checks).every(Boolean),
+  decisionConsistent,
   transactionBound: evidence.payment.transactionHash.toLowerCase() === settlement.transactionHash.toLowerCase(),
   payerBound: settlement.payer.toLowerCase() === evidence.delivery.request.buyer.toLowerCase(),
   providerBound: settlement.payTo.toLowerCase() === promise.provider.toLowerCase(),

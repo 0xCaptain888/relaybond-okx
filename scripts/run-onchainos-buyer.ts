@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { hashCanonical, sha256Canonical } from "../src/canonical.js";
-import { extractMerchantDelivery, runOnchainOs } from "../src/onchainos-buyer.js";
+import { buildPaymentReplayArguments, extractMerchantDelivery, paidEvidencePath, runOnchainOs, type PaidScenario } from "../src/onchainos-buyer.js";
 import { settlementTransaction, verifyOnchainSettlement } from "../src/settlement.js";
 import { verifyDelivery } from "../src/verifier.js";
 import type { DeliveryReceipt, ServicePromise, ServiceRequest, Signed } from "../src/types.js";
@@ -42,21 +42,21 @@ if (command === "pay") {
   const paymentId = value("--payment-id");
   const selectedIndex = value("--selected-index", "0");
   const expectedStatus = value("--expect", "accepted").toUpperCase();
+  const symbol = value("--symbol").toUpperCase();
+  const scenario = value("--scenario").toLowerCase() as PaidScenario;
   if (!["ACCEPTED", "BREACH"].includes(expectedStatus)) throw new Error("--expect must be accepted or breach.");
   if (!paymentId) throw new Error("pay requires --payment-id from a prior quote.");
+  if (!symbol || !scenario) throw new Error("pay requires --symbol and --scenario so the paid replay exactly matches the reviewed quote.");
+  if (!/^[A-Z0-9]+-[A-Z0-9]+$/.test(symbol)) throw new Error("--symbol must be an OKX instrument id such as BTC-USDT.");
+  if (!["accepted", "empty", "stale"].includes(scenario)) throw new Error("--scenario must be accepted, empty or stale.");
+  if ((expectedStatus === "ACCEPTED") !== (scenario === "accepted")) {
+    throw new Error("--expect must match the reviewed scenario: accepted → ACCEPTED; empty/stale → BREACH.");
+  }
   if (!process.argv.includes("--yes")) {
     throw new Error("Refusing payment without explicit --yes after the operator reviews the OnchainOS quote.");
   }
 
-  const paid = await runOnchainOs([
-    "payment",
-    "pay",
-    "--payment-id",
-    paymentId,
-    "--selected-index",
-    selectedIndex,
-    "--yes",
-  ]);
+  const paid = await runOnchainOs(buildPaymentReplayArguments({ paymentId, selectedIndex, symbol, scenario }));
   const data = paid.data || {};
   if (data.status !== "success") throw new Error(`Payment request did not succeed: ${JSON.stringify(data.error || data.status)}`);
   const delivery = extractMerchantDelivery(data) as Delivery;
@@ -77,10 +77,6 @@ if (command === "pay") {
     receipt: delivery.deliveryReceipt,
     checkedAt: Math.max(Math.floor(Date.now() / 1000), delivery.deliveryReceipt.payload.deliveredAt),
   });
-  if (verification.status !== expectedStatus) {
-    throw new Error(`Expected ${expectedStatus}, received ${verification.status}: ${verification.violations.join(", ")}`);
-  }
-
   const unsignedEvidence = {
     evidenceVersion: "1",
     mode: "OKX_AGENTIC_WALLET_XLAYER_TESTNET",
@@ -100,10 +96,11 @@ if (command === "pay") {
     portableIntegrity: { algorithm: "SHA-256", hash: sha256Canonical(unsignedEvidence) },
   };
   await mkdir("evidence/live", { recursive: true });
-  const evidencePath = verification.status === "ACCEPTED"
-    ? "evidence/live/agentic-wallet-paid-delivery.json"
-    : "evidence/live/agentic-wallet-paid-breach.json";
+  const evidencePath = paidEvidencePath(expectedStatus as "ACCEPTED" | "BREACH", verification.status);
   await writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`);
+  if (verification.status !== expectedStatus) {
+    throw new Error(`Expected ${expectedStatus}, received ${verification.status}: ${verification.violations.join(", ") || "no violations"}. Unexpected delivery saved to ${evidencePath}.`);
+  }
   console.log(JSON.stringify({ status: verification.status, transactionHash: settlement.transactionHash, evidence: evidencePath, evidenceHash: evidence.evidenceHash }, null, 2));
   process.exit(0);
 }
@@ -114,6 +111,6 @@ console.log(`Preferred OKX Agentic Wallet runner
    npm run buyer:okx -- quote --symbol BTC-USDT --scenario accepted
 
 2. After reviewing and explicitly approving the displayed terms:
-   npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --expect accepted --yes
+   npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --symbol BTC-USDT --scenario accepted --expect accepted --yes
 
 The second command delegates signing, replay and settlement to the logged-in OnchainOS TEE wallet, then independently verifies the provider-signed RelayBond delivery.`);

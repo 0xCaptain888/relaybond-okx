@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { extractMerchantDelivery, requireFinalSettlement } from "../src/onchainos-buyer.js";
+import { buildPaymentReplayArguments, extractMerchantDelivery, paidEvidencePath, requireFinalSettlement } from "../src/onchainos-buyer.js";
 import { settlementTransaction } from "../src/settlement.js";
 
 test("OnchainOS result extraction rejects a missing merchant delivery", () => {
@@ -38,4 +38,21 @@ test("continues a pending facilitator response using its onchain transaction", (
     status: "success",
     decodedReceipt: { status: "pending", transaction },
   }), transaction);
+});
+
+test("paid replay carries the exact reviewed business parameters", () => {
+  assert.deepEqual(buildPaymentReplayArguments({
+    paymentId: "pay_test",
+    selectedIndex: "0",
+    symbol: "BTC-USDT",
+    scenario: "stale",
+  }), [
+    "payment", "pay", "--payment-id", "pay_test", "--selected-index", "0",
+    "--param", "symbol=BTC-USDT", "--param", "scenario=stale", "--yes",
+  ]);
+});
+
+test("unexpected paid results are preserved instead of discarded", () => {
+  assert.equal(paidEvidencePath("BREACH", "ACCEPTED"), "evidence/live/agentic-wallet-unexpected-accepted.json");
+  assert.equal(paidEvidencePath("BREACH", "BREACH"), "evidence/live/agentic-wallet-paid-breach.json");
 });
