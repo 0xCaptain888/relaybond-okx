@@ -1,6 +1,6 @@
 {
   "name": "relaybond-okx",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": false,
   "description": "Economic accountability for paid AI agent services on OKX AI and X Layer.",
   "type": "module",

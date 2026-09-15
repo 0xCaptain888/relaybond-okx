@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { keccak256, stringToHex } from "viem";
 import { buildBreachClaim } from "../src/breach-claim.js";
 import { createJudgeEvidence } from "../src/simulator.js";
 
@@ -19,6 +20,7 @@ test("builds a replay-safe rebate claim only from paid attributable breach evide
   assert.equal(claim.buyer, judge.buyer);
   assert.equal(claim.rebateAmount, 10_000n);
   assert.equal(claim.requestHash, scenario.deliveryReceipt.payload.requestHash);
+  assert.equal(claim.serviceId, keccak256(stringToHex("market-data-v1")));
 });
 
 test("refuses a rebate when provider attribution is broken", async () => {

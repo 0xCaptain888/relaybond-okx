@@ -19,7 +19,7 @@
 - [x] Pay once from an OKX Agentic Wallet and independently confirm the 0.01 USD₮0 settlement transaction.
 - [x] Capture a complete Agentic Wallet paid delivery body and independently verify it as `ACCEPTED`.
 - [x] Return one correct provider-signed response and verify all 9 SLA checks.
-- [ ] Return one signed empty/stale response and verify `BREACH`.
+- [x] Return one provider-signed stale paid response and independently verify `BREACH`.
 - [ ] Submit verifier attestation and show the real onchain `BreachRebated` event.
 - [x] Deploy the public judge demo and API at `https://relaybond-okx.vercel.app`.
 

@@ -1,3 +1,4 @@
+import { keccak256, stringToHex } from "viem";
 import { hashCanonical } from "./canonical.js";
 import { hashPromise } from "./signing.js";
 import type { DeliveryReceipt, ServicePromise, ServiceRequest, Signed, VerificationResult } from "./types.js";
@@ -38,7 +39,7 @@ export async function buildBreachClaim(evidence: PaidBreachEvidence) {
     throw new Error("No objective SLA delivery breach is present.");
   }
   return {
-    serviceId: hashCanonical(promise.serviceId),
+    serviceId: keccak256(stringToHex(promise.serviceId)),
     promiseHash: await hashPromise(promise),
     requestHash: hashCanonical(request),
     receiptHash: hashCanonical(evidence.delivery.deliveryReceipt),

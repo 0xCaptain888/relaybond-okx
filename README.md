@@ -128,9 +128,10 @@ npm run rebate:live-breach -- --confirm
 - First Agentic Wallet settlement: `0.01 Testnet USD₮0`, transaction `0x2a9b32e353a93179f6f811b687051382ce9de782c9fd4f3bc3058b0c9d2bd125`. Settlement is independently confirmed; the merchant delivery body was not persisted by the previous runner, so this is deliberately **not** labeled `ACCEPTED`.
 - Complete Agentic Wallet paid delivery: `0.01 Testnet USD₮0`, transaction [`0xfd1e…e4bf`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xfd1e25e2415a79eff8e8d981d9e5f97efe8f9136ce026b1cf1e5ac872c8ee4bf), block `41018044`, evidence hash `0x39a67bcde940b07e429aee35fbef6fe260dcc2e0aecae6e3013f124cfa57dde8`, independently verified `ACCEPTED` with all 9 SLA checks passing.
 - Scenario-mismatch settlement: `0.01 Testnet USD₮0`, transaction [`0x4386…5304`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x438616931bfcca24e7da37a0f3683dbb8db360081a8fb249982d238851595304). The v0.2.2 runner omitted `stale` during paid replay, so this is deliberately recorded as settlement-only evidence and **not** claimed as `BREACH`.
-- Agentic Wallet balance after three explicit calls: `0.02 Testnet USD₮0` at block `41021541`.
+- Complete paid breach: `0.01 Testnet USD₮0`, transaction [`0x53b8…449a`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a), block `41022040`, evidence hash `0x49288a96c20698ea0efd44f7134a87edcd774d31c98aa110506b31ea17b82cb5`, independently verified `BREACH` because `freshnessMet=false`.
+- Agentic Wallet balance after four explicit calls: `0.01 Testnet USD₮0` at block `41022208`; the breach rebate remains pending explicit confirmation.
 - Verified source: `QualityBondVault`, Solidity `0.8.28`, optimizer `200`, EVM `paris`
-- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json), [`agentic-wallet-paid-delivery.json`](./evidence/live/agentic-wallet-paid-delivery.json), [`agentic-wallet-scenario-mismatch-settlement.json`](./evidence/live/agentic-wallet-scenario-mismatch-settlement.json), [`agentic-wallet-balance.json`](./evidence/live/agentic-wallet-balance.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
+- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json), [`agentic-wallet-paid-delivery.json`](./evidence/live/agentic-wallet-paid-delivery.json), [`agentic-wallet-paid-breach.json`](./evidence/live/agentic-wallet-paid-breach.json), [`agentic-wallet-scenario-mismatch-settlement.json`](./evidence/live/agentic-wallet-scenario-mismatch-settlement.json), [`agentic-wallet-balance.json`](./evidence/live/agentic-wallet-balance.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
 
 ## Repository map
 
@@ -185,6 +186,7 @@ npm run rebate:live-breach -- --confirm
 | Real OKX AI A2MCP listing | PENDING | must be completed before submission |
 | Real x402 settlement | TESTNET | two 0.01 USD₮0 Agentic Wallet settlements; latest tx `0xfd1e…e4bf` |
 | Real paid delivery verification | TESTNET / ACCEPTED | request, OKX result, provider signatures, exact Transfer and 9/9 SLA checks |
+| Real paid breach verification | TESTNET / BREACH | stale paid quote, exact Transfer, provider signatures and `freshnessMet=false` |
 | Real X Layer breach rebate | PENDING | requires a paid bad delivery + verifier attestation |
 
 See the [prior-work disclosure](./docs/prior-work-disclosure.md) and [threat model](./docs/threat-model.md).

@@ -3,8 +3,8 @@
   "mode": "XLAYER_TESTNET_READ_ONLY",
   "address": "0xcb83af485c066add3eca9041a78ea7c14e3f15f4",
   "token": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
-  "balanceAtomic": "20000",
-  "balanceDisplay": "0.02 USD₮0",
-  "blockNumber": "41021541",
-  "capturedAt": "2026-09-15T13:55:07.582Z"
+  "balanceAtomic": "10000",
+  "balanceDisplay": "0.01 USD₮0",
+  "blockNumber": "41022208",
+  "capturedAt": "2026-09-15T14:04:06.806Z"
 }

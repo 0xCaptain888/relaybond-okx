@@ -40,7 +40,7 @@ export function createOkxApp() {
   app.options(/.*/, (_request, response) => response.status(204).end());
   app.use(express.json({ limit: "32kb" }));
   app.get("/health", (_request, response) => {
-    response.json({ status: "ok", version: "0.2.3", mode: "OKX_OFFICIAL_X402", network, serviceId: promise.serviceId, provider: provider.address, vault: promise.vault });
+    response.json({ status: "ok", version: "0.2.4", mode: "OKX_OFFICIAL_X402", network, serviceId: promise.serviceId, provider: provider.address, vault: promise.vault });
   });
   app.get("/v1/service/promise", async (_request, response, next) => {
     try {

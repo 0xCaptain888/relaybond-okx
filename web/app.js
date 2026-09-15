@@ -153,6 +153,10 @@ async function loadLiveStatus() {
     const paidEvidence = await loadLiveEvidence("agentic-wallet-paid-delivery");
     const checks = Object.values(paidEvidence.verification.checks).filter(Boolean).length;
     paidProof.textContent = `${paidEvidence.verification.status} · ${checks}/9`;
+    try {
+      const breachEvidence = await loadLiveEvidence("agentic-wallet-paid-breach");
+      if (breachEvidence.verification.status === "BREACH") paidProof.textContent = "ACCEPTED + BREACH";
+    } catch {}
   } catch {
     try {
       const settlement = await loadLiveEvidence("agentic-wallet-payment-settlement");
