@@ -1,0 +1,13 @@
+{
+  "evidenceVersion": "1",
+  "chainId": 1952,
+  "mode": "XLAYER_TESTNET",
+  "contract": "QualityBondVault",
+  "address": "0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5",
+  "settlementToken": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+  "verifier": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
+  "deployer": "0xC0F33b0334B1d000Cc40Dd0001762C1232dDAC08",
+  "transactionHash": "0x763f8b602f024d97281546f43bd7b3190a581a1d854d4dc5744d402547a9f484",
+  "blockNumber": 41008617,
+  "deployedAt": "2026-09-15T10:17:33.229Z"
+}

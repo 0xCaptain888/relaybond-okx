@@ -15,6 +15,8 @@
     "rebate:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/claim-rebate.cjs --network xLayerTestnet",
     "wallets:bootstrap": "node --import tsx scripts/bootstrap-wallets.ts",
     "wallets:status": "node --env-file-if-exists=.env --import tsx scripts/wallet-status.ts",
+    "deployment:configure": "node --import tsx scripts/set-deployment-env.ts",
+    "promise:generate": "node --env-file-if-exists=.env --import tsx scripts/generate-service-promise.ts",
     "secrets:okx": "node --import tsx scripts/secure-okx-config.ts",
     "secrets:status": "node --env-file-if-exists=.env --import tsx scripts/secret-status.ts",
     "typecheck": "tsc --noEmit",

@@ -2,7 +2,7 @@
 
 > **Economic accountability for paid Agent services.**
 
-**[Launch Public Judge Demo](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **Video:** pending · **X Layer evidence:** pending
+**[Launch Public Judge Demo](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **[X Layer deployment](https://www.okx.com/web3/explorer/xlayer-test/tx/0x763f8b602f024d97281546f43bd7b3190a581a1d854d4dc5744d402547a9f484)** · **Video:** pending
 
 RelayBond is the service-warranty layer for paid AI agents. Providers publish a signed, machine-readable SLA and deposit a USDT0 Quality Bond on X Layer. If a provider-signed response violates objective delivery terms, an independent verifier can trigger an automatic buyer rebate.
 
@@ -27,7 +27,7 @@ Signed ServicePromise
 → X Layer buyer rebate
 ```
 
-The local foundation already demonstrates signed promises, signed delivery receipts, deterministic verification, `ACCEPTED`, two objective `BREACH` cases, portable evidence and simulated bond accounting. It does **not** claim a live OKX payment or X Layer rebate yet.
+The foundation demonstrates signed promises, signed delivery receipts, deterministic verification, `ACCEPTED`, two objective `BREACH` cases and portable evidence. `QualityBondVault` is deployed on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. It does **not** claim a live OKX payment, funded bond or X Layer rebate yet.
 
 ## Why this is different
 
@@ -87,6 +87,7 @@ The provider route returns a standards-shaped HTTP `402` challenge. If a payment
 - [`src/verifier.ts`](./src/verifier.ts) — independent objective SLA verifier.
 - [`src/payment.ts`](./src/payment.ts) — x402 `exact` payment challenge.
 - [`src/okx-server.ts`](./src/okx-server.ts) — official OKX Payment SDK resource server.
+- [`src/okx-app.ts`](./src/okx-app.ts) — deployment-neutral Express app used locally and by Vercel.
 - [`src/sdk.ts`](./src/sdk.ts) — integration client for other Agent projects.
 - [`src/passport.ts`](./src/passport.ts) — evidence-derived provider Reliability Passport.
 - [`openapi.yaml`](./openapi.yaml) — machine-readable integration surface.
@@ -117,7 +118,8 @@ The provider route returns a standards-shaped HTTP `402` challenge. If a payment
 |---|---|---|
 | Signed SLA and delivery receipt | LOCAL | unit tests + generated JSON |
 | Independent deterministic verifier | LOCAL | `npm run test:unit` |
-| QualityBondVault | LOCAL | Hardhat contract tests |
+| QualityBondVault tests | LOCAL | Hardhat contract tests |
+| QualityBondVault deployment | TESTNET | block `41008617`, tx `0x763f…f484` |
 | Browser integrity verification | LOCAL | Judge Demo |
 | Reliability Passport | LOCAL | derived from signed evidence, not user reviews |
 | Real OKX AI A2MCP listing | PENDING | must be completed before submission |
