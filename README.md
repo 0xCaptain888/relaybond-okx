@@ -2,7 +2,7 @@
 
 > **Economic accountability for paid Agent services.**
 
-**Public Judge Demo:** deployment pending · **Video:** pending · **X Layer evidence:** pending
+**[Launch Public Judge Demo](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **Video:** pending · **X Layer evidence:** pending
 
 RelayBond is the service-warranty layer for paid AI agents. Providers publish a signed, machine-readable SLA and deposit a USDT0 Quality Bond on X Layer. If a provider-signed response violates objective delivery terms, an independent verifier can trigger an automatic buyer rebate.
 

@@ -22,7 +22,7 @@ async function sha256(value) {
 }
 
 async function loadEvidence() {
-  const response = await fetch("../evidence/judge-run.json", { cache: "no-store" });
+  const response = await fetch("./evidence/judge-run.json", { cache: "no-store" });
   if (!response.ok) throw new Error("Generate evidence first: npm run demo");
   return response.json();
 }
