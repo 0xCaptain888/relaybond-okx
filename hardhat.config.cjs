@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("@okxweb3/hardhat-explorer-verify");
 
 const privateKey = process.env.XLAYER_PRIVATE_KEY || "";
 
@@ -18,5 +19,18 @@ module.exports = {
       chainId: 196,
       accounts: privateKey ? [privateKey] : [],
     },
+  },
+  okxweb3explorer: {
+    apiKey: process.env.OKX_API_KEY || "",
+    customChains: [
+      {
+        network: "xLayerTestnet",
+        chainId: 1952,
+        urls: {
+          apiURL: "https://www.oklink.com/api/v5/explorer/contract/verify-source-code-plugin/XLAYER_TESTNET",
+          browserURL: "https://www.oklink.com/xlayer-test",
+        },
+      },
+    ],
   },
 };

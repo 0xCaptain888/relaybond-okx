@@ -87,7 +87,8 @@ The production endpoint is live at `https://relaybond-okx.vercel.app/v1/provider
 - Registered service: [`0x07fd…1c14`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x07fd2a4f7782d2ba9ea951d4e18656ac4b965f54bf7e1c3503ca926ade6f1c14)
 - USDT0 approval: [`0x324f…2395`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x324f21c98650608e46b317dfcfa7175fe5227c7a618fdb8c56bb733dc64e2395)
 - 5 Testnet USDT0 bond deposit: [`0xa423…6694`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xa4231e43f171c43da45a9b3412af1a2992ea23d4fd7c1e4fe13da68136d36694)
-- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json) and [`bond.json`](./evidence/live/bond.json)
+- Verified source: `QualityBondVault`, Solidity `0.8.28`, optimizer `200`, EVM `paris`
+- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
 
 ## Repository map
 
@@ -130,6 +131,7 @@ The production endpoint is live at `https://relaybond-okx.vercel.app/v1/provider
 | Independent deterministic verifier | LOCAL | `npm run test:unit` |
 | QualityBondVault tests | LOCAL | Hardhat contract tests |
 | QualityBondVault deployment | TESTNET | block `41008617`, tx `0x763f…f484` |
+| QualityBondVault source | VERIFIED | OKX Onchain OS reports source + ABI present |
 | Public Judge Demo + API | LIVE | Vercel production deployment |
 | Official OKX x402 challenge | LIVE | unauthenticated quote returns HTTP `402` + `PAYMENT-REQUIRED` |
 | Quality Bond | TESTNET | active service backed by 5 Testnet USDT0, deposit tx `0xa423…6694` |

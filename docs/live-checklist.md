@@ -6,7 +6,7 @@
 - [x] Use official Testnet USD₮0 `0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c` and test OKB from the X Layer faucet.
 - [x] Fund only the public role addresses in `evidence/setup/wallet-addresses.json`; `.env` remains local and gitignored.
 - [x] Deploy `QualityBondVault` and record the public deployment transaction.
-- [ ] Verify the deployed contract source on the X Layer explorer.
+- [x] Verify the deployed `QualityBondVault` source on the X Layer explorer.
 - [x] Register the endpoint-bound Service Promise and deposit a real 5 Testnet USDT0 Quality Bond.
 - [ ] Publish the provider as an OKX AI A2MCP service.
 - [x] Return the official x402 `exact` payment challenge from the public Vercel API.

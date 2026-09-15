@@ -10,6 +10,8 @@
   "scripts": {
     "build": "hardhat compile",
     "vercel-build": "npm run build && node --import tsx scripts/build-vercel.ts",
+    "verify:contract:xlayer-testnet": "node --env-file-if-exists=.env scripts/verify-xlayer-contract.cjs",
+    "verify:contract:status": "node --env-file-if-exists=.env --import tsx scripts/check-contract-verification.ts",
     "deploy:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/deploy.cjs --network xLayerTestnet",
     "deploy:xlayer": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/deploy.cjs --network xLayer",
     "bond:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/register-and-bond.cjs --network xLayerTestnet",
@@ -43,6 +45,7 @@
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@okxweb3/hardhat-explorer-verify": "^1.6.5",
     "@types/express": "^5.0.3",
     "@types/node": "^20.17.24",
     "hardhat": "^2.22.19",

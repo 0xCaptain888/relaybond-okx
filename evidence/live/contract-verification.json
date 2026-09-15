@@ -1,0 +1,17 @@
+{
+  "evidenceVersion": "1",
+  "mode": "XLAYER_TESTNET",
+  "verified": true,
+  "contractAddress": "0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5",
+  "contractName": "QualityBondVault",
+  "compilerVersion": "v0.8.28+commit.7893614a",
+  "compilerType": "Solidity",
+  "optimization": "1",
+  "optimizationRuns": "200",
+  "evmVersion": "paris",
+  "licenseType": "MIT License (MIT)",
+  "sourcePresent": true,
+  "abiPresent": true,
+  "checkedAt": "2026-09-15T11:30:11.827Z",
+  "source": "OKX_ONCHAIN_OS_VERIFY_CONTRACT_INFO"
+}
