@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#090b0d" />
+    <title>RelayBond — Agent Service Warranties</title>
+    <meta name="description" content="Economic accountability for paid AI agent services on OKX AI and X Layer." />
+    <link rel="icon" href="./mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <header>
+      <a class="brand" href="#"><img src="./mark.svg" alt="" /><span>RelayBond</span></a>
+      <div class="header-actions">
+        <span class="network"><i></i>X Layer</span>
+        <a href="https://github.com/0xCaptain888" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
+    </header>
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">SERVICE WARRANTIES FOR THE AGENT ECONOMY</p>
+          <h1>The payment worked.<br /><em>The service must work too.</em></h1>
+          <p class="lede">RelayBond makes paid Agent providers put USDT0 behind machine-readable service promises. Bad delivery triggers an independently verified rebate.</p>
+          <div class="hero-actions">
+            <button id="run">Run the 45-second judge flow</button>
+            <button id="verify" class="secondary">Verify evidence in browser</button>
+          </div>
+          <p class="honesty">Current public artifact: deterministic local evidence. Live x402 + X Layer transactions are the next integration milestone.</p>
+        </div>
+        <aside class="bond-card">
+          <div class="card-head"><span>Provider Quality Bond</span><span class="live">ACTIVE</span></div>
+          <strong><span id="bond">5.00</span> <small>USDT0</small></strong>
+          <div class="bond-line"><span></span></div>
+          <dl>
+            <div><dt>Service</dt><dd>Market Data v1</dd></div>
+            <div><dt>Maximum latency</dt><dd>2.0 sec</dd></div>
+            <div><dt>Maximum data age</dt><dd>30 sec</dd></div>
+            <div><dt>Rebate per breach</dt><dd>0.01 USDT0</dd></div>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="flow-shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">LIVE PRODUCT NARRATIVE</p><h2>One promise. Three provable outcomes.</h2></div>
+          <span id="run-state">READY</span>
+        </div>
+        <div class="steps">
+          <article data-step="0"><b>01</b><div><h3>Promise signed</h3><p>EIP-712 SLA binds schema, freshness, latency, price and rebate.</p></div><span>WAITING</span></article>
+          <article data-step="1"><b>02</b><div><h3>Paid call delivered</h3><p>Correct quote arrives inside the promise window.</p></div><span>WAITING</span></article>
+          <article data-step="2"><b>03</b><div><h3>Empty response caught</h3><p>The provider signed <code>{}</code>. The verifier proves the breach.</p></div><span>WAITING</span></article>
+          <article data-step="3"><b>04</b><div><h3>Buyer rebated</h3><p>0.01 USDT0 moves from the seller’s Quality Bond.</p></div><span>WAITING</span></article>
+        </div>
+      </section>
+
+      <section class="three-up">
+        <article><span>BEFORE PAYMENT</span><h3>Signed promise</h3><p>Buyers know the exact output contract and warranty before an Agent spends.</p></article>
+        <article><span>AFTER DELIVERY</span><h3>Portable evidence</h3><p>Request, response, payment and SLA hashes travel as one independently verifiable receipt.</p></article>
+        <article><span>WHEN IT FAILS</span><h3>Economic consequence</h3><p>A provider cannot collect indefinitely while returning empty, stale or malformed results.</p></article>
+      </section>
+
+      <section class="terminal">
+        <div class="terminal-top"><span></span><span></span><span></span><b>Evidence verifier</b></div>
+        <pre id="output">$ Ready. Run the judge flow or verify the portable evidence hash.</pre>
+      </section>
+    </main>
+    <footer><span>Built for OKX Dev Day 2026 · Remote Build</span><span>Evidence first. Claims second.</span></footer>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

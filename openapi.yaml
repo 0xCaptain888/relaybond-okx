@@ -1,0 +1,39 @@
+openapi: 3.1.0
+info:
+  title: RelayBond API
+  version: 0.1.0
+  description: Bond-backed paid Agent services with portable delivery evidence.
+servers:
+  - url: https://relaybond.example
+paths:
+  /health:
+    get:
+      operationId: relaybondHealth
+      responses:
+        "200":
+          description: Runtime status
+  /v1/provider/quote:
+    post:
+      operationId: getBondBackedQuote
+      summary: Purchase a fresh market quote protected by a Quality Bond
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [symbol]
+              properties:
+                symbol: { type: string, examples: [BTC-USDT] }
+      responses:
+        "200":
+          description: Paid result plus signed promise and delivery receipt
+        "402":
+          description: x402 challenge in the PAYMENT-REQUIRED header
+  /v1/verify:
+    post:
+      operationId: verifyRelayBondDelivery
+      summary: Independently verify a signed service delivery
+      responses:
+        "200":
+          description: ACCEPTED or BREACH with deterministic checks

@@ -1,0 +1,193 @@
+{
+  "evidenceVersion": "1",
+  "mode": "DETERMINISTIC_LOCAL_SIMULATION",
+  "generatedAt": "2026-09-15T00:00:00.000Z",
+  "provider": "0x47C68CF47d6e5c44f64a87D8bF2B9f672C3995fE",
+  "buyer": "0x4b67C71F8023Af4f60E2A103F8C3DD1f8AEF41C4",
+  "verifier": "0x20312E640615af0Ce25F8aa1e277Aa30Ccf54229",
+  "servicePromise": {
+    "payload": {
+      "version": "1",
+      "chainId": 1952,
+      "vault": "0x1111111111111111111111111111111111110195",
+      "serviceId": "market-data-v1",
+      "endpoint": "https://relaybond.example/v1/provider/quote",
+      "responseTimeMs": 2000,
+      "maxDataAgeSeconds": 30,
+      "requiredSchema": "market-quote-v1",
+      "minimumRecords": 1,
+      "priceAtomic": "10000",
+      "bondAmountAtomic": "5000000",
+      "rebateAtomic": "10000",
+      "refundOnBreach": true,
+      "validUntil": 1789516800,
+      "provider": "0x47C68CF47d6e5c44f64a87D8bF2B9f672C3995fE"
+    },
+    "signature": "0x7983df1a46c66c716cd91362a89846df9959e791e2cc2a102ecca9e0490248ca4c487bc9ec8f7c0f18c37c25c6f11c7bdad0ab85bfcf7431c1bfbc8f260f647f1c"
+  },
+  "scenarios": [
+    {
+      "name": "good-delivery",
+      "request": {
+        "serviceId": "market-data-v1",
+        "requestedAt": 1789430400,
+        "input": {
+          "symbol": "BTC-USDT"
+        },
+        "buyer": "0x4b67C71F8023Af4f60E2A103F8C3DD1f8AEF41C4"
+      },
+      "response": {
+        "symbol": "BTC-USDT",
+        "price": 62450.25,
+        "observedAt": 1789430400
+      },
+      "deliveryReceipt": {
+        "payload": {
+          "version": "1",
+          "serviceId": "market-data-v1",
+          "requestHash": "0x28fc4555cbe42407b6447d71ecb974b89db5f50f258295a66208c99c82858a4f",
+          "responseHash": "0x96977acce73d20596917d3b420e4b2a3c063050d7b89b74b484edcc80cc44d4f",
+          "paymentId": "0x4f751c6ded39a917bce842ca8b127f176711bc7f1c8e2a2de4b6bcaeea4a5747",
+          "deliveredAt": 1789430401,
+          "servicePromiseHash": "0x5e9f016f666eba71b86995e05e20e00ad26dcf793ad2a864a42dcbff8bd3b2cd",
+          "provider": "0x47C68CF47d6e5c44f64a87D8bF2B9f672C3995fE"
+        },
+        "signature": "0xcfeda1b427fa9f2b34c367750c7fb5729eb586bf0f3a6a7f8c65e6105434ce0d2c785495e436879d5b1a13ba1ec4c3106d1e9934147967b3c60089cf1e46e4711b"
+      },
+      "verification": {
+        "status": "ACCEPTED",
+        "checkedAt": 1789430401,
+        "violations": [],
+        "checks": {
+          "promiseSignature": true,
+          "receiptSignature": true,
+          "promiseBound": true,
+          "requestBound": true,
+          "responseBound": true,
+          "deadlineMet": true,
+          "freshnessMet": true,
+          "schemaMet": true,
+          "recordCountMet": true
+        },
+        "evidenceHash": "0xecb5e10cc8ed81c03146f0b27cbf76d985f69cde2ee960a42461dd3556a3c536"
+      },
+      "settlement": {
+        "state": "NOT_REQUIRED",
+        "rebateAtomic": "0",
+        "bondBeforeAtomic": "5000000",
+        "bondAfterAtomic": "5000000"
+      }
+    },
+    {
+      "name": "empty-paid-response",
+      "request": {
+        "serviceId": "market-data-v1",
+        "requestedAt": 1789430410,
+        "input": {
+          "symbol": "ETH-USDT"
+        },
+        "buyer": "0x4b67C71F8023Af4f60E2A103F8C3DD1f8AEF41C4"
+      },
+      "response": {},
+      "deliveryReceipt": {
+        "payload": {
+          "version": "1",
+          "serviceId": "market-data-v1",
+          "requestHash": "0x684cec250020ceb80de9e4bb8df557caa80dc61efe5cf0a3473d57cb9700129c",
+          "responseHash": "0xb48d38f93eaa084033fc5970bf96e559c33c4cdc07d889ab00b4d63f9590739d",
+          "paymentId": "0x6746f5bbae06f6810badbb34c6f6d8d8e2decf72be11cab39b22289a5b769b2e",
+          "deliveredAt": 1789430411,
+          "servicePromiseHash": "0x5e9f016f666eba71b86995e05e20e00ad26dcf793ad2a864a42dcbff8bd3b2cd",
+          "provider": "0x47C68CF47d6e5c44f64a87D8bF2B9f672C3995fE"
+        },
+        "signature": "0xd8e840f4810767803bfe2ef81650099186b79fff81c5e4f5017014acda381cce2bfe446191121e17feaed190c9f70e9e56e617543782c14fb1792738922d1ad11c"
+      },
+      "verification": {
+        "status": "BREACH",
+        "checkedAt": 1789430411,
+        "violations": [
+          "freshnessMet",
+          "schemaMet",
+          "recordCountMet"
+        ],
+        "checks": {
+          "promiseSignature": true,
+          "receiptSignature": true,
+          "promiseBound": true,
+          "requestBound": true,
+          "responseBound": true,
+          "deadlineMet": true,
+          "freshnessMet": false,
+          "schemaMet": false,
+          "recordCountMet": false
+        },
+        "evidenceHash": "0xf26b51fbea9bcf4a99b1d7fddb0372ee6f9397593daaf95e3e21c3bd246ce950"
+      },
+      "settlement": {
+        "state": "REBATED",
+        "rebateAtomic": "10000",
+        "bondBeforeAtomic": "5000000",
+        "bondAfterAtomic": "4990000"
+      }
+    },
+    {
+      "name": "stale-quote",
+      "request": {
+        "serviceId": "market-data-v1",
+        "requestedAt": 1789430420,
+        "input": {
+          "symbol": "OKB-USDT"
+        },
+        "buyer": "0x4b67C71F8023Af4f60E2A103F8C3DD1f8AEF41C4"
+      },
+      "response": {
+        "symbol": "OKB-USDT",
+        "price": 190.5,
+        "observedAt": 1789430100
+      },
+      "deliveryReceipt": {
+        "payload": {
+          "version": "1",
+          "serviceId": "market-data-v1",
+          "requestHash": "0xa4df526aadc8483b548dbb2546fd30f284453d8b13bd39599f886cea798b5dd1",
+          "responseHash": "0x2209c3f674260ed9f825d67b802e3d336d457f238099dcc239b5a64a3214a179",
+          "paymentId": "0x0858736046ddd2e5f5bca52e3037bbfcb5e3e53b67b28d428467aa755751569a",
+          "deliveredAt": 1789430421,
+          "servicePromiseHash": "0x5e9f016f666eba71b86995e05e20e00ad26dcf793ad2a864a42dcbff8bd3b2cd",
+          "provider": "0x47C68CF47d6e5c44f64a87D8bF2B9f672C3995fE"
+        },
+        "signature": "0x729c226c1800dc6ca1cc7b5886e121c7eb2e5a6cbcf7cd20cd6fbf8f06320edc5a74e6058a17625c0779501845880db416134573202540626d0b08c2594bede71c"
+      },
+      "verification": {
+        "status": "BREACH",
+        "checkedAt": 1789430421,
+        "violations": [
+          "freshnessMet"
+        ],
+        "checks": {
+          "promiseSignature": true,
+          "receiptSignature": true,
+          "promiseBound": true,
+          "requestBound": true,
+          "responseBound": true,
+          "deadlineMet": true,
+          "freshnessMet": false,
+          "schemaMet": true,
+          "recordCountMet": true
+        },
+        "evidenceHash": "0xa98b06d0c367b8e9bbcf0db9ff45af78eb9f325ffbd4e087ad94710ff86ac0c6"
+      },
+      "settlement": {
+        "state": "REBATED",
+        "rebateAtomic": "10000",
+        "bondBeforeAtomic": "4990000",
+        "bondAfterAtomic": "4980000"
+      }
+    }
+  ],
+  "evidenceHash": "0x6c801e3428dd57f6b6a6262a314ca1b1feda21aa1bad6c7146cf9b1a632706f8",
+  "portableIntegrity": {
+    "algorithm": "SHA-256",
+    "hash": "0x269b30227925c7305394ad8a82734b60bfe930850734b3c3e0e16aa7546667fb"
+  }
+}

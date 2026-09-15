@@ -1,0 +1,53 @@
+{
+  "name": "relaybond-okx",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Economic accountability for paid AI agent services on OKX AI and X Layer.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "scripts": {
+    "build": "hardhat compile",
+    "deploy:xlayer-testnet": "hardhat run scripts/deploy.cjs --network xLayerTestnet",
+    "deploy:xlayer": "hardhat run scripts/deploy.cjs --network xLayer",
+    "bond:xlayer-testnet": "hardhat run scripts/register-and-bond.cjs --network xLayerTestnet",
+    "rebate:xlayer-testnet": "hardhat run scripts/claim-rebate.cjs --network xLayerTestnet",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run test:unit && npm run test:contract",
+    "test:unit": "node --import tsx --test test/*.test.ts",
+    "test:contract": "hardhat test",
+    "demo": "node --import tsx scripts/judge-run.ts",
+    "verify:evidence": "node --import tsx scripts/verify-evidence.ts evidence/judge-run.json",
+    "api": "node --import tsx src/server.ts",
+    "api:okx": "node --import tsx src/okx-server.ts",
+    "serve": "node --import tsx scripts/serve-demo.ts",
+    "check": "npm run typecheck && npm test && npm run demo && npm run verify:evidence"
+  },
+  "dependencies": {
+    "@okxweb3/x402-core": "^0.1.0",
+    "@okxweb3/x402-evm": "^0.2.1",
+    "@okxweb3/x402-express": "^0.1.1",
+    "express": "^5.1.0",
+    "undici": "^7.29.0",
+    "viem": "^2.45.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@types/express": "^5.0.3",
+    "@types/node": "^20.17.24",
+    "hardhat": "^2.22.19",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.2"
+  },
+  "keywords": [
+    "okx",
+    "x-layer",
+    "x402",
+    "a2mcp",
+    "ai-agents",
+    "service-level-agreement",
+    "quality-bond"
+  ],
+  "license": "MIT"
+}
