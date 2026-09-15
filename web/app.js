@@ -3,6 +3,9 @@ const verifyButton = document.querySelector("#verify");
 const output = document.querySelector("#output");
 const bond = document.querySelector("#bond");
 const runState = document.querySelector("#run-state");
+const acceptanceRate = document.querySelector("#acceptance-rate");
+const bondCoverage = document.querySelector("#bond-coverage");
+const verifiedCalls = document.querySelector("#verified-calls");
 const steps = [...document.querySelectorAll("[data-step]")];
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -25,6 +28,15 @@ async function loadEvidence() {
   const response = await fetch("./evidence/judge-run.json", { cache: "no-store" });
   if (!response.ok) throw new Error("Generate evidence first: npm run demo");
   return response.json();
+}
+
+async function loadPassport() {
+  const response = await fetch("./evidence/reliability-passport.json", { cache: "no-store" });
+  if (!response.ok) return;
+  const passport = await response.json();
+  acceptanceRate.textContent = `${(passport.acceptanceRateBps / 100).toFixed(2)}%`;
+  bondCoverage.textContent = `${passport.bondCoverageCalls} calls`;
+  verifiedCalls.textContent = String(passport.calls);
 }
 
 async function runFlow() {
@@ -72,3 +84,4 @@ async function verifyEvidence() {
 
 runButton.addEventListener("click", () => runFlow().catch((error) => { output.textContent = `$ Run failed\n${error.message}`; runButton.disabled = false; }));
 verifyButton.addEventListener("click", verifyEvidence);
+loadPassport().catch(() => {});

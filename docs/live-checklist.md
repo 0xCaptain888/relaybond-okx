@@ -4,6 +4,7 @@
 
 - [ ] Confirm X Layer Testnet/Mainnet eligibility with OKX Dev Day organizers. Testnet chain ID is `1952`.
 - [ ] Use official Testnet USD₮0 `0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c` and test OKB from the X Layer faucet.
+- [ ] Fund only the public deployer address in `evidence/setup/wallet-addresses.json`; `.env` remains local and gitignored.
 - [ ] Deploy `QualityBondVault` and record verified source plus deployment transaction.
 - [ ] Deposit a real USDT0 Quality Bond.
 - [ ] Publish the provider as an OKX AI A2MCP service.
@@ -16,7 +17,7 @@
 
 ## P1 — prize-strengthening
 
-- [ ] Reliability Passport with calls, breach rate, bond coverage and median latency.
+- [x] Reliability Passport with acceptance rate, breach reasons and bond coverage. Live history remains pending.
 - [ ] Provider SDK and OpenAPI integration example.
 - [ ] Backup-provider recovery without double-charging the buyer.
 - [ ] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.

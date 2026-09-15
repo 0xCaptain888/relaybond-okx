@@ -48,6 +48,24 @@ npm run check
 npm run serve
 ```
 
+Create isolated Testnet identities without exposing private keys:
+
+```bash
+npm run wallets:bootstrap
+npm run wallets:status
+```
+
+The command stores secrets only in gitignored `.env` with mode `600` and writes public addresses separately to `evidence/setup/wallet-addresses.json`.
+
+Save OKX seller credentials without putting them in shell history or chat:
+
+```bash
+npm run secrets:okx
+npm run secrets:status
+```
+
+Open the printed localhost URL. Values stay in the local `.env` file and are never echoed back.
+
 Open `http://localhost:4173`. The judge flow writes [evidence/judge-run.json](./evidence/judge-run.json) and the browser independently verifies its portable SHA-256 integrity.
 
 Run the API separately:
@@ -70,6 +88,7 @@ The provider route returns a standards-shaped HTTP `402` challenge. If a payment
 - [`src/payment.ts`](./src/payment.ts) — x402 `exact` payment challenge.
 - [`src/okx-server.ts`](./src/okx-server.ts) — official OKX Payment SDK resource server.
 - [`src/sdk.ts`](./src/sdk.ts) — integration client for other Agent projects.
+- [`src/passport.ts`](./src/passport.ts) — evidence-derived provider Reliability Passport.
 - [`openapi.yaml`](./openapi.yaml) — machine-readable integration surface.
 - [`docs/okx-a2mcp-listing.md`](./docs/okx-a2mcp-listing.md) — copy-ready OKX AI listing package.
 - [`web/`](./web) — judge-facing interactive proof narrative.
@@ -100,6 +119,7 @@ The provider route returns a standards-shaped HTTP `402` challenge. If a payment
 | Independent deterministic verifier | LOCAL | `npm run test:unit` |
 | QualityBondVault | LOCAL | Hardhat contract tests |
 | Browser integrity verification | LOCAL | Judge Demo |
+| Reliability Passport | LOCAL | derived from signed evidence, not user reviews |
 | Real OKX AI A2MCP listing | PENDING | must be completed before submission |
 | Real x402 payment | PENDING | must be completed before submission |
 | Real X Layer bond and rebate | PENDING | must be completed before submission |

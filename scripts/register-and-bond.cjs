@@ -13,7 +13,9 @@ async function main() {
     throw new Error("QUALITY_BOND_VAULT_ADDRESS, USDT0_ADDRESS and SERVICE_PROMISE_HASH are required");
   }
 
-  const [provider] = await hre.ethers.getSigners();
+  const providerKey = process.env.PROVIDER_SIGNING_KEY;
+  if (!providerKey) throw new Error("PROVIDER_SIGNING_KEY is required");
+  const provider = new hre.ethers.Wallet(providerKey, hre.ethers.provider);
   const serviceId = hre.ethers.id(serviceName);
   const vault = await hre.ethers.getContractAt("QualityBondVault", vaultAddress, provider);
   const token = new hre.ethers.Contract(

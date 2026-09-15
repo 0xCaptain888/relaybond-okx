@@ -1,0 +1,19 @@
+{
+  "passportVersion": "1",
+  "serviceId": "market-data-v1",
+  "provider": "0x47C68CF47d6e5c44f64a87D8bF2B9f672C3995fE",
+  "calls": 3,
+  "acceptedCalls": 1,
+  "breachedCalls": 2,
+  "acceptanceRateBps": 3333,
+  "bondCoverageCalls": 498,
+  "totalRebatedAtomic": "20000",
+  "breachReasons": {
+    "freshnessMet": 2,
+    "schemaMet": 1,
+    "recordCountMet": 1
+  },
+  "latestEvidenceHash": "0x6c801e3428dd57f6b6a6262a314ca1b1feda21aa1bad6c7146cf9b1a632706f8",
+  "generatedAt": "2026-09-15T00:00:00.000Z",
+  "passportHash": "0x0477457050d4c8dcadb529b6f3027b7717963eada7bd553f423a7006b441102f"
+}

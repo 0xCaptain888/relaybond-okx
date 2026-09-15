@@ -1,0 +1,10 @@
+{
+  "evidenceVersion": "1",
+  "network": "X Layer Testnet",
+  "chainId": 1952,
+  "deployer": "0xC0F33b0334B1d000Cc40Dd0001762C1232dDAC08",
+  "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+  "verifier": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
+  "generatedAt": "2026-09-15T10:10:56.053Z",
+  "note": "Public addresses only. No private key is present in this file."
+}
