@@ -1,0 +1,19 @@
+{
+  "passportVersion": "1",
+  "scope": "VERIFIED_XLAYER_TESTNET_DELIVERIES",
+  "serviceId": "market-data-v1",
+  "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+  "calls": 1,
+  "acceptedCalls": 1,
+  "breachedCalls": 0,
+  "acceptanceRateBps": 10000,
+  "bondBalanceAtomic": "5000000",
+  "rebateAtomic": "10000",
+  "bondCoverageCalls": 500,
+  "totalPaidAtomic": "10000",
+  "totalRebatedAtomic": "0",
+  "latestEvidenceHash": "0x39a67bcde940b07e429aee35fbef6fe260dcc2e0aecae6e3013f124cfa57dde8",
+  "latestSettlementTx": "0xfd1e25e2415a79eff8e8d981d9e5f97efe8f9136ce026b1cf1e5ac872c8ee4bf",
+  "generatedAt": "2026-09-15T12:54:40.224Z",
+  "passportHash": "0xc25162d343892db4dfe967506f5d24bb1f3a02e7cac98403b499e0b584d632ae"
+}

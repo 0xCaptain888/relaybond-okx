@@ -1,0 +1,10 @@
+{
+  "evidenceVersion": "1",
+  "mode": "XLAYER_TESTNET_READ_ONLY",
+  "address": "0xcb83af485c066add3eca9041a78ea7c14e3f15f4",
+  "token": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+  "balanceAtomic": "30000",
+  "balanceDisplay": "0.03 USD₮0",
+  "blockNumber": "41018376",
+  "capturedAt": "2026-09-15T13:00:14.787Z"
+}

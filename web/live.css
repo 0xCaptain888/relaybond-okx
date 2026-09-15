@@ -61,6 +61,16 @@
   line-height: 1.5;
 }
 
+.live-grid p a {
+  color: inherit;
+  text-decoration-color: #4d5a50;
+  text-underline-offset: 3px;
+}
+
+.live-grid p a:hover {
+  color: var(--lime);
+}
+
 .live-grid b {
   position: absolute;
   right: 14px;

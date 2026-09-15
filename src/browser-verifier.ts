@@ -64,13 +64,28 @@ async function verifyPaidDelivery(delivery: {
   };
 }
 
+function verifyPaidEvidenceHash(evidence: {
+  evidenceHash: Hex;
+  portableIntegrity: { hash: Hex };
+  [key: string]: unknown;
+}) {
+  const { evidenceHash, portableIntegrity, ...unsigned } = evidence;
+  return {
+    passed: hashCanonicalBrowser(unsigned) === evidenceHash,
+    calculatedHash: hashCanonicalBrowser(unsigned),
+    expectedHash: evidenceHash,
+    portableHash: portableIntegrity.hash,
+  };
+}
+
 declare global {
   interface Window {
     RelayBondVerifier: {
       verifyPromiseEvidence: typeof verifyPromiseEvidence;
       verifyPaidDelivery: typeof verifyPaidDelivery;
+      verifyPaidEvidenceHash: typeof verifyPaidEvidenceHash;
     };
   }
 }
 
-window.RelayBondVerifier = { verifyPromiseEvidence, verifyPaidDelivery };
+window.RelayBondVerifier = { verifyPromiseEvidence, verifyPaidDelivery, verifyPaidEvidenceHash };

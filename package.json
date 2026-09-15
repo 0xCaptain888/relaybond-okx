@@ -1,6 +1,6 @@
 {
   "name": "relaybond-okx",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": false,
   "description": "Economic accountability for paid AI agent services on OKX AI and X Layer.",
   "type": "module",
@@ -56,12 +56,14 @@
     "test:contract": "hardhat test",
     "demo": "node --import tsx scripts/judge-run.ts",
     "verify:evidence": "node --import tsx scripts/verify-evidence.ts evidence/judge-run.json",
+    "verify:live-paid": "node --import tsx scripts/verify-paid-evidence.ts",
+    "verify:live-paid:onchain": "node --env-file-if-exists=.env --import tsx scripts/verify-paid-evidence.ts --onchain",
     "passport": "node --import tsx scripts/build-passport.ts",
     "api": "node --import tsx src/server.ts",
     "api:okx": "node --import tsx src/okx-server.ts",
     "serve": "npm run build:web && node --import tsx scripts/serve-demo.ts",
     "security:audit": "npm audit --omit=dev --audit-level=high",
-    "check": "npm run typecheck && npm test && npm run build:web && npm run demo && npm run verify:evidence && npm run passport"
+    "check": "npm run typecheck && npm test && npm run build:web && npm run demo && npm run verify:evidence && npm run verify:live-paid && npm run passport"
   },
   "dependencies": {
     "@okxweb3/x402-core": "^0.1.0",

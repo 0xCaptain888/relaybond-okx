@@ -79,12 +79,17 @@ async function verifyLiveSignatures() {
   try {
     const promiseEvidence = await loadLiveEvidence("service-promise");
     const promiseResult = await window.RelayBondVerifier.verifyPromiseEvidence(promiseEvidence);
-    let paidLine = "Paid Delivery Receipt: PENDING — not claimed yet";
+    let paidLine = "Paid Delivery Receipt: unavailable";
     try {
       const paidEvidence = await loadLiveEvidence("agentic-wallet-paid-delivery");
       const paidResult = await window.RelayBondVerifier.verifyPaidDelivery(paidEvidence.delivery);
-      paidLine = `Paid Delivery Receipt: ${paidResult.passed ? "VERIFIED" : "FAILED"}`;
-      paidProof.textContent = paidResult.passed ? "Verified" : "Failed";
+      const integrityResult = window.RelayBondVerifier.verifyPaidEvidenceHash(paidEvidence);
+      const { portableIntegrity, evidenceHash, ...unsigned } = paidEvidence;
+      const portablePassed = await sha256(unsigned) === portableIntegrity.hash;
+      const allChecks = Object.values(paidEvidence.verification.checks).every(Boolean);
+      const paidPassed = paidResult.passed && integrityResult.passed && portablePassed && allChecks && paidEvidence.verification.status === "ACCEPTED";
+      paidLine = `Paid Delivery:      ${paidPassed ? "ACCEPTED" : "FAILED"}\nDelivery checks:    ${Object.values(paidEvidence.verification.checks).filter(Boolean).length}/9\nEvidence Keccak:    ${integrityResult.passed ? "VERIFIED" : "FAILED"}\nPortable SHA-256:   ${portablePassed ? "VERIFIED" : "FAILED"}\nSettlement tx:      ${paidEvidence.payment.transactionHash}`;
+      paidProof.textContent = paidPassed ? "ACCEPTED · 9/9" : "FAILED";
     } catch {
       // The Service Promise remains independently verifiable before the paid run.
     }
@@ -99,7 +104,8 @@ async function verifyLiveSignatures() {
 }
 
 async function loadPassport() {
-  const response = await fetch("./evidence/reliability-passport.json", { cache: "no-store" });
+  let response = await fetch("./evidence/live/reliability-passport.json", { cache: "no-store" });
+  if (!response.ok) response = await fetch("./evidence/reliability-passport.json", { cache: "no-store" });
   if (!response.ok) return;
   const passport = await response.json();
   acceptanceRate.textContent = `${(passport.acceptanceRateBps / 100).toFixed(2)}%`;
@@ -140,12 +146,13 @@ async function loadLiveStatus() {
     liveBond.textContent = (Number(bondEvidence.bondBalanceAtomic) / 1_000_000).toFixed(2);
   } catch {}
   try {
-    const fundingEvidence = await loadLiveEvidence("agentic-wallet-funding");
-    walletFunding.textContent = (Number(fundingEvidence.recipientBalanceAfterAtomic) / 1_000_000).toFixed(2);
+    const balanceEvidence = await loadLiveEvidence("agentic-wallet-balance");
+    walletFunding.textContent = (Number(balanceEvidence.balanceAtomic) / 1_000_000).toFixed(2);
   } catch {}
   try {
-    await loadLiveEvidence("agentic-wallet-paid-delivery");
-    paidProof.textContent = "Evidence published";
+    const paidEvidence = await loadLiveEvidence("agentic-wallet-paid-delivery");
+    const checks = Object.values(paidEvidence.verification.checks).filter(Boolean).length;
+    paidProof.textContent = `${paidEvidence.verification.status} · ${checks}/9`;
   } catch {
     try {
       const settlement = await loadLiveEvidence("agentic-wallet-payment-settlement");

@@ -43,5 +43,5 @@ Use this service when an autonomous workflow needs a fresh OKX instrument quote 
 - [x] Confirm an unauthenticated request returns HTTP 402 with a valid `PAYMENT-REQUIRED` header.
 - [x] Publish the signed Service Promise at `GET /v1/service/promise`.
 - [x] Keep the service price at 0.01 Testnet USD₮0 for judging.
-- [ ] Confirm one Agentic Wallet paid retry settles and returns HTTP 200.
+- [x] Confirm one Agentic Wallet paid retry settles, returns the delivery body and verifies `ACCEPTED`.
 - [ ] Publish the service in OKX AI / A2MCP after the paid proof exists.

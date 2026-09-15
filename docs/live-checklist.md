@@ -17,15 +17,15 @@
 - [x] Reject merchant output unless the decoded settlement receipt is final-success.
 - [x] Prepare a fail-closed paid breach runner and evidence-derived rebate executor.
 - [x] Pay once from an OKX Agentic Wallet and independently confirm the 0.01 USD₮0 settlement transaction.
-- [ ] Capture a complete paid delivery body and verify it as `ACCEPTED` (the first settlement body was not persisted).
-- [ ] Return one correct signed response and verify `ACCEPTED`.
+- [x] Capture a complete Agentic Wallet paid delivery body and independently verify it as `ACCEPTED`.
+- [x] Return one correct provider-signed response and verify all 9 SLA checks.
 - [ ] Return one signed empty/stale response and verify `BREACH`.
 - [ ] Submit verifier attestation and show the real onchain `BreachRebated` event.
 - [x] Deploy the public judge demo and API at `https://relaybond-okx.vercel.app`.
 
 ## P1 — prize-strengthening
 
-- [x] Reliability Passport with acceptance rate, breach reasons and bond coverage. Live history remains pending.
+- [x] Reliability Passport with separate verified Testnet history, acceptance rate and 500-call bond coverage.
 - [x] Provider SDK and OpenAPI integration surface.
 - [ ] Backup-provider recovery without double-charging the buyer.
 - [x] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.
