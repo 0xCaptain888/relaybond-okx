@@ -24,7 +24,9 @@ export async function createContinuityEvidence(): Promise<ContinuityEvidence> {
   const verifier = privateKeyToAccount(VERIFIER_KEY);
   const chainId = 1952;
   const vault = "0x2222222222222222222222222222222222220295" as const;
-  const baseTime = 1_789_516_800;
+  // Fixed to the pre-build prototype date; deterministic evidence must never
+  // look like it was generated in the future or during the official period.
+  const baseTime = 1_789_430_400;
   const providers: BondedProviderProfile[] = [
     {
       providerId: "relaybond-market-primary",
