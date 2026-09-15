@@ -4,6 +4,14 @@
 
 Rejected because the response hash is inside the provider-signed DeliveryReceipt.
 
+## Buyer substitutes the rebate address
+
+Rejected because the service route ignores self-declared buyer headers. The payer is extracted only from the authorization already accepted by the OKX facilitator, then bound into the provider-signed request hash.
+
+## Merchant response arrives but payment later fails
+
+No LIVE evidence is emitted. The buyer runner requires the decoded settlement receipt itself to be final-success; a successful HTTP response alone is insufficient.
+
 ## Provider returns an empty or stale response after payment
 
 The verifier evaluates the signed response against the signed ServicePromise. A valid breach attestation can release a capped rebate from the provider bond.

@@ -12,6 +12,10 @@
 - [x] Return the official x402 `exact` payment challenge from the public Vercel API.
 - [x] Ship a guarded Buyer Runner whose default mode only inspects the 402 challenge.
 - [x] Add a two-phase OKX Agentic Wallet adapter (`quote` first, explicit `pay` second).
+- [x] Fund the OKX Agentic Wallet with 0.05 Testnet USD₮0 and publish the transaction evidence.
+- [x] Derive the buyer from the facilitator-verified authorization instead of a caller-supplied header.
+- [x] Reject merchant output unless the decoded settlement receipt is final-success.
+- [x] Prepare a fail-closed paid breach runner and evidence-derived rebate executor.
 - [ ] Pay once from an OKX Agentic Wallet and capture the payment identifier.
 - [ ] Return one correct signed response and verify `ACCEPTED`.
 - [ ] Return one signed empty/stale response and verify `BREACH`.
@@ -23,7 +27,7 @@
 - [x] Reliability Passport with acceptance rate, breach reasons and bond coverage. Live history remains pending.
 - [x] Provider SDK and OpenAPI integration surface.
 - [ ] Backup-provider recovery without double-charging the buyer.
-- [ ] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.
+- [x] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.
 - [ ] Two to three outside builders test the integration.
 
 ## Submission hygiene

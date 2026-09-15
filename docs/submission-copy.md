@@ -12,6 +12,10 @@ x402 proves that an Agent paid; it does not prove the purchased service worked. 
 
 OKX AI supplies the Agent-to-Agent discovery surface, A2MCP and x402 supply the paid call, OKX Market API supplies the real delivery, Agentic Wallet supplies the buyer and X Layer turns the SLA into an enforceable USDT0 warranty.
 
+## Current live proof
+
+The X Layer Testnet vault is deployed and source-verified, the provider has locked 5 Testnet USD₮0, the public API returns the official payment challenge, the Agentic Wallet is funded, and the browser independently recovers the EIP-712 provider signer. The first successful paid delivery and breach rebate remain pending and will not be claimed before their transactions exist.
+
 ## Demo opening
 
 ```text

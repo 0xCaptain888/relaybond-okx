@@ -23,8 +23,8 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run demo && npm run passport
-      - run: mkdir -p site/evidence && cp -R web/. site/ && cp evidence/judge-run.json evidence/reliability-passport.json site/evidence/
+      - run: npm run demo && npm run passport && npm run build:web
+      - run: mkdir -p site/evidence && cp -R web/. site/ && cp evidence/judge-run.json evidence/reliability-passport.json site/evidence/ && cp -R evidence/live site/evidence/live
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

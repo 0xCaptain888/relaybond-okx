@@ -14,7 +14,7 @@ Use this service when an autonomous workflow needs a fresh OKX instrument quote 
 
 ## Endpoint
 
-`POST https://<PUBLIC_API>/v1/provider/quote`
+`POST https://relaybond-okx.vercel.app/v1/provider/quote`
 
 ## Request
 
@@ -39,8 +39,9 @@ Use this service when an autonomous workflow needs a fresh OKX instrument quote 
 
 ## Before listing
 
-- Deploy the public endpoint over HTTPS.
-- Confirm an unauthenticated request returns HTTP 402 with a valid `PAYMENT-REQUIRED` header.
-- Confirm the paid retry returns HTTP 200.
-- Replace every placeholder URL and contract address.
-- Keep the service price at a small amount for judging.
+- [x] Deploy the public endpoint over HTTPS.
+- [x] Confirm an unauthenticated request returns HTTP 402 with a valid `PAYMENT-REQUIRED` header.
+- [x] Publish the signed Service Promise at `GET /v1/service/promise`.
+- [x] Keep the service price at 0.01 Testnet USD₮0 for judging.
+- [ ] Confirm one Agentic Wallet paid retry settles and returns HTTP 200.
+- [ ] Publish the service in OKX AI / A2MCP after the paid proof exists.

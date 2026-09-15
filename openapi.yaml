@@ -1,10 +1,10 @@
 openapi: 3.1.0
 info:
   title: RelayBond API
-  version: 0.1.0
+  version: 0.2.0
   description: Bond-backed paid Agent services with portable delivery evidence.
 servers:
-  - url: https://relaybond.example
+  - url: https://relaybond-okx.vercel.app
 paths:
   /health:
     get:
@@ -25,11 +25,23 @@ paths:
               required: [symbol]
               properties:
                 symbol: { type: string, examples: [BTC-USDT] }
+                scenario:
+                  type: string
+                  enum: [accepted, empty, stale]
+                  default: accepted
+                  description: Paid breach scenarios are disabled unless the operator explicitly enables the testnet demo.
       responses:
         "200":
           description: Paid result plus signed promise and delivery receipt
         "402":
           description: x402 challenge in the PAYMENT-REQUIRED header
+  /v1/service/promise:
+    get:
+      operationId: getRelayBondServicePromise
+      summary: Inspect the signed SLA before payment
+      responses:
+        "200":
+          description: EIP-712 signed Service Promise and typed-data digest
   /v1/verify:
     post:
       operationId: verifyRelayBondDelivery

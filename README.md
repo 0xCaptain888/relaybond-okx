@@ -27,7 +27,7 @@ Signed ServicePromise
 → X Layer buyer rebate
 ```
 
-The live build demonstrates signed promises, signed delivery receipts, deterministic verification, `ACCEPTED`, two objective `BREACH` cases and portable evidence. `QualityBondVault` is deployed on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. The provider has registered the public Service Promise and deposited a real **5 Testnet USDT0** Quality Bond. A paid OKX Agentic Wallet call and real breach rebate remain explicitly pending.
+The public build exposes a live OKX payment boundary, a browser-verifiable EIP-712 Service Promise and deterministic `ACCEPTED` / `BREACH` evidence. `QualityBondVault` is deployed and source-verified on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. The provider has registered the endpoint-bound Promise and deposited a real **5 Testnet USD₮0** Quality Bond. The OKX Agentic Wallet is funded with **0.05 Testnet USD₮0** for the final paid runs. A successful paid delivery and real breach rebate remain explicitly pending until their transactions exist.
 
 ## Why this is different
 
@@ -80,6 +80,17 @@ curl -i -X POST http://localhost:8787/v1/provider/quote \
 
 The production endpoint is live at `https://relaybond-okx.vercel.app/v1/provider/quote`. An unauthenticated request returns HTTP `402` plus the official `PAYMENT-REQUIRED` header from the OKX x402 SDK. No paid call is claimed until an OKX Agentic Wallet payment is completed and captured.
 
+Public read-only integration endpoints:
+
+```text
+GET  /health
+GET  /v1/service/promise
+POST /v1/verify
+POST /v1/provider/quote
+```
+
+The provider route never trusts a caller-supplied buyer address. After the facilitator accepts the payment authorization, RelayBond derives the payer from that verified authorization, checks its token, amount and recipient against the advertised terms, and binds the payer plus normalized request input into the signed Delivery Receipt.
+
 Safely inspect the exact payment terms without signing or moving funds:
 
 ```bash
@@ -93,10 +104,18 @@ The preferred two-phase Agentic Wallet path delegates custody, signing, request 
 ```bash
 npm run buyer:okx -- quote --symbol BTC-USDT
 # review network, token, amount, balance and payee
-npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --yes
+npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --expect accepted --yes
 ```
 
-The quote command never signs. The pay command requires the operator's explicit `--yes`, then RelayBond independently checks the returned Service Promise and Delivery Receipt before writing portable evidence.
+The quote command never signs. The pay command requires the operator's explicit `--yes`, requires a decoded final-success settlement receipt, then independently checks the returned Service Promise and Delivery Receipt before writing portable evidence. A merchant response without final settlement is rejected and cannot become live evidence.
+
+The repository also contains a guarded breach path. It is disabled in production unless `ALLOW_PAID_BREACH_DEMO=true`; when enabled for a testnet judging run, `--scenario stale` or `--scenario empty` produces a provider-signed objective breach. A rebate can be submitted only from final-success paid evidence and only after a separate explicit `--confirm`:
+
+```bash
+npm run buyer:okx -- quote --symbol BTC-USDT --scenario stale
+npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --expect breach --yes
+npm run rebate:live-breach -- --confirm
+```
 
 ## Live X Layer evidence
 
@@ -105,8 +124,9 @@ The quote command never signs. The pay command requires the operator's explicit 
 - Registered service: [`0x07fd…1c14`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x07fd2a4f7782d2ba9ea951d4e18656ac4b965f54bf7e1c3503ca926ade6f1c14)
 - USDT0 approval: [`0x324f…2395`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x324f21c98650608e46b317dfcfa7175fe5227c7a618fdb8c56bb733dc64e2395)
 - 5 Testnet USDT0 bond deposit: [`0xa423…6694`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xa4231e43f171c43da45a9b3412af1a2992ea23d4fd7c1e4fe13da68136d36694)
+- Agentic Wallet funding: `0.05 Testnet USD₮0`, transaction `0x2e83c5fd8e19bc5f813c662ca9dd2dea30abafacba968341b7080300b6352eaf`
 - Verified source: `QualityBondVault`, Solidity `0.8.28`, optimizer `200`, EVM `paris`
-- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
+- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
 
 ## Repository map
 
@@ -116,6 +136,7 @@ The quote command never signs. The pay command requires the operator's explicit 
 - [`src/payment.ts`](./src/payment.ts) — x402 `exact` payment challenge.
 - [`src/okx-server.ts`](./src/okx-server.ts) — official OKX Payment SDK resource server.
 - [`src/okx-app.ts`](./src/okx-app.ts) — deployment-neutral Express app used locally and by Vercel.
+- [`src/paid-request.ts`](./src/paid-request.ts) — verified payer extraction, payment-term binding and normalized service input.
 - [`src/sdk.ts`](./src/sdk.ts) — integration client for other Agent projects.
 - [`src/passport.ts`](./src/passport.ts) — evidence-derived provider Reliability Passport.
 - [`openapi.yaml`](./openapi.yaml) — machine-readable integration surface.
@@ -153,7 +174,9 @@ The quote command never signs. The pay command requires the operator's explicit 
 | Public Judge Demo + API | LIVE | Vercel production deployment |
 | Official OKX x402 challenge | LIVE | unauthenticated quote returns HTTP `402` + `PAYMENT-REQUIRED` |
 | Quality Bond | TESTNET | active service backed by 5 Testnet USDT0, deposit tx `0xa423…6694` |
-| Browser integrity verification | LIVE | Vercel Judge Demo |
+| Browser portable integrity verification | LIVE | Vercel Judge Demo |
+| Browser EIP-712 signer recovery | LIVE | recovers the provider and Promise digest without server trust |
+| Agentic Wallet funding | TESTNET | 0.05 USD₮0, tx `0x2e83…2eaf` |
 | Reliability Passport | LOCAL | derived from signed evidence, not user reviews |
 | Real OKX AI A2MCP listing | PENDING | must be completed before submission |
 | Real x402 payment | PENDING | must be completed before submission |

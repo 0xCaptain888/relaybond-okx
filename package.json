@@ -1,27 +1,53 @@
 {
   "name": "relaybond-okx",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "description": "Economic accountability for paid AI agent services on OKX AI and X Layer.",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./verifier": {
+      "types": "./dist/verifier.d.ts",
+      "import": "./dist/verifier.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    }
+  },
+  "files": [
+    "dist",
+    "openapi.yaml",
+    "README.md",
+    "LICENSE"
+  ],
   "engines": {
     "node": ">=20.18.0"
   },
   "scripts": {
-    "build": "hardhat compile",
-    "vercel-build": "npm run build && node --import tsx scripts/build-vercel.ts",
+    "build": "hardhat compile && npm run build:sdk",
+    "build:sdk": "tsc -p tsconfig.build.json",
+    "vercel-build": "npm run build && npm run build:web && node --import tsx scripts/build-vercel.ts",
+    "build:web": "node --import tsx scripts/build-browser.ts",
     "verify:contract:xlayer-testnet": "node --env-file-if-exists=.env scripts/verify-xlayer-contract.cjs",
     "verify:contract:status": "node --env-file-if-exists=.env --import tsx scripts/check-contract-verification.ts",
     "deploy:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/deploy.cjs --network xLayerTestnet",
     "deploy:xlayer": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/deploy.cjs --network xLayer",
     "bond:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/register-and-bond.cjs --network xLayerTestnet",
     "rebate:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/claim-rebate.cjs --network xLayerTestnet",
+    "rebate:live-breach": "node --env-file-if-exists=.env --import tsx scripts/claim-live-breach.ts",
     "wallets:bootstrap": "node --import tsx scripts/bootstrap-wallets.ts",
     "wallets:status": "node --env-file-if-exists=.env --import tsx scripts/wallet-status.ts",
     "deployment:configure": "node --import tsx scripts/set-deployment-env.ts",
     "promise:generate": "node --env-file-if-exists=.env --import tsx scripts/generate-service-promise.ts",
     "buyer:live": "node --env-file-if-exists=.env --import tsx scripts/run-live-buyer.ts",
     "buyer:okx": "node --env-file-if-exists=.env --import tsx scripts/run-onchainos-buyer.ts",
+    "fund:agentic-wallet": "node --env-file-if-exists=.env --import tsx scripts/fund-agentic-wallet.ts",
     "secrets:okx": "node --import tsx scripts/secure-okx-config.ts",
     "secrets:status": "node --env-file-if-exists=.env --import tsx scripts/secret-status.ts",
     "typecheck": "tsc --noEmit",
@@ -33,9 +59,9 @@
     "passport": "node --import tsx scripts/build-passport.ts",
     "api": "node --import tsx src/server.ts",
     "api:okx": "node --import tsx src/okx-server.ts",
-    "serve": "node --import tsx scripts/serve-demo.ts",
+    "serve": "npm run build:web && node --import tsx scripts/serve-demo.ts",
     "security:audit": "npm audit --omit=dev --audit-level=high",
-    "check": "npm run typecheck && npm test && npm run demo && npm run verify:evidence && npm run passport"
+    "check": "npm run typecheck && npm test && npm run build:web && npm run demo && npm run verify:evidence && npm run passport"
   },
   "dependencies": {
     "@okxweb3/x402-core": "^0.1.0",
@@ -52,7 +78,8 @@
     "@types/node": "^20.17.24",
     "hardhat": "^2.22.19",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "esbuild": "^0.28.2"
   },
   "keywords": [
     "okx",

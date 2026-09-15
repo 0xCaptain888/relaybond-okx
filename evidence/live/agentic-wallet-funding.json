@@ -1,0 +1,17 @@
+{
+  "evidenceVersion": "1",
+  "mode": "XLAYER_TESTNET",
+  "purpose": "Fund OKX Agentic Wallet for RelayBond x402 test",
+  "network": "eip155:1952",
+  "token": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+  "from": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+  "to": "0xcb83af485c066add3eca9041a78ea7c14e3f15f4",
+  "amountAtomic": "50000",
+  "transactionHash": "0x2e83c5fd8e19bc5f813c662ca9dd2dea30abafacba968341b7080300b6352eaf",
+  "blockNumber": "41015345",
+  "providerBalanceBeforeAtomic": "5000000",
+  "providerBalanceAfterAtomic": "4950000",
+  "recipientBalanceBeforeAtomic": "0",
+  "recipientBalanceAfterAtomic": "50000",
+  "recordedAt": "2026-09-15T12:09:41.273Z"
+}

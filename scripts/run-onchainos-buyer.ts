@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { hashCanonical, sha256Canonical } from "../src/canonical.js";
-import { extractMerchantDelivery, runOnchainOs } from "../src/onchainos-buyer.js";
+import { extractMerchantDelivery, requireFinalSettlement, runOnchainOs } from "../src/onchainos-buyer.js";
 import { verifyDelivery } from "../src/verifier.js";
 import type { DeliveryReceipt, ServicePromise, ServiceRequest, Signed } from "../src/types.js";
 
@@ -21,6 +21,7 @@ const endpoint = value("--url", `${(process.env.PUBLIC_BASE_URL || "https://rela
 
 if (command === "quote") {
   const symbol = value("--symbol", "BTC-USDT").toUpperCase();
+  const scenario = value("--scenario", "accepted").toLowerCase();
   const quote = await runOnchainOs([
     "payment",
     "quote",
@@ -29,6 +30,8 @@ if (command === "quote") {
     "POST",
     "--param",
     `symbol=${symbol}`,
+    "--param",
+    `scenario=${scenario}`,
   ]);
   console.log(JSON.stringify(quote, null, 2));
   process.exit(0);
@@ -37,6 +40,8 @@ if (command === "quote") {
 if (command === "pay") {
   const paymentId = value("--payment-id");
   const selectedIndex = value("--selected-index", "0");
+  const expectedStatus = value("--expect", "accepted").toUpperCase();
+  if (!["ACCEPTED", "BREACH"].includes(expectedStatus)) throw new Error("--expect must be accepted or breach.");
   if (!paymentId) throw new Error("pay requires --payment-id from a prior quote.");
   if (!process.argv.includes("--yes")) {
     throw new Error("Refusing payment without explicit --yes after the operator reviews the OnchainOS quote.");
@@ -52,7 +57,7 @@ if (command === "pay") {
     "--yes",
   ]);
   const data = paid.data || {};
-  if (data.status !== "success") throw new Error(`Payment did not succeed: ${JSON.stringify(data.error)}`);
+  const settlement = requireFinalSettlement(data);
   const delivery = extractMerchantDelivery(data) as Delivery;
   const verification = await verifyDelivery({
     promise: delivery.servicePromise,
@@ -61,8 +66,8 @@ if (command === "pay") {
     receipt: delivery.deliveryReceipt,
     checkedAt: Math.max(Math.floor(Date.now() / 1000), delivery.deliveryReceipt.payload.deliveredAt),
   });
-  if (verification.status !== "ACCEPTED") {
-    throw new Error(`Paid delivery failed independent verification: ${verification.violations.join(", ")}`);
+  if (verification.status !== expectedStatus) {
+    throw new Error(`Expected ${expectedStatus}, received ${verification.status}: ${verification.violations.join(", ")}`);
   }
 
   const unsignedEvidence = {
@@ -71,8 +76,8 @@ if (command === "pay") {
     capturedAt: new Date().toISOString(),
     payment: {
       status: data.status,
-      transactionHash: data.txHash,
-      receipt: data.decodedReceipt,
+      transactionHash: settlement.transactionHash,
+      receipt: settlement.receipt,
     },
     delivery,
     verification,
@@ -83,17 +88,20 @@ if (command === "pay") {
     portableIntegrity: { algorithm: "SHA-256", hash: sha256Canonical(unsignedEvidence) },
   };
   await mkdir("evidence/live", { recursive: true });
-  await writeFile("evidence/live/agentic-wallet-paid-delivery.json", `${JSON.stringify(evidence, null, 2)}\n`);
-  console.log(JSON.stringify({ status: "ACCEPTED", transactionHash: data.txHash, evidence: "evidence/live/agentic-wallet-paid-delivery.json", evidenceHash: evidence.evidenceHash }, null, 2));
+  const evidencePath = verification.status === "ACCEPTED"
+    ? "evidence/live/agentic-wallet-paid-delivery.json"
+    : "evidence/live/agentic-wallet-paid-breach.json";
+  await writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`);
+  console.log(JSON.stringify({ status: verification.status, transactionHash: settlement.transactionHash, evidence: evidencePath, evidenceHash: evidence.evidenceHash }, null, 2));
   process.exit(0);
 }
 
 console.log(`Preferred OKX Agentic Wallet runner
 
 1. Quote only (never signs):
-   npm run buyer:okx -- quote --symbol BTC-USDT
+   npm run buyer:okx -- quote --symbol BTC-USDT --scenario accepted
 
 2. After reviewing and explicitly approving the displayed terms:
-   npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --yes
+   npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --expect accepted --yes
 
 The second command delegates signing, replay and settlement to the logged-in OnchainOS TEE wallet, then independently verifies the provider-signed RelayBond delivery.`);

@@ -9,6 +9,8 @@ import type { ServiceRequest } from "./types.js";
 import { fetchOkxTicker } from "./okx-market.js";
 import { configuredServicePromise } from "./service-promise.js";
 import { ResilientFacilitatorClient } from "./resilient-facilitator.js";
+import { buildScenarioResponse, normalizeServiceInput, paymentContextFromVerifiedHeader } from "./paid-request.js";
+import { verifyDelivery, type VerificationInput } from "./verifier.js";
 
 export function createOkxApp() {
   const required = ["OKX_API_KEY", "OKX_SECRET_KEY", "OKX_PASSPHRASE", "X402_PAY_TO", "PROVIDER_SIGNING_KEY"] as const;
@@ -29,9 +31,42 @@ export function createOkxApp() {
 
   const app = express();
   app.set("trust proxy", true);
+  app.use((_request, response, next) => {
+    response.setHeader("access-control-allow-origin", "*");
+    response.setHeader("access-control-allow-methods", "GET,POST,OPTIONS");
+    response.setHeader("access-control-allow-headers", "content-type,payment-signature,x-payment");
+    next();
+  });
+  app.options(/.*/, (_request, response) => response.status(204).end());
   app.use(express.json({ limit: "32kb" }));
   app.get("/health", (_request, response) => {
-    response.json({ status: "ok", mode: "OKX_OFFICIAL_X402", network, serviceId: promise.serviceId, provider: provider.address, vault: promise.vault });
+    response.json({ status: "ok", version: "0.2.0", mode: "OKX_OFFICIAL_X402", network, serviceId: promise.serviceId, provider: provider.address, vault: promise.vault });
+  });
+  app.get("/v1/service/promise", async (_request, response, next) => {
+    try {
+      response.json({ servicePromise: await signPromise(provider, promise), promiseHash: await hashPromise(promise) });
+    } catch (error) {
+      next(error);
+    }
+  });
+  app.post("/v1/verify", async (request, response, next) => {
+    try {
+      response.json(await verifyDelivery(request.body as VerificationInput));
+    } catch (error) {
+      next(error);
+    }
+  });
+  app.use("/v1/provider/quote", (request, response, next) => {
+    try {
+      const { scenario } = normalizeServiceInput(request.body, request.query);
+      if (scenario !== "accepted" && process.env.ALLOW_PAID_BREACH_DEMO !== "true") {
+        response.status(403).json({ error: "BREACH_DEMO_DISABLED" });
+        return;
+      }
+      next();
+    } catch (error) {
+      response.status(400).json({ error: "INVALID_SERVICE_REQUEST", message: error instanceof Error ? error.message : "Invalid request" });
+    }
   });
   app.use((request, _response, next) => {
     // Vercel rewrites may expose the captured wildcard as an internal `path`
@@ -52,21 +87,29 @@ export function createOkxApp() {
   app.post("/v1/provider/quote", async (request, response, next) => {
     try {
       const now = Math.floor(Date.now() / 1000);
+      const normalized = normalizeServiceInput(request.body, request.query);
+      const paymentHeader = request.header("payment-signature") || request.header("x-payment");
+      const payment = paymentContextFromVerifiedHeader(paymentHeader, {
+        network,
+        asset: (process.env.USDT0_ADDRESS || "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c") as `0x${string}`,
+        amount: promise.priceAtomic,
+        payTo: payTo as `0x${string}`,
+      });
       const serviceRequest: ServiceRequest = {
         serviceId: promise.serviceId,
         requestedAt: now,
-        input: request.body,
-        buyer: (request.header("x-relaybond-buyer") || "0x0000000000000000000000000000000000000000") as `0x${string}`,
+        input: normalized.input,
+        buyer: payment.buyer,
       };
-      const symbol = typeof request.body?.symbol === "string" ? request.body.symbol.toUpperCase() : "BTC-USDT";
-      const serviceResponse = await fetchOkxTicker(symbol);
+      const quote = await fetchOkxTicker(normalized.symbol);
+      const serviceResponse = buildScenarioResponse(quote, normalized.scenario, promise.maxDataAgeSeconds);
       const signedPromise = await signPromise(provider, promise);
       const deliveryReceipt = await signReceipt(provider, promise, {
         version: "1",
         serviceId: promise.serviceId,
         requestHash: hashCanonical(serviceRequest),
         responseHash: hashCanonical(serviceResponse),
-        paymentId: hashCanonical({ paymentSignature: request.header("payment-signature") || request.header("x-payment") || "missing" }),
+        paymentId: payment.paymentId,
         deliveredAt: now,
         servicePromiseHash: await hashPromise(promise),
         provider: provider.address,

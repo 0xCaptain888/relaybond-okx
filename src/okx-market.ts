@@ -1,3 +1,5 @@
+import { fetch, ProxyAgent } from "undici";
+
 export type OkxTicker = {
   symbol: string;
   price: number;
@@ -33,4 +35,3 @@ export async function fetchOkxTicker(symbol: string): Promise<OkxTicker> {
     source: "OKX_MARKET_API",
   };
 }
-import { fetch, ProxyAgent } from "undici";
