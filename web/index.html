@@ -31,11 +31,11 @@
             <button id="verify-live" class="secondary">Recover live EIP-712 signer</button>
             <button id="run" class="tertiary">Run breach lab</button>
           </div>
-          <p class="honesty">LIVE: public x402 API. TESTNET: verified contract, 5 USD₮0 bond, real ACCEPTED delivery and real paid BREACH. PENDING: onchain breach rebate.</p>
+          <p class="honesty">LIVE: public x402 API. TESTNET: verified contract and the complete paid lifecycle — ACCEPTED → BREACH → REBATED. The service auto-paused after its bond fell below the 5 USD₮0 minimum.</p>
         </div>
         <aside class="bond-card">
-          <div class="card-head"><span>Provider Quality Bond</span><span class="live">ACTIVE</span></div>
-          <strong><span id="bond">5.00</span> <small>USDT0</small></strong>
+          <div class="card-head"><span>Provider Quality Bond</span><span id="bond-status" class="paused">AUTO-PAUSED</span></div>
+          <strong><span id="bond">4.99</span> <small>USDT0</small></strong>
           <div class="bond-line"><span></span></div>
           <dl>
             <div><dt>Service</dt><dd>Market Data v1</dd></div>
@@ -48,9 +48,9 @@
 
       <section class="live-grid" aria-label="Live deployment evidence">
         <article><span>PUBLIC API</span><strong>HTTP 402</strong><p>OKX exact-payment challenge on X Layer Testnet.</p><b class="ok">LIVE</b></article>
-        <article><span>QUALITY BOND</span><strong><i id="live-bond">5.00</i> USD₮0</strong><p>Provider capital locked in the verified vault.</p><b class="ok">TESTNET</b></article>
-        <article><span>AGENTIC WALLET</span><strong><i id="wallet-funding">0.01</i> USD₮0</strong><p>Current balance after four explicit 0.01 paid calls.</p><b class="ok">TESTNET</b></article>
-        <article><span>PAID WARRANTY</span><strong id="paid-proof">ACCEPTED + BREACH</strong><p><a id="paid-tx" href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a" target="_blank" rel="noreferrer">Real stale delivery ↗</a></p><b class="ok">TESTNET</b></article>
+        <article><span>QUALITY BOND</span><strong><i id="live-bond">4.99</i> USD₮0</strong><p>Real bond after rebate; service is paused until rebonded.</p><b class="paused">AUTO-PAUSED</b></article>
+        <article><span>AGENTIC WALLET</span><strong><i id="wallet-funding">0.02</i> USD₮0</strong><p>Current balance after four paid calls and one verified rebate.</p><b class="ok">TESTNET</b></article>
+        <article><span>PAID WARRANTY</span><strong id="paid-proof">ACCEPTED → BREACH → REBATED</strong><p><a href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a" target="_blank" rel="noreferrer">Breach ↗</a> · <a id="rebate-tx" href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x21c3e459c868efdb35da90b2976a73738347e90a38a591cff49e219101b7c03f" target="_blank" rel="noreferrer">Rebate ↗</a></p><b class="ok">REBATED</b></article>
       </section>
 
       <section class="flow-shell">
@@ -75,7 +75,7 @@
       <section class="passport">
         <div><p class="eyebrow">LIVE RELIABILITY PASSPORT</p><h2>Trust becomes inspectable.</h2><p>Verified Testnet delivery history and capital coverage are separated from the local breach lab—not blended into marketing metrics.</p></div>
         <dl>
-          <div><dt>Live acceptance</dt><dd id="acceptance-rate">—</dd></div>
+          <div><dt>Verified acceptance</dt><dd id="acceptance-rate">—</dd></div>
           <div><dt>Bond coverage</dt><dd id="bond-coverage">—</dd></div>
           <div><dt>Verified calls</dt><dd id="verified-calls">—</dd></div>
         </dl>

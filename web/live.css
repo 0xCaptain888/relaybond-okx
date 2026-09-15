@@ -87,6 +87,11 @@
   color: #ffbc5b;
 }
 
+.live-grid b.paused,
+.card-head .paused {
+  color: #ffbc5b;
+}
+
 .terminal-top button {
   margin-left: auto;
   border: 1px solid #31383a;

@@ -14,7 +14,7 @@ OKX AI supplies the Agent-to-Agent discovery surface, A2MCP and x402 supply the 
 
 ## Current live proof
 
-The X Layer Testnet vault is deployed and source-verified, the provider has locked 5 Testnet USD₮0, and the public API returns the official payment challenge. A real 0.01 Testnet USD₮0 Agentic Wallet purchase returned an OKX market quote, bound the verified payer into the provider-signed receipt, settled the exact Transfer on X Layer and passed all 9 independent SLA checks as `ACCEPTED`. The paid breach rebate remains pending and will not be claimed before its transaction exists.
+The X Layer Testnet vault is deployed and source-verified, the provider locked 5 Testnet USD₮0, and the public API returns the official payment challenge. One real 0.01 Testnet USD₮0 Agentic Wallet purchase returned an OKX market quote and passed all 9 SLA checks as `ACCEPTED`. A second paid call returned provider-signed stale data and was independently verified `BREACH`. Transaction `0x21c3…03f` then emitted the matching `BreachRebated` event and transferred exactly 0.01 USD₮0 from the vault to the buyer. The remaining bond is 4.99 USD₮0 and the service auto-paused below its minimum.
 
 ## Demo opening
 

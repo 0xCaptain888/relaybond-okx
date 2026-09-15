@@ -11,6 +11,7 @@ const verifiedCalls = document.querySelector("#verified-calls");
 const liveBond = document.querySelector("#live-bond");
 const walletFunding = document.querySelector("#wallet-funding");
 const paidProof = document.querySelector("#paid-proof");
+const bondStatus = document.querySelector("#bond-status");
 const steps = [...document.querySelectorAll("[data-step]")];
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -90,6 +91,19 @@ async function verifyLiveSignatures() {
       const paidPassed = paidResult.passed && integrityResult.passed && portablePassed && allChecks && paidEvidence.verification.status === "ACCEPTED";
       paidLine = `Paid Delivery:      ${paidPassed ? "ACCEPTED" : "FAILED"}\nDelivery checks:    ${Object.values(paidEvidence.verification.checks).filter(Boolean).length}/9\nEvidence Keccak:    ${integrityResult.passed ? "VERIFIED" : "FAILED"}\nPortable SHA-256:   ${portablePassed ? "VERIFIED" : "FAILED"}\nSettlement tx:      ${paidEvidence.payment.transactionHash}`;
       paidProof.textContent = paidPassed ? "ACCEPTED · 9/9" : "FAILED";
+      const [breachEvidence, rebateEvidence] = await Promise.all([
+        loadLiveEvidence("agentic-wallet-paid-breach"),
+        loadLiveEvidence("rebate"),
+      ]);
+      const rebateChecks = rebateEvidence.verification;
+      const rebatePassed = rebateChecks.receiptStatus === "success"
+        && rebateChecks.blockPinnedStateMatched
+        && rebateChecks.bondDeltaMatched
+        && rebateChecks.breachEventMatched
+        && rebateChecks.transferMatched
+        && rebateEvidence.serviceActiveAfter === false;
+      paidLine += `\n\nPaid Breach:        ${breachEvidence.verification.status}\nBreach reason:      ${breachEvidence.verification.violations.join(", ")}\nBound checks:       ${Object.values(breachEvidence.verification.checks).filter(Boolean).length}/9\nRebate:             ${rebatePassed ? "VERIFIED ONCHAIN" : "FAILED"}\nRebate tx:          ${rebateEvidence.transactionHash}\nBond after:         ${(Number(rebateEvidence.bondAfterAtomic) / 1_000_000).toFixed(2)} USD₮0\nService active:     ${rebateEvidence.serviceActiveAfter}`;
+      paidProof.textContent = rebatePassed ? "ACCEPTED → BREACH → REBATED" : "REBATE VERIFY FAILED";
     } catch {
       // The Service Promise remains independently verifiable before the paid run.
     }
@@ -116,7 +130,6 @@ async function loadPassport() {
 async function runFlow() {
   runButton.disabled = true;
   runState.textContent = "LOCAL LAB RUNNING";
-  bond.textContent = "5.00";
   steps.forEach((step) => { step.className = ""; step.lastElementChild.textContent = "WAITING"; });
   output.textContent = "$ Loading deterministic breach-lab evidence…";
   const evidence = await loadEvidence();
@@ -133,7 +146,6 @@ async function runFlow() {
     steps[index].classList.add(index === 2 ? "breach" : "done");
     steps[index].lastElementChild.textContent = messages[index][0];
     output.textContent += `\n✓ ${messages[index][0]}\n  ${messages[index][1]}`;
-    if (index === 3) bond.textContent = "4.99";
   }
   output.textContent += `\n\nEvidence hash\n${evidence.evidenceHash}\n\nMode: ${evidence.mode}`;
   runState.textContent = "LOCAL LAB COMPLETE";
@@ -142,9 +154,20 @@ async function runFlow() {
 
 async function loadLiveStatus() {
   try {
-    const bondEvidence = await loadLiveEvidence("bond");
-    liveBond.textContent = (Number(bondEvidence.bondBalanceAtomic) / 1_000_000).toFixed(2);
-  } catch {}
+    const rebateEvidence = await loadLiveEvidence("rebate");
+    const formattedBond = (Number(rebateEvidence.bondAfterAtomic) / 1_000_000).toFixed(2);
+    liveBond.textContent = formattedBond;
+    bond.textContent = formattedBond;
+    bondStatus.textContent = rebateEvidence.serviceActiveAfter ? "ACTIVE" : "AUTO-PAUSED";
+    bondStatus.className = rebateEvidence.serviceActiveAfter ? "live" : "paused";
+  } catch {
+    try {
+      const bondEvidence = await loadLiveEvidence("bond");
+      const formattedBond = (Number(bondEvidence.bondBalanceAtomic) / 1_000_000).toFixed(2);
+      liveBond.textContent = formattedBond;
+      bond.textContent = formattedBond;
+    } catch {}
+  }
   try {
     const balanceEvidence = await loadLiveEvidence("agentic-wallet-balance");
     walletFunding.textContent = (Number(balanceEvidence.balanceAtomic) / 1_000_000).toFixed(2);
@@ -155,7 +178,13 @@ async function loadLiveStatus() {
     paidProof.textContent = `${paidEvidence.verification.status} · ${checks}/9`;
     try {
       const breachEvidence = await loadLiveEvidence("agentic-wallet-paid-breach");
-      if (breachEvidence.verification.status === "BREACH") paidProof.textContent = "ACCEPTED + BREACH";
+      if (breachEvidence.verification.status === "BREACH") {
+        paidProof.textContent = "ACCEPTED → BREACH";
+        try {
+          const rebateEvidence = await loadLiveEvidence("rebate");
+          if (rebateEvidence.verification?.receiptStatus === "success") paidProof.textContent = "ACCEPTED → BREACH → REBATED";
+        } catch {}
+      }
     } catch {}
   } catch {
     try {

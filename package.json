@@ -1,6 +1,6 @@
 {
   "name": "relaybond-okx",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": false,
   "description": "Economic accountability for paid AI agent services on OKX AI and X Layer.",
   "type": "module",
@@ -41,6 +41,7 @@
     "bond:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/register-and-bond.cjs --network xLayerTestnet",
     "rebate:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/claim-rebate.cjs --network xLayerTestnet",
     "rebate:live-breach": "node --env-file-if-exists=.env --import tsx scripts/claim-live-breach.ts",
+    "evidence:refresh-live": "node --env-file-if-exists=.env --import tsx scripts/refresh-live-rebate.ts",
     "wallets:bootstrap": "node --import tsx scripts/bootstrap-wallets.ts",
     "wallets:status": "node --env-file-if-exists=.env --import tsx scripts/wallet-status.ts",
     "deployment:configure": "node --import tsx scripts/set-deployment-env.ts",

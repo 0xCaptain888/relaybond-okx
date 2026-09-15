@@ -1,0 +1,50 @@
+{
+  "evidenceVersion": "2",
+  "mode": "XLAYER_TESTNET",
+  "sourceEvidence": "evidence/live/agentic-wallet-paid-breach.json",
+  "attestation": {
+    "serviceId": "0x8acdd3517c56d7e4749fc31bb36ff79d957cf7123220b3bcd3b5eb662a1aa82d",
+    "promiseHash": "0xca605c666adb1e0d9239634c6131509bbc66ec06e2333af49f1c5afccdeaa73c",
+    "requestHash": "0xee86eeee4b51e1a7f07029268569c8473c9ee4c09a1784e3a26989c7c94bede0",
+    "receiptHash": "0x27b4f06c65398a99d5c861ff2a947bc9604860322e9c238d322b897e82c6c8e9",
+    "buyer": "0xcb83AF485c066add3eca9041a78Ea7c14e3F15F4",
+    "rebateAmount": "10000",
+    "deadline": "1789484836",
+    "nonce": "1789481236005",
+    "signature": "0x605df72e4c5572c9972b208c6c3002ec96bca2f96ea9ef53b90830d4bdc99d3e60bdcfb9f490c4efd41c04f187571c0ea0d324b9d748901be01a1c97fea319c11b",
+    "verifier": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE"
+  },
+  "transactionHash": "0x21c3e459c868efdb35da90b2976a73738347e90a38a591cff49e219101b7c03f",
+  "blockNumber": "41022400",
+  "bondBeforeAtomic": "5000000",
+  "bondAfterAtomic": "4990000",
+  "generatedAt": "2026-09-15T14:13:19.069Z",
+  "settlementToken": "0x9e29b3AaDa05Bf2D2c827Af80Bd28Dc0b9b4FB0c",
+  "blockTimestamp": "1789481237",
+  "serviceActiveAfter": false,
+  "verification": {
+    "receiptStatus": "success",
+    "blockPinnedStateMatched": true,
+    "bondDeltaMatched": true,
+    "breachEventMatched": true,
+    "transferMatched": true,
+    "serviceStatusEventMatched": true,
+    "rebateEvent": {
+      "logIndex": 2,
+      "serviceId": "0x8acdd3517c56d7e4749fc31bb36ff79d957cf7123220b3bcd3b5eb662a1aa82d",
+      "requestHash": "0xee86eeee4b51e1a7f07029268569c8473c9ee4c09a1784e3a26989c7c94bede0",
+      "receiptHash": "0x27b4f06c65398a99d5c861ff2a947bc9604860322e9c238d322b897e82c6c8e9",
+      "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+      "buyer": "0xcb83AF485c066add3eca9041a78Ea7c14e3F15F4",
+      "amountAtomic": "10000",
+      "remainingBondAtomic": "4990000"
+    },
+    "transfer": {
+      "logIndex": 1,
+      "token": "0x9e29b3AaDa05Bf2D2c827Af80Bd28Dc0b9b4FB0c",
+      "from": "0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5",
+      "to": "0xcb83AF485c066add3eca9041a78Ea7c14e3F15F4",
+      "amountAtomic": "10000"
+    }
+  }
+}

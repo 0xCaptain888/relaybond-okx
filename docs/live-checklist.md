@@ -20,12 +20,12 @@
 - [x] Capture a complete Agentic Wallet paid delivery body and independently verify it as `ACCEPTED`.
 - [x] Return one correct provider-signed response and verify all 9 SLA checks.
 - [x] Return one provider-signed stale paid response and independently verify `BREACH`.
-- [ ] Submit verifier attestation and show the real onchain `BreachRebated` event.
+- [x] Submit verifier attestation and show the real onchain `BreachRebated` event, exact token `Transfer` and automatic service pause.
 - [x] Deploy the public judge demo and API at `https://relaybond-okx.vercel.app`.
 
 ## P1 — prize-strengthening
 
-- [x] Reliability Passport with separate verified Testnet history, acceptance rate and 500-call bond coverage.
+- [x] Reliability Passport with 2 verified Testnet deliveries, 50% acceptance, 0.01 rebated and 499-call bond coverage.
 - [x] Provider SDK and OpenAPI integration surface.
 - [ ] Backup-provider recovery without double-charging the buyer.
 - [x] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.

@@ -63,8 +63,11 @@ export type LiveReliabilityPassport = {
   bondCoverageCalls: number;
   totalPaidAtomic: string;
   totalRebatedAtomic: string;
+  breachReasons: Record<string, number>;
+  currentServiceActive: boolean;
   latestEvidenceHash: `0x${string}`;
   latestSettlementTx: `0x${string}`;
+  latestRebateTx?: `0x${string}`;
   generatedAt: string;
   passportHash: `0x${string}`;
 };
@@ -72,34 +75,48 @@ export type LiveReliabilityPassport = {
 export function buildLiveReliabilityPassport(input: {
   serviceId: string;
   provider: `0x${string}`;
-  status: VerificationStatus;
   bondBalanceAtomic: string;
   rebateAtomic: string;
-  paidAtomic: string;
+  currentServiceActive: boolean;
+  deliveries: Array<{
+    status: VerificationStatus;
+    paidAtomic: string;
+    evidenceHash: `0x${string}`;
+    settlementTx: `0x${string}`;
+    violations: string[];
+  }>;
   rebatedAtomic?: string;
-  evidenceHash: `0x${string}`;
-  settlementTx: `0x${string}`;
+  rebateTx?: `0x${string}`;
   generatedAt: string;
 }): LiveReliabilityPassport {
-  const acceptedCalls = input.status === "ACCEPTED" ? 1 : 0;
-  const breachedCalls = input.status === "BREACH" ? 1 : 0;
+  if (input.deliveries.length === 0) throw new Error("A live Reliability Passport requires at least one verified delivery.");
+  const acceptedCalls = input.deliveries.filter((delivery) => delivery.status === "ACCEPTED").length;
+  const breachedCalls = input.deliveries.filter((delivery) => delivery.status === "BREACH").length;
+  const breachReasons: Record<string, number> = {};
+  for (const delivery of input.deliveries) {
+    for (const violation of delivery.violations) breachReasons[violation] = (breachReasons[violation] || 0) + 1;
+  }
+  const latest = input.deliveries.at(-1)!;
   const rebate = BigInt(input.rebateAtomic);
   const unsigned = {
     passportVersion: "1" as const,
     scope: "VERIFIED_XLAYER_TESTNET_DELIVERIES" as const,
     serviceId: input.serviceId,
     provider: input.provider,
-    calls: 1,
+    calls: input.deliveries.length,
     acceptedCalls,
     breachedCalls,
-    acceptanceRateBps: acceptedCalls * 10_000,
+    acceptanceRateBps: Math.round((acceptedCalls / input.deliveries.length) * 10_000),
     bondBalanceAtomic: input.bondBalanceAtomic,
     rebateAtomic: input.rebateAtomic,
     bondCoverageCalls: rebate === 0n ? 0 : Number(BigInt(input.bondBalanceAtomic) / rebate),
-    totalPaidAtomic: input.paidAtomic,
+    totalPaidAtomic: input.deliveries.reduce((sum, delivery) => sum + BigInt(delivery.paidAtomic), 0n).toString(),
     totalRebatedAtomic: input.rebatedAtomic || "0",
-    latestEvidenceHash: input.evidenceHash,
-    latestSettlementTx: input.settlementTx,
+    breachReasons,
+    currentServiceActive: input.currentServiceActive,
+    latestEvidenceHash: latest.evidenceHash,
+    latestSettlementTx: latest.settlementTx,
+    ...(input.rebateTx ? { latestRebateTx: input.rebateTx } : {}),
     generatedAt: input.generatedAt,
   };
   return { ...unsigned, passportHash: hashCanonical(unsigned) };

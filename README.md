@@ -27,7 +27,7 @@ Signed ServicePromise
 → X Layer buyer rebate
 ```
 
-The public build exposes a live OKX payment boundary, a browser-verifiable EIP-712 Service Promise and deterministic `ACCEPTED` / `BREACH` evidence. `QualityBondVault` is deployed and source-verified on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. The provider has registered the endpoint-bound Promise and deposited a real **5 Testnet USD₮0** Quality Bond. A second explicit **0.01 Testnet USD₮0** Agentic Wallet payment completed the full delivery path and was independently verified as `ACCEPTED`; the paid breach and onchain rebate remain explicitly pending.
+The public build exposes a live OKX payment boundary, browser-verifiable EIP-712 promises and the complete Testnet warranty lifecycle. `QualityBondVault` is deployed and source-verified on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. One real **0.01 Testnet USD₮0** Agentic Wallet delivery was independently verified `ACCEPTED`; a second was verified `BREACH` for stale data; transaction `0x21c3…03f` then returned **0.01 Testnet USD₮0** from the provider bond to the buyer. The bond is now **4.99 Testnet USD₮0**, and the contract automatically paused the service because it fell below the 5.00 minimum.
 
 ## Why this is different
 
@@ -78,7 +78,7 @@ curl -i -X POST http://localhost:8787/v1/provider/quote \
   -d '{"symbol":"BTC-USDT"}'
 ```
 
-The production endpoint is live at `https://relaybond-okx.vercel.app/v1/provider/quote`. An unauthenticated request returns HTTP `402` plus the official `PAYMENT-REQUIRED` header from the OKX x402 SDK. The complete paid-delivery artifact is published and can be rechecked with `npm run verify:live-paid`; add `:onchain` to independently re-query the exact X Layer Transfer.
+The production endpoint is live at `https://relaybond-okx.vercel.app/v1/provider/quote`. An unauthenticated request returns HTTP `402` plus the official `PAYMENT-REQUIRED` header from the OKX x402 SDK. The complete paid-delivery artifacts are published and can be rechecked with `npm run verify:live-paid`; add `:onchain` to independently re-query the exact X Layer Transfer. `npm run evidence:refresh-live` performs a read-only, block-pinned reconstruction of the completed rebate and refreshes the buyer balance without signing or broadcasting.
 
 Public read-only integration endpoints:
 
@@ -129,9 +129,11 @@ npm run rebate:live-breach -- --confirm
 - Complete Agentic Wallet paid delivery: `0.01 Testnet USD₮0`, transaction [`0xfd1e…e4bf`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xfd1e25e2415a79eff8e8d981d9e5f97efe8f9136ce026b1cf1e5ac872c8ee4bf), block `41018044`, evidence hash `0x39a67bcde940b07e429aee35fbef6fe260dcc2e0aecae6e3013f124cfa57dde8`, independently verified `ACCEPTED` with all 9 SLA checks passing.
 - Scenario-mismatch settlement: `0.01 Testnet USD₮0`, transaction [`0x4386…5304`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x438616931bfcca24e7da37a0f3683dbb8db360081a8fb249982d238851595304). The v0.2.2 runner omitted `stale` during paid replay, so this is deliberately recorded as settlement-only evidence and **not** claimed as `BREACH`.
 - Complete paid breach: `0.01 Testnet USD₮0`, transaction [`0x53b8…449a`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a), block `41022040`, evidence hash `0x49288a96c20698ea0efd44f7134a87edcd774d31c98aa110506b31ea17b82cb5`, independently verified `BREACH` because `freshnessMet=false`.
-- Agentic Wallet balance after four explicit calls: `0.01 Testnet USD₮0` at block `41022208`; the breach rebate remains pending explicit confirmation.
+- Onchain buyer rebate: `0.01 Testnet USD₮0`, transaction [`0x21c3…03f`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x21c3e459c868efdb35da90b2976a73738347e90a38a591cff49e219101b7c03f), block `41022400`. The receipt contains the exact `BreachRebated`, vault-to-buyer `Transfer` and `ServiceStatusChanged(false)` events; all claim hashes, addresses and amounts match the paid breach evidence.
+- Quality Bond after rebate: `4.99 Testnet USD₮0`; service state is `active=false` because the remaining bond is below the 5.00 minimum.
+- Agentic Wallet balance after four explicit calls and the rebate: `0.02 Testnet USD₮0` at block `41022760`.
 - Verified source: `QualityBondVault`, Solidity `0.8.28`, optimizer `200`, EVM `paris`
-- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json), [`agentic-wallet-paid-delivery.json`](./evidence/live/agentic-wallet-paid-delivery.json), [`agentic-wallet-paid-breach.json`](./evidence/live/agentic-wallet-paid-breach.json), [`agentic-wallet-scenario-mismatch-settlement.json`](./evidence/live/agentic-wallet-scenario-mismatch-settlement.json), [`agentic-wallet-balance.json`](./evidence/live/agentic-wallet-balance.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
+- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json), [`agentic-wallet-paid-delivery.json`](./evidence/live/agentic-wallet-paid-delivery.json), [`agentic-wallet-paid-breach.json`](./evidence/live/agentic-wallet-paid-breach.json), [`rebate.json`](./evidence/live/rebate.json), [`agentic-wallet-scenario-mismatch-settlement.json`](./evidence/live/agentic-wallet-scenario-mismatch-settlement.json), [`agentic-wallet-balance.json`](./evidence/live/agentic-wallet-balance.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
 
 ## Repository map
 
@@ -178,16 +180,16 @@ npm run rebate:live-breach -- --confirm
 | QualityBondVault source | VERIFIED | OKX Onchain OS reports source + ABI present |
 | Public Judge Demo + API | LIVE | Vercel production deployment |
 | Official OKX x402 challenge | LIVE | unauthenticated quote returns HTTP `402` + `PAYMENT-REQUIRED` |
-| Quality Bond | TESTNET | active service backed by 5 Testnet USDT0, deposit tx `0xa423…6694` |
+| Quality Bond | TESTNET / AUTO-PAUSED | 4.99 Testnet USDT0 remains after rebate; service paused below its 5.00 minimum |
 | Browser portable integrity verification | LIVE | Vercel Judge Demo |
 | Browser EIP-712 signer recovery | LIVE | recovers the provider and Promise digest without server trust |
 | Agentic Wallet funding | TESTNET | 0.05 USD₮0, tx `0x2e83…2eaf` |
-| Reliability Passport | TESTNET | 1 verified paid call, 100% live acceptance, 500-call bond coverage |
+| Reliability Passport | TESTNET | 2 verified paid calls, 50% acceptance, 0.01 rebated and 499-call bond coverage |
 | Real OKX AI A2MCP listing | PENDING | must be completed before submission |
-| Real x402 settlement | TESTNET | two 0.01 USD₮0 Agentic Wallet settlements; latest tx `0xfd1e…e4bf` |
+| Real x402 settlement | TESTNET | one complete accepted delivery and one complete breached delivery, each paid 0.01 USD₮0 |
 | Real paid delivery verification | TESTNET / ACCEPTED | request, OKX result, provider signatures, exact Transfer and 9/9 SLA checks |
 | Real paid breach verification | TESTNET / BREACH | stale paid quote, exact Transfer, provider signatures and `freshnessMet=false` |
-| Real X Layer breach rebate | PENDING | requires a paid bad delivery + verifier attestation |
+| Real X Layer breach rebate | TESTNET / REBATED | exact 0.01 USD₮0 vault-to-buyer transfer and `BreachRebated` event, tx `0x21c3…03f` |
 
 See the [prior-work disclosure](./docs/prior-work-disclosure.md) and [threat model](./docs/threat-model.md).
 Production dependencies currently pass [`npm run security:audit`](./SECURITY.md) with zero known vulnerabilities; legacy Hardhat advisories are isolated to the local development toolchain.

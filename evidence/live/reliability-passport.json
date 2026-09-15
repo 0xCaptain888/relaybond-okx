@@ -3,17 +3,22 @@
   "scope": "VERIFIED_XLAYER_TESTNET_DELIVERIES",
   "serviceId": "market-data-v1",
   "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
-  "calls": 1,
+  "calls": 2,
   "acceptedCalls": 1,
-  "breachedCalls": 0,
-  "acceptanceRateBps": 10000,
-  "bondBalanceAtomic": "5000000",
+  "breachedCalls": 1,
+  "acceptanceRateBps": 5000,
+  "bondBalanceAtomic": "4990000",
   "rebateAtomic": "10000",
-  "bondCoverageCalls": 500,
-  "totalPaidAtomic": "10000",
-  "totalRebatedAtomic": "0",
-  "latestEvidenceHash": "0x39a67bcde940b07e429aee35fbef6fe260dcc2e0aecae6e3013f124cfa57dde8",
-  "latestSettlementTx": "0xfd1e25e2415a79eff8e8d981d9e5f97efe8f9136ce026b1cf1e5ac872c8ee4bf",
-  "generatedAt": "2026-09-15T12:54:40.224Z",
-  "passportHash": "0xc25162d343892db4dfe967506f5d24bb1f3a02e7cac98403b499e0b584d632ae"
+  "bondCoverageCalls": 499,
+  "totalPaidAtomic": "20000",
+  "totalRebatedAtomic": "10000",
+  "breachReasons": {
+    "freshnessMet": 1
+  },
+  "currentServiceActive": false,
+  "latestEvidenceHash": "0x49288a96c20698ea0efd44f7134a87edcd774d31c98aa110506b31ea17b82cb5",
+  "latestSettlementTx": "0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a",
+  "latestRebateTx": "0x21c3e459c868efdb35da90b2976a73738347e90a38a591cff49e219101b7c03f",
+  "generatedAt": "2026-09-15T14:13:19.069Z",
+  "passportHash": "0xb48708ee5b98d5cd094c0b652506cf6a5861043181398a99878efdb05fdeb7a6"
 }
