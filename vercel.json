@@ -1,8 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "outputDirectory": "public",
   "rewrites": [
-    { "source": "/health", "destination": "/api/index/health" },
-    { "source": "/v1/:path*", "destination": "/api/index/v1/:path*" }
+    { "source": "/health", "destination": "/api/index" },
+    { "source": "/v1/:path*", "destination": "/api/index" }
   ],
   "functions": {
     "api/index.ts": { "maxDuration": 30 }

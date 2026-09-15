@@ -2,7 +2,7 @@
 
 > **Economic accountability for paid Agent services.**
 
-**[Launch Public Judge Demo](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **[X Layer deployment](https://www.okx.com/web3/explorer/xlayer-test/tx/0x763f8b602f024d97281546f43bd7b3190a581a1d854d4dc5744d402547a9f484)** · **Video:** pending
+**[Live Judge Demo + API](https://relaybond-okx.vercel.app/)** · **[GitHub Pages mirror](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **[X Layer contract](https://www.okx.com/web3/explorer/xlayer-test/address/0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5)** · **Video:** pending
 
 RelayBond is the service-warranty layer for paid AI agents. Providers publish a signed, machine-readable SLA and deposit a USDT0 Quality Bond on X Layer. If a provider-signed response violates objective delivery terms, an independent verifier can trigger an automatic buyer rebate.
 
@@ -27,7 +27,7 @@ Signed ServicePromise
 → X Layer buyer rebate
 ```
 
-The foundation demonstrates signed promises, signed delivery receipts, deterministic verification, `ACCEPTED`, two objective `BREACH` cases and portable evidence. `QualityBondVault` is deployed on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. It does **not** claim a live OKX payment, funded bond or X Layer rebate yet.
+The live build demonstrates signed promises, signed delivery receipts, deterministic verification, `ACCEPTED`, two objective `BREACH` cases and portable evidence. `QualityBondVault` is deployed on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. The provider has registered the public Service Promise and deposited a real **5 Testnet USDT0** Quality Bond. A paid OKX Agentic Wallet call and real breach rebate remain explicitly pending.
 
 ## Why this is different
 
@@ -68,7 +68,7 @@ Open the printed localhost URL. Values stay in the local `.env` file and are nev
 
 Open `http://localhost:4173`. The judge flow writes [evidence/judge-run.json](./evidence/judge-run.json) and the browser independently verifies its portable SHA-256 integrity.
 
-Run the API separately:
+Run the local API separately:
 
 ```bash
 npm run api
@@ -78,7 +78,16 @@ curl -i -X POST http://localhost:8787/v1/provider/quote \
   -d '{"symbol":"BTC-USDT"}'
 ```
 
-The provider route returns a standards-shaped HTTP `402` challenge. If a payment header is supplied in this foundation build, it returns `501 LIVE_PAYMENT_VERIFIER_NOT_CONFIGURED` rather than pretending the payment was verified.
+The production endpoint is live at `https://relaybond-okx.vercel.app/v1/provider/quote`. An unauthenticated request returns HTTP `402` plus the official `PAYMENT-REQUIRED` header from the OKX x402 SDK. No paid call is claimed until an OKX Agentic Wallet payment is completed and captured.
+
+## Live X Layer evidence
+
+- Service Promise: `0xca605c666adb1e0d9239634c6131509bbc66ec06e2333af49f1c5afccdeaa73c`
+- Endpoint bound by the Promise: `https://relaybond-okx.vercel.app/v1/provider/quote`
+- Registered service: [`0x07fd…1c14`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x07fd2a4f7782d2ba9ea951d4e18656ac4b965f54bf7e1c3503ca926ade6f1c14)
+- USDT0 approval: [`0x324f…2395`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x324f21c98650608e46b317dfcfa7175fe5227c7a618fdb8c56bb733dc64e2395)
+- 5 Testnet USDT0 bond deposit: [`0xa423…6694`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xa4231e43f171c43da45a9b3412af1a2992ea23d4fd7c1e4fe13da68136d36694)
+- Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json) and [`bond.json`](./evidence/live/bond.json)
 
 ## Repository map
 
@@ -116,15 +125,19 @@ The provider route returns a standards-shaped HTTP `402` challenge. If a payment
 
 | Capability | Status | Evidence |
 |---|---|---|
-| Signed SLA and delivery receipt | LOCAL | unit tests + generated JSON |
+| Signed Service Promise | TESTNET | public endpoint-bound EIP-712 Promise + onchain Promise hash |
+| Signed delivery receipt | LOCAL | unit tests + generated JSON; paid live receipt pending |
 | Independent deterministic verifier | LOCAL | `npm run test:unit` |
 | QualityBondVault tests | LOCAL | Hardhat contract tests |
 | QualityBondVault deployment | TESTNET | block `41008617`, tx `0x763f…f484` |
-| Browser integrity verification | LOCAL | Judge Demo |
+| Public Judge Demo + API | LIVE | Vercel production deployment |
+| Official OKX x402 challenge | LIVE | unauthenticated quote returns HTTP `402` + `PAYMENT-REQUIRED` |
+| Quality Bond | TESTNET | active service backed by 5 Testnet USDT0, deposit tx `0xa423…6694` |
+| Browser integrity verification | LIVE | Vercel Judge Demo |
 | Reliability Passport | LOCAL | derived from signed evidence, not user reviews |
 | Real OKX AI A2MCP listing | PENDING | must be completed before submission |
 | Real x402 payment | PENDING | must be completed before submission |
-| Real X Layer bond and rebate | PENDING | must be completed before submission |
+| Real X Layer breach rebate | PENDING | requires a paid bad delivery + verifier attestation |
 
 See the [prior-work disclosure](./docs/prior-work-disclosure.md) and [threat model](./docs/threat-model.md).
 Production dependencies currently pass [`npm run security:audit`](./SECURITY.md) with zero known vulnerabilities; legacy Hardhat advisories are isolated to the local development toolchain.

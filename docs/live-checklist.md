@@ -7,27 +7,27 @@
 - [x] Fund only the public role addresses in `evidence/setup/wallet-addresses.json`; `.env` remains local and gitignored.
 - [x] Deploy `QualityBondVault` and record the public deployment transaction.
 - [ ] Verify the deployed contract source on the X Layer explorer.
-- [ ] Deposit a real USDT0 Quality Bond.
+- [x] Register the endpoint-bound Service Promise and deposit a real 5 Testnet USDT0 Quality Bond.
 - [ ] Publish the provider as an OKX AI A2MCP service.
-- [ ] Return the official x402 `exact` payment challenge.
+- [x] Return the official x402 `exact` payment challenge from the public Vercel API.
 - [ ] Pay once from an OKX Agentic Wallet and capture the payment identifier.
 - [ ] Return one correct signed response and verify `ACCEPTED`.
 - [ ] Return one signed empty/stale response and verify `BREACH`.
 - [ ] Submit verifier attestation and show the real onchain `BreachRebated` event.
-- [ ] Deploy the public judge demo and API.
+- [x] Deploy the public judge demo and API at `https://relaybond-okx.vercel.app`.
 
 ## P1 — prize-strengthening
 
 - [x] Reliability Passport with acceptance rate, breach reasons and bond coverage. Live history remains pending.
-- [ ] Provider SDK and OpenAPI integration example.
+- [x] Provider SDK and OpenAPI integration surface.
 - [ ] Backup-provider recovery without double-charging the buyer.
 - [ ] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.
 - [ ] Two to three outside builders test the integration.
 
 ## Submission hygiene
 
-- [ ] README links first: demo, video, live evidence, contracts.
+- [x] README links first: demo, live API, source and contract.
 - [ ] 2–4 minute video starts with `Payment: SUCCESS / Response: {}`.
-- [ ] Prior-work disclosure is linked.
-- [ ] Every claim is labeled LOCAL, TESTNET, MAINNET or DESIGN.
+- [x] Prior-work disclosure is linked.
+- [x] Every claim is labeled LOCAL, TESTNET, LIVE, MAINNET or DESIGN.
 - [ ] Submission is frozen and checked before 2026-09-25 23:59 UTC.

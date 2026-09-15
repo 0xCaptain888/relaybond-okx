@@ -5,5 +5,8 @@ dist/
 .env
 .env.*
 !.env.example
+!.env.chain.example
 coverage/
 .DS_Store
+.vercel/
+public/

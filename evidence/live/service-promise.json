@@ -1,0 +1,26 @@
+{
+  "evidenceVersion": "1",
+  "mode": "XLAYER_TESTNET",
+  "promiseHash": "0xca605c666adb1e0d9239634c6131509bbc66ec06e2333af49f1c5afccdeaa73c",
+  "signedPromise": {
+    "payload": {
+      "version": "1",
+      "chainId": 1952,
+      "vault": "0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5",
+      "serviceId": "market-data-v1",
+      "endpoint": "https://relaybond-okx.vercel.app/v1/provider/quote",
+      "responseTimeMs": 2000,
+      "maxDataAgeSeconds": 30,
+      "requiredSchema": "market-quote-v1",
+      "minimumRecords": 1,
+      "priceAtomic": "10000",
+      "bondAmountAtomic": "5000000",
+      "rebateAtomic": "10000",
+      "refundOnBreach": true,
+      "validUntil": 1798761599,
+      "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d"
+    },
+    "signature": "0x85233ca010a2b7d5e000de8a06341659d7ad6cf601402dc292af6cd615056bb32ffbbc4fa0ff1989878177b169ecb44d85af4982632744ca7713e806ccd76bed1b"
+  },
+  "generatedAt": "2026-09-15T11:14:10.033Z"
+}

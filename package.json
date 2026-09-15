@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "hardhat compile",
+    "vercel-build": "npm run build && node --import tsx scripts/build-vercel.ts",
     "deploy:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/deploy.cjs --network xLayerTestnet",
     "deploy:xlayer": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/deploy.cjs --network xLayer",
     "bond:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/register-and-bond.cjs --network xLayerTestnet",
