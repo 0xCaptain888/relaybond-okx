@@ -27,7 +27,10 @@
 
 - [x] Reliability Passport with 2 verified Testnet deliveries, 50% acceptance, 0.01 rebated and 499-call bond coverage.
 - [x] Provider SDK and OpenAPI integration surface.
-- [ ] Backup-provider recovery without double-charging the buyer.
+- [x] Deterministic backup-provider recovery without double-charging the buyer (`LOCAL / TESTED`).
+- [x] Verifier-signed Continuity Receipt binds primary breach, backup delivery and recovery economics.
+- [x] RecoveryBondVaultV2 contract tests cover authorization, replay protection and buyer balance invariance.
+- [ ] Deploy RecoveryBondVaultV2 to X Layer Testnet and execute one real backup settlement.
 - [x] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.
 - [ ] Two to three outside builders test the integration.
 
@@ -38,3 +41,4 @@
 - [x] Prior-work disclosure is linked.
 - [x] Every claim is labeled LOCAL, TESTNET, LIVE, MAINNET or DESIGN.
 - [ ] Submission is frozen and checked before 2026-09-25 23:59 UTC.
+- [x] Pre-period work is explicitly disclosed; no September 15 work is represented as official build-period work.

@@ -1,4 +1,4 @@
-# RelayBond architecture
+# RelayBond architecture v0.3.0
 
 ```text
 Buyer Agent
@@ -12,9 +12,26 @@ Provider Agent ── binds verified payer and signs DeliveryReceipt ──► I
   │                                              │
   │ valid delivery                               │ objective breach attestation
   ▼                                              ▼
-ACCEPTED                               QualityBondVault on X Layer
+ACCEPTED                               QualityBondVault V1 on X Layer
                                                 │
                                                 └── USDT0 rebate to buyer
+```
+
+The deployed V1 proves the warranty boundary. The LOCAL / TESTED V2 extends it into continuity:
+
+```text
+Bonded Provider Registry
+  │ rank by SLA + bond coverage + verified history
+  ▼
+Primary Provider ── BREACH ──► Independent Verifier
+                                  │ signs RecoveryAttestation
+                                  ▼
+                          RecoveryBondVaultV2
+                                  │ primary bond funds backup
+                                  ▼
+Backup Provider ── ACCEPTED ──► Continuity Receipt ──► RECOVERED
+
+Buyer debit count: 1
 ```
 
 ## Trust boundaries
@@ -26,8 +43,18 @@ ACCEPTED                               QualityBondVault on X Layer
 - A merchant response is not recorded as LIVE unless the decoded facilitator receipt reports final-success settlement.
 - The deterministic verifier evaluates only objective, pre-declared checks.
 - The onchain vault caps each rebate and prevents request-hash replay.
+- V2 requires different primary and backup identities and prevents recovery-attestation replay.
+- The V2 contract pays the backup from primary bond principal; it does not debit or approve the buyer.
+- A Continuity Receipt binds the original request, primary breach evidence, backup delivery evidence, recovery amount and final state.
 - A 24-hour withdrawal delay keeps a provider from removing its bond immediately after a disputed call.
 
 ## One memorable mechanism
 
-Every listed service carries a visible Quality Bond. A seller can advertise a stronger promise only by putting more capital behind it.
+Every listed service carries a visible Quality Bond. A failed seller does not merely refund a fee: its capital becomes the budget that finishes the buyer's task.
+
+## Deployment honesty
+
+- `QualityBondVault`: TESTNET / SOURCE VERIFIED.
+- x402 paid calls and V1 rebate: TESTNET.
+- registry, Continuity Receipt and `RecoveryBondVaultV2`: LOCAL / TESTED.
+- V2 X Layer deployment and live backup settlement: PENDING.

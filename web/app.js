@@ -36,6 +36,12 @@ async function loadEvidence() {
   return response.json();
 }
 
+async function loadContinuityEvidence() {
+  const response = await fetch("./evidence/continuity-judge-run.json", { cache: "no-store" });
+  if (!response.ok) throw new Error("Generate continuity evidence first: npm run demo:continuity");
+  return response.json();
+}
+
 async function loadLiveEvidence(name) {
   const response = await fetch(`./evidence/live/${name}.json`, { cache: "no-store" });
   if (!response.ok) throw new Error(`${name} evidence is not published yet`);
@@ -129,26 +135,21 @@ async function loadPassport() {
 
 async function runFlow() {
   runButton.disabled = true;
-  runState.textContent = "LOCAL LAB RUNNING";
+  runState.textContent = "LOCAL RECOVERY RUNNING";
   steps.forEach((step) => { step.className = ""; step.lastElementChild.textContent = "WAITING"; });
-  output.textContent = "$ Loading deterministic breach-lab evidence…";
-  const evidence = await loadEvidence();
-  const messages = [
-    ["PROMISE VERIFIED", "Provider signature recovered. SLA hash is bound to the delivery receipt."],
-    ["ACCEPTED", `Valid quote passed ${Object.keys(evidence.scenarios[0].verification.checks).length} deterministic checks.`],
-    ["BREACH", `Paid response failed: ${evidence.scenarios[1].verification.violations.join(", ")}.`],
-    ["REBATED", "Buyer +0.01 USDT0 · Provider bond 5.00 → 4.99 USDT0."],
-  ];
+  output.textContent = "$ Loading deterministic double-pay-free recovery evidence…";
+  const evidence = await loadContinuityEvidence();
   for (let index = 0; index < steps.length; index += 1) {
+    const stage = evidence.stages[index];
     steps[index].classList.add("active");
-    await wait(700);
+    await wait(650);
     steps[index].classList.remove("active");
-    steps[index].classList.add(index === 2 ? "breach" : "done");
-    steps[index].lastElementChild.textContent = messages[index][0];
-    output.textContent += `\n✓ ${messages[index][0]}\n  ${messages[index][1]}`;
+    steps[index].classList.add(index === 1 ? "breach" : "done");
+    steps[index].lastElementChild.textContent = stage.state;
+    output.textContent += `\n${index === 1 ? "!" : "✓"} ${stage.state}\n  ${stage.description}`;
   }
-  output.textContent += `\n\nEvidence hash\n${evidence.evidenceHash}\n\nMode: ${evidence.mode}`;
-  runState.textContent = "LOCAL LAB COMPLETE";
+  output.textContent += `\n\nPrimary result:       ${evidence.primary.verification.status}\nBackup result:        ${evidence.recovery.verification.status}\nFinal state:          ${evidence.continuityReceipt.payload.finalStatus}\nBuyer paid:           ${(Number(evidence.economics.buyerPaidAtomic) / 1_000_000).toFixed(2)} USD₮0\nBackup funded by bond:${(Number(evidence.economics.fundedFromPrimaryBondAtomic) / 1_000_000).toFixed(2).padStart(6)} USD₮0\nBuyer double charged: ${evidence.economics.buyerDoubleCharged}\n\nEvidence hash\n${evidence.evidenceHash}\n\nMode: ${evidence.mode}`;
+  runState.textContent = "RECOVERED · BUYER PAID ONCE";
   runButton.disabled = false;
 }
 
@@ -197,14 +198,18 @@ async function loadLiveStatus() {
 async function verifyEvidence() {
   verifyButton.disabled = true;
   try {
-    const evidence = await loadEvidence();
+    const evidence = await loadContinuityEvidence();
+    const result = await window.RelayBondVerifier.verifyContinuityEvidence(evidence);
     const { portableIntegrity, ...portablePayload } = evidence;
     const calculated = await sha256(portablePayload);
-    const verified = calculated === portableIntegrity.hash;
-    output.textContent = `$ Browser-side portable evidence verification\n\nAlgorithm: ${portableIntegrity.algorithm}\nExpected:   ${portableIntegrity.hash}\nCalculated: ${calculated}\n\n${verified ? "✓ VERIFIED — evidence is byte-for-byte intact" : "✗ FAILED — evidence was modified"}`;
-    runState.textContent = verified ? "VERIFIED" : "TAMPERED";
+    const portablePassed = calculated === portableIntegrity.hash;
+    const economicsPassed = Object.values(result.economics).every(Boolean);
+    const verified = result.passed && portablePassed;
+    output.textContent = `$ BROWSER CONTINUITY VERIFICATION\n\nRecovered signer:    ${result.signer}\nExpected verifier:   ${result.expectedVerifier}\nSigner match:        ${result.signer.toLowerCase() === result.expectedVerifier.toLowerCase()}\nEconomics checks:    ${economicsPassed ? "ALL PASSED" : "FAILED"}\nBuyer paid once:     ${result.economics.buyerPaidOnce}\nBond funded backup:  ${result.economics.recoveryCoveredByBond}\nIndependent backup:  ${result.economics.independentProviders}\nEvidence Keccak:     ${result.evidenceHashPassed ? "VERIFIED" : "FAILED"}\nPortable SHA-256:    ${portablePassed ? "VERIFIED" : "FAILED"}\n\n${verified ? "✓ CONTINUITY VERIFIED — breach, backup delivery and recovery economics are independently bound." : "✗ FAILED — continuity evidence or signature was modified."}`;
+    runState.textContent = verified ? "CONTINUITY VERIFIED" : "VERIFY FAILED";
   } catch (error) {
     output.textContent = `$ Verification error\n${error.message}`;
+    runState.textContent = "VERIFY FAILED";
   } finally {
     verifyButton.disabled = false;
   }

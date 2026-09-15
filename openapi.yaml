@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: RelayBond API
-  version: 0.2.4
-  description: Bond-backed paid Agent services with portable delivery evidence.
+  version: 0.3.0
+  description: Bond-backed paid Agent services with portable delivery evidence and double-pay-free recovery.
 servers:
   - url: https://relaybond-okx.vercel.app
 paths:
@@ -42,6 +42,20 @@ paths:
       responses:
         "200":
           description: EIP-712 signed Service Promise and typed-data digest
+  /v1/providers:
+    get:
+      operationId: listBondedProviders
+      summary: List providers ranked by bond, SLA and verified reliability
+      responses:
+        "200":
+          description: Honest LOCAL V2 provider registry used by the recovery judge flow
+  /v1/recovery/demo:
+    get:
+      operationId: getContinuityRecoveryDemo
+      summary: Inspect a verifier-signed recovery where the buyer pays once
+      responses:
+        "200":
+          description: Deterministic LOCAL Continuity Receipt and recovery economics
   /v1/verify:
     post:
       operationId: verifyRelayBondDelivery

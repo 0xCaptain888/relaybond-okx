@@ -12,6 +12,7 @@ import { ResilientFacilitatorClient } from "./resilient-facilitator.js";
 import { buildScenarioResponse, normalizeServiceInput, paymentContextFromVerifiedHeader } from "./paid-request.js";
 import { verifyDelivery, type VerificationInput } from "./verifier.js";
 import { APP_VERSION } from "./version.js";
+import { createContinuityEvidence } from "./continuity-simulator.js";
 
 export function createOkxApp() {
   const required = ["OKX_API_KEY", "OKX_SECRET_KEY", "OKX_PASSPHRASE", "X402_PAY_TO", "PROVIDER_SIGNING_KEY"] as const;
@@ -46,6 +47,25 @@ export function createOkxApp() {
   app.get("/v1/service/promise", async (_request, response, next) => {
     try {
       response.json({ servicePromise: await signPromise(provider, promise), promiseHash: await hashPromise(promise) });
+    } catch (error) {
+      next(error);
+    }
+  });
+  app.get("/v1/providers", async (_request, response, next) => {
+    try {
+      const evidence = await createContinuityEvidence();
+      response.json({
+        mode: evidence.mode,
+        notice: "LOCAL V2 recovery registry. Live provider publication remains separately labeled.",
+        providers: evidence.providers,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+  app.get("/v1/recovery/demo", async (_request, response, next) => {
+    try {
+      response.json(await createContinuityEvidence());
     } catch (error) {
       next(error);
     }

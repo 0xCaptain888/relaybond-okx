@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#090b0d" />
-    <title>RelayBond — Agent Service Warranties</title>
-    <meta name="description" content="Economic accountability for paid AI agent services on OKX AI and X Layer." />
+    <title>RelayBond — Reliability Clearing for AI Agents</title>
+    <meta name="description" content="Bonded provider routing and double-pay-free recovery for paid AI Agent services on OKX AI and X Layer." />
     <link rel="icon" href="./mark.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
     <link rel="stylesheet" href="./passport.css" />
@@ -23,15 +23,15 @@
     <main>
       <section class="hero">
         <div>
-          <p class="eyebrow">SERVICE WARRANTIES FOR THE AGENT ECONOMY</p>
-          <h1>The payment worked.<br /><em>The service must work too.</em></h1>
-          <p class="lede">RelayBond makes paid Agent providers put USDT0 behind machine-readable service promises. Bad delivery triggers an independently verified rebate.</p>
+          <p class="eyebrow">RELIABILITY CLEARING FOR THE AGENT ECONOMY</p>
+          <h1>The agent failed.<br /><em>The task still finishes.</em></h1>
+          <p class="lede">RelayBond routes paid tasks to bonded Agent providers, verifies delivery, and funds an independent backup from the failed provider’s bond—without charging the buyer twice.</p>
           <div class="hero-actions">
             <button id="probe">Probe live x402</button>
             <button id="verify-live" class="secondary">Recover live EIP-712 signer</button>
-            <button id="run" class="tertiary">Run breach lab</button>
+            <button id="run" class="tertiary">Run continuity recovery</button>
           </div>
-          <p class="honesty">LIVE: public x402 API. TESTNET: verified contract and the complete paid lifecycle — ACCEPTED → BREACH → REBATED. The service auto-paused after its bond fell below the 5 USD₮0 minimum.</p>
+          <p class="honesty">LIVE / TESTNET: x402 payment, signed delivery, verified breach and real buyer rebate. LOCAL V2: bonded-provider failover and double-pay-free recovery. V2 is tested but not yet deployed.</p>
         </div>
         <aside class="bond-card">
           <div class="card-head"><span>Provider Quality Bond</span><span id="bond-status" class="paused">AUTO-PAUSED</span></div>
@@ -50,40 +50,61 @@
         <article><span>PUBLIC API</span><strong>HTTP 402</strong><p>OKX exact-payment challenge on X Layer Testnet.</p><b class="ok">LIVE</b></article>
         <article><span>QUALITY BOND</span><strong><i id="live-bond">4.99</i> USD₮0</strong><p>Real bond after rebate; service is paused until rebonded.</p><b class="paused">AUTO-PAUSED</b></article>
         <article><span>AGENTIC WALLET</span><strong><i id="wallet-funding">0.02</i> USD₮0</strong><p>Current balance after four paid calls and one verified rebate.</p><b class="ok">TESTNET</b></article>
-        <article><span>PAID WARRANTY</span><strong id="paid-proof">ACCEPTED → BREACH → REBATED</strong><p><a href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a" target="_blank" rel="noreferrer">Breach ↗</a> · <a id="rebate-tx" href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x21c3e459c868efdb35da90b2976a73738347e90a38a591cff49e219101b7c03f" target="_blank" rel="noreferrer">Rebate ↗</a></p><b class="ok">REBATED</b></article>
+        <article><span>V1 PAID WARRANTY</span><strong id="paid-proof">ACCEPTED → BREACH → REBATED</strong><p><a href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a" target="_blank" rel="noreferrer">Breach ↗</a> · <a id="rebate-tx" href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x21c3e459c868efdb35da90b2976a73738347e90a38a591cff49e219101b7c03f" target="_blank" rel="noreferrer">Rebate ↗</a></p><b class="ok">TESTNET</b></article>
+      </section>
+
+      <section class="registry-shell" aria-label="Bonded provider registry">
+        <div class="section-heading">
+          <div><p class="eyebrow">BONDED PROVIDER REGISTRY · LOCAL V2</p><h2>Route by proof, not promises.</h2></div>
+          <span>2 ELIGIBLE PROVIDERS</span>
+        </div>
+        <div class="provider-grid">
+          <article>
+            <div><b>#1 PRIMARY</b><span>Atlas Market Agent</span></div>
+            <strong>95.0% <small>verified acceptance</small></strong>
+            <dl><div><dt>Bond</dt><dd>5.00 USD₮0</dd></div><div><dt>SLA</dt><dd>1.5s / 20s fresh</dd></div><div><dt>Price</dt><dd>0.01 USD₮0</dd></div></dl>
+          </article>
+          <article>
+            <div><b>#2 BACKUP</b><span>Harbor Quote Agent</span></div>
+            <strong>3 <small>verified recoveries</small></strong>
+            <dl><div><dt>Bond</dt><dd>3.00 USD₮0</dd></div><div><dt>SLA</dt><dd>1.8s / 25s fresh</dd></div><div><dt>Price</dt><dd>0.01 USD₮0</dd></div></dl>
+          </article>
+        </div>
       </section>
 
       <section class="flow-shell">
         <div class="section-heading">
-          <div><p class="eyebrow">DETERMINISTIC BREACH LAB</p><h2>One promise. Three provable outcomes.</h2></div>
+          <div><p class="eyebrow">CONTINUITY RECOVERY · LOCAL V2</p><h2>One buyer payment. A finished task.</h2></div>
           <span id="run-state">READY</span>
         </div>
         <div class="steps">
-          <article data-step="0"><b>01</b><div><h3>Promise signed</h3><p>EIP-712 SLA binds schema, freshness, latency, price and rebate.</p></div><span>WAITING</span></article>
-          <article data-step="1"><b>02</b><div><h3>Paid call delivered</h3><p>Correct quote arrives inside the promise window.</p></div><span>WAITING</span></article>
-          <article data-step="2"><b>03</b><div><h3>Empty response caught</h3><p>The provider signed <code>{}</code>. The verifier proves the breach.</p></div><span>WAITING</span></article>
-          <article data-step="3"><b>04</b><div><h3>Buyer rebated</h3><p>0.01 USDT0 moves from the seller’s Quality Bond.</p></div><span>WAITING</span></article>
+          <article data-step="0"><b>01</b><div><h3>Buyer pays once</h3><p>Primary provider receives the only buyer-funded 0.01 USD₮0 payment.</p></div><span>WAITING</span></article>
+          <article data-step="1"><b>02</b><div><h3>Stale result caught</h3><p>Signed delivery violates its 20-second freshness promise.</p></div><span>WAITING</span></article>
+          <article data-step="2"><b>03</b><div><h3>Bond funds recovery</h3><p>The failed provider’s Quality Bond becomes the backup budget.</p></div><span>WAITING</span></article>
+          <article data-step="3"><b>04</b><div><h3>Backup delivers</h3><p>An independent bonded provider returns a fresh signed result.</p></div><span>WAITING</span></article>
+          <article data-step="4"><b>05</b><div><h3>Task recovered</h3><p>Verifier signs one Continuity Receipt binding both deliveries.</p></div><span>WAITING</span></article>
         </div>
       </section>
 
       <section class="three-up">
-        <article><span>BEFORE PAYMENT</span><h3>Signed promise</h3><p>Buyers know the exact output contract and warranty before an Agent spends.</p></article>
-        <article><span>AFTER DELIVERY</span><h3>Portable evidence</h3><p>Request, response, payment and SLA hashes travel as one independently verifiable receipt.</p></article>
-        <article><span>WHEN IT FAILS</span><h3>Economic consequence</h3><p>A provider cannot collect indefinitely while returning empty, stale or malformed results.</p></article>
+        <article><span>BEFORE PAYMENT</span><h3>Proof-ranked routing</h3><p>Choose providers by signed SLA, bond coverage and verified delivery history.</p></article>
+        <article><span>WHEN IT FAILS</span><h3>Continuity, not just refunds</h3><p>The failed provider’s bond pays the backup instead of asking the buyer to spend again.</p></article>
+        <article><span>AFTER RECOVERY</span><h3>Portable Continuity Receipt</h3><p>One verifier-signed artifact binds the primary breach, backup delivery and recovery economics.</p></article>
       </section>
 
       <section class="passport">
-        <div><p class="eyebrow">LIVE RELIABILITY PASSPORT</p><h2>Trust becomes inspectable.</h2><p>Verified Testnet delivery history and capital coverage are separated from the local breach lab—not blended into marketing metrics.</p></div>
+        <div><p class="eyebrow">LIVE RELIABILITY PASSPORT</p><h2>Trust becomes inspectable.</h2><p>Verified Testnet delivery history and capital coverage are separated from the LOCAL V2 recovery run—not blended into marketing metrics.</p></div>
         <dl>
           <div><dt>Verified acceptance</dt><dd id="acceptance-rate">—</dd></div>
           <div><dt>Bond coverage</dt><dd id="bond-coverage">—</dd></div>
           <div><dt>Verified calls</dt><dd id="verified-calls">—</dd></div>
+          <div><dt>Buyer charges</dt><dd id="buyer-charges">1×</dd></div>
         </dl>
       </section>
 
       <section class="terminal">
-        <div class="terminal-top"><span></span><span></span><span></span><b>Live evidence console</b><button id="verify">Verify portable hash</button></div>
-        <pre id="output">$ Ready. Probe the live payment boundary, recover the provider signer, or run the deterministic breach lab.</pre>
+        <div class="terminal-top"><span></span><span></span><span></span><b>Continuity evidence console</b><button id="verify">Verify Continuity Receipt</button></div>
+        <pre id="output">$ Ready. Probe the live payment boundary, recover the provider signer, or run the double-pay-free recovery flow.</pre>
       </section>
     </main>
     <footer><span>Built for OKX Dev Day 2026 · Remote Build</span><span>Evidence first. Claims second.</span></footer>

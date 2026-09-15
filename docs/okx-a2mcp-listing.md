@@ -2,15 +2,15 @@
 
 ## Name
 
-RelayBond Market Data Warranty
+RelayBond Bonded Market Data
 
 ## Short description
 
-Purchase a fresh OKX market quote protected by a provider-funded USDT0 Quality Bond and receive a signed Delivery Receipt.
+Purchase a fresh OKX market quote from a proof-ranked bonded provider, with signed delivery evidence and a recovery path if the primary fails.
 
 ## Agent instruction
 
-Use this service when an autonomous workflow needs a fresh OKX instrument quote plus machine-verifiable delivery evidence. Send an OKX instrument ID such as `BTC-USDT`. On success, independently verify the returned ServicePromise and DeliveryReceipt. If the signed response is empty, stale, late or malformed, submit it to the RelayBond verifier for a rebate attestation.
+Use this service when an autonomous workflow needs a fresh OKX instrument quote plus machine-verifiable delivery evidence. Send an OKX instrument ID such as `BTC-USDT`. Inspect ranked providers before purchase, then independently verify the returned ServicePromise and DeliveryReceipt. If the primary response is empty, stale, late or malformed, request continuity recovery. V1 buyer rebates are TESTNET; backup recovery is currently LOCAL / TESTED.
 
 ## Endpoint
 
@@ -45,3 +45,4 @@ Use this service when an autonomous workflow needs a fresh OKX instrument quote 
 - [x] Keep the service price at 0.01 Testnet USD₮0 for judging.
 - [x] Confirm one Agentic Wallet paid retry settles, returns the delivery body and verifies `ACCEPTED`.
 - [ ] Publish the service in OKX AI / A2MCP after the paid proof exists.
+- [ ] After V2 deployment, update the listing from rebate warranty to live continuity recovery.

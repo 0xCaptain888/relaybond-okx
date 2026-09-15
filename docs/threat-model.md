@@ -20,6 +20,22 @@ The verifier evaluates the signed response against the signed ServicePromise. A 
 
 The vault records each request hash and settles it at most once.
 
+## Primary and backup collude
+
+V2 rejects identical provider identities and exposes both signed delivery histories in the Continuity Receipt. Identity separation is necessary but not sufficient against Sybil collusion; production evolution includes stake-weighted provider admission and correlated-failure scoring.
+
+## Backup inflates its recovery price
+
+The recovery amount cannot exceed the buyer's original service payment. Provider selection also filters backups above the buyer's declared budget before execution.
+
+## Buyer is charged again during failover
+
+The V2 recovery contract has no buyer debit path. It transfers the verifier-authorized recovery amount from the primary provider's bond to the backup. Unit and contract tests assert that buyer balance does not change.
+
+## Verifier binds unrelated deliveries
+
+The Continuity Receipt binds the original request hash, task ID, primary evidence hash, backup evidence hash, provider identities, amounts and terminal states. Browser verification recovers the EIP-712 signer and rechecks canonical evidence integrity.
+
 ## Malicious verifier
 
 The first release uses a named verifier for a crisp, demoable trust model. Production evolution is threshold verification, verifier staking and a challenge window. Subjective quality remains out of scope.
@@ -38,3 +54,4 @@ The competition deployment must use the documented USDT0 contract. Arbitrary fee
 - replacing OKX escrow or payment settlement;
 - guaranteeing market accuracy beyond machine-readable criteria;
 - pretending that a local simulation is a live transaction.
+- claiming the LOCAL / TESTED V2 recovery path is already deployed.

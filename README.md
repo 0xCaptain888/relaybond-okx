@@ -1,10 +1,10 @@
-# RelayBond
+# RelayBond v0.3.0
 
-> **Economic accountability for paid Agent services.**
+> **The reliability clearing layer for the Agent economy.**
 
 **[Live Judge Demo + API](https://relaybond-okx.vercel.app/)** · **[GitHub Pages mirror](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **[X Layer contract](https://www.okx.com/web3/explorer/xlayer-test/address/0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5)** · **Video:** pending
 
-RelayBond is the service-warranty layer for paid AI agents. Providers publish a signed, machine-readable SLA and deposit a USDT0 Quality Bond on X Layer. If a provider-signed response violates objective delivery terms, an independent verifier can trigger an automatic buyer rebate.
+RelayBond routes paid tasks to bonded Agent providers, verifies delivery and recovers failed work through an independent backup without charging the buyer twice. The deployed V1 proves real Testnet payment, breach verification and buyer rebate. The tested LOCAL V2 extends that mechanism from refund-only warranties to task continuity.
 
 ## The five-second problem
 
@@ -13,30 +13,32 @@ Payment: SUCCESS
 Response: {}
 ```
 
-x402 proves payment happened. It does not prove a useful service was delivered. RelayBond adds measurable promises, provider-authenticated delivery evidence and a financial consequence for breach.
+x402 proves payment happened. It does not prove a useful service was delivered—or that the task eventually finished. RelayBond adds proof-ranked routing, measurable promises, provider-authenticated delivery evidence and a bond-funded recovery path.
 
 ## Judge flow
 
 ```text
-Signed ServicePromise
-→ USDT0 Quality Bond
-→ x402 exact paid A2MCP call
-→ signed DeliveryReceipt
-→ deterministic SLA verification
-→ ACCEPTED or BREACH
-→ X Layer buyer rebate
+Rank bonded providers
+→ buyer pays primary once
+→ verify primary DeliveryReceipt
+→ BREACH routes bond budget to an independent backup
+→ verify backup DeliveryReceipt
+→ verifier signs one Continuity Receipt
+→ RECOVERED without a second buyer charge
 ```
 
-The public build exposes a live OKX payment boundary, browser-verifiable EIP-712 promises and the complete Testnet warranty lifecycle. `QualityBondVault` is deployed and source-verified on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. One real **0.01 Testnet USD₮0** Agentic Wallet delivery was independently verified `ACCEPTED`; a second was verified `BREACH` for stale data; transaction `0x21c3…03f` then returned **0.01 Testnet USD₮0** from the provider bond to the buyer. The bond is now **4.99 Testnet USD₮0**, and the contract automatically paused the service because it fell below the 5.00 minimum.
+The public build exposes a live OKX payment boundary, browser-verifiable EIP-712 promises and the complete Testnet V1 warranty lifecycle. `QualityBondVault` is deployed and source-verified on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. One real **0.01 Testnet USD₮0** Agentic Wallet delivery was independently verified `ACCEPTED`; a second was verified `BREACH` for stale data; transaction `0x21c3…03f` then returned **0.01 Testnet USD₮0** from the provider bond to the buyer.
+
+The same demo now includes a deterministic LOCAL V2 Judge Run: Atlas fails its signed freshness SLA, Harbor independently completes the task, and a verifier-signed Continuity Receipt proves the buyer paid exactly once while the failed provider bond funded recovery. `RecoveryBondVaultV2` and its replay, authorization and balance invariants are contract-tested, but **V2 is not yet deployed**.
 
 ## Why this is different
 
-- Buyer-side policy products decide whether an Agent may pay.
+- Buyer policy products decide whether an Agent may pay.
 - Escrow products decide when settlement is released.
-- Orchestration products choose or retry providers.
-- RelayBond makes the **seller economically responsible after an immediate paid service call**.
+- Orchestrators retry providers but usually make the buyer pay again.
+- RelayBond ranks providers by verifiable history, makes the seller economically responsible and converts a breached bond into a recovery budget.
 
-It is the evidence, SLA and quality-guarantee layer above settlement—not a replacement for OKX payment infrastructure.
+It is the reliability clearing layer above OKX settlement: one portable receipt binds payment, failure, backup delivery and who funded recovery.
 
 ## Run locally
 
@@ -47,6 +49,14 @@ npm install
 npm run check
 npm run serve
 ```
+
+Run only the V2 continuity path:
+
+```bash
+npm run demo:continuity
+```
+
+The generated [`evidence/continuity-judge-run.json`](./evidence/continuity-judge-run.json) contains both provider identities, both signed deliveries, the verifier-signed Continuity Receipt, recovery economics, a canonical Keccak evidence hash and portable SHA-256 integrity.
 
 Create isolated Testnet identities without exposing private keys:
 
@@ -85,9 +95,13 @@ Public read-only integration endpoints:
 ```text
 GET  /health
 GET  /v1/service/promise
+GET  /v1/providers
+GET  /v1/recovery/demo
 POST /v1/verify
 POST /v1/provider/quote
 ```
+
+`/v1/providers` and `/v1/recovery/demo` are explicitly labeled `LOCAL V2`; the production API exposes them for judge inspection without claiming an onchain V2 settlement.
 
 The provider route never trusts a caller-supplied buyer address. After the facilitator accepts the payment authorization, RelayBond derives the payer from that verified authorization, checks its token, amount and recipient against the advertised terms, and binds the payer plus normalized request input into the signed Delivery Receipt. The buyer runner independently confirms the exact USD₮0 `Transfer` event on X Layer even when the facilitator's first receipt is still pending.
 
@@ -138,6 +152,10 @@ npm run rebate:live-breach -- --confirm
 ## Repository map
 
 - [`contracts/QualityBondVault.sol`](./contracts/QualityBondVault.sol) — seller-funded warranty vault, delayed withdrawals and replay-safe rebates.
+- [`contracts/RecoveryBondVaultV2.sol`](./contracts/RecoveryBondVaultV2.sol) — tested V2 settlement that pays an independent backup from the failed provider bond without changing the buyer balance.
+- [`src/registry.ts`](./src/registry.ts) — filters and ranks bonded providers by SLA, coverage and verified history.
+- [`src/continuity.ts`](./src/continuity.ts) — Continuity Receipt construction and double-pay-free economic invariants.
+- [`src/continuity-simulator.ts`](./src/continuity-simulator.ts) — deterministic primary-breach → backup-delivery → recovery evidence.
 - [`src/signing.ts`](./src/signing.ts) — EIP-712 ServicePromise and DeliveryReceipt signatures.
 - [`src/verifier.ts`](./src/verifier.ts) — independent objective SLA verifier.
 - [`src/payment.ts`](./src/payment.ts) — x402 `exact` payment challenge.
@@ -190,6 +208,11 @@ npm run rebate:live-breach -- --confirm
 | Real paid delivery verification | TESTNET / ACCEPTED | request, OKX result, provider signatures, exact Transfer and 9/9 SLA checks |
 | Real paid breach verification | TESTNET / BREACH | stale paid quote, exact Transfer, provider signatures and `freshnessMet=false` |
 | Real X Layer breach rebate | TESTNET / REBATED | exact 0.01 USD₮0 vault-to-buyer transfer and `BreachRebated` event, tx `0x21c3…03f` |
+| Bonded Provider Registry | LOCAL / TESTED | deterministic eligibility and ranking tests |
+| Verifier-signed Continuity Receipt | LOCAL / TESTED | browser-recovers verifier and checks canonical evidence |
+| Double-pay-free backup recovery | LOCAL / RECOVERED | primary `BREACH`, backup `ACCEPTED`, buyer charged once |
+| RecoveryBondVaultV2 contract | LOCAL / TESTED | backup authorization, replay protection and balance invariants |
+| RecoveryBondVaultV2 deployment | PENDING | no V2 Testnet deployment is claimed |
 
 See the [prior-work disclosure](./docs/prior-work-disclosure.md) and [threat model](./docs/threat-model.md).
 Production dependencies currently pass [`npm run security:audit`](./SECURITY.md) with zero known vulnerabilities; legacy Hardhat advisories are isolated to the local development toolchain.

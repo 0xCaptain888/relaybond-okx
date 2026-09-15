@@ -1,6 +1,7 @@
 import { keccak256, stringToHex, type Hex } from "viem";
 import { hashPromise, recoverPromiseSigner, recoverReceiptSigner } from "./signing.js";
-import type { DeliveryReceipt, ServicePromise, ServiceRequest, Signed } from "./types.js";
+import { recoverContinuitySigner } from "./signing.js";
+import type { ContinuityEvidence, DeliveryReceipt, ServicePromise, ServiceRequest, Signed } from "./types.js";
 
 function normalize(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(normalize);
@@ -78,14 +79,44 @@ function verifyPaidEvidenceHash(evidence: {
   };
 }
 
+async function verifyContinuityEvidence(evidence: ContinuityEvidence) {
+  const signer = await recoverContinuitySigner(
+    { chainId: evidence.chainId, vault: evidence.vault },
+    evidence.continuityReceipt,
+  );
+  const receipt = evidence.continuityReceipt.payload;
+  const economics = {
+    buyerPaidOnce: receipt.buyerPaidAtomic === receipt.primaryPaymentAtomic,
+    recoveryCoveredByBond: BigInt(receipt.recoveryPaidFromBondAtomic) <= BigInt(receipt.primaryPaymentAtomic),
+    independentProviders: receipt.primaryProvider.toLowerCase() !== receipt.backupProvider.toLowerCase(),
+    statusesBound: receipt.primaryStatus === "BREACH"
+      && receipt.backupStatus === "ACCEPTED"
+      && receipt.finalStatus === "RECOVERED",
+  };
+  const { evidenceHash, portableIntegrity, ...unsigned } = evidence;
+  const evidenceHashPassed = hashCanonicalBrowser(unsigned) === evidenceHash;
+  return {
+    passed:
+      signer.toLowerCase() === evidence.verifier.toLowerCase()
+      && Object.values(economics).every(Boolean)
+      && evidenceHashPassed,
+    signer,
+    expectedVerifier: evidence.verifier,
+    economics,
+    evidenceHashPassed,
+    portableHash: portableIntegrity.hash,
+  };
+}
+
 declare global {
   interface Window {
     RelayBondVerifier: {
       verifyPromiseEvidence: typeof verifyPromiseEvidence;
       verifyPaidDelivery: typeof verifyPaidDelivery;
       verifyPaidEvidenceHash: typeof verifyPaidEvidenceHash;
+      verifyContinuityEvidence: typeof verifyContinuityEvidence;
     };
   }
 }
 
-window.RelayBondVerifier = { verifyPromiseEvidence, verifyPaidDelivery, verifyPaidEvidenceHash };
+window.RelayBondVerifier = { verifyPromiseEvidence, verifyPaidDelivery, verifyPaidEvidenceHash, verifyContinuityEvidence };

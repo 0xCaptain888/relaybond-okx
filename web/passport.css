@@ -12,7 +12,7 @@
 
 .passport h2 { font-size: 28px; margin: 0 0 10px; }
 .passport p:not(.eyebrow) { color: var(--muted); max-width: 540px; font-size: 13px; line-height: 1.6; }
-.passport dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; }
+.passport dl { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0; }
 .passport dl div { padding: 18px 12px; background: #0a0d0b; border: 1px solid #25301d; border-radius: 9px; }
 .passport dt { font-size: 10px; color: var(--muted); }
 .passport dd { font-size: 22px; font-weight: 800; margin: 9px 0 0; color: var(--lime); }

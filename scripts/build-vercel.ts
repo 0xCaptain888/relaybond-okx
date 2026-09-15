@@ -6,6 +6,7 @@ await rm(output, { recursive: true, force: true });
 await mkdir(`${output}/evidence`, { recursive: true });
 await cp("web", output, { recursive: true });
 await cp("evidence/judge-run.json", `${output}/evidence/judge-run.json`);
+await cp("evidence/continuity-judge-run.json", `${output}/evidence/continuity-judge-run.json`);
 await cp("evidence/reliability-passport.json", `${output}/evidence/reliability-passport.json`);
 await cp("evidence/live", `${output}/evidence/live`, { recursive: true });
 

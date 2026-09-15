@@ -5,7 +5,7 @@ import {
   type Hex,
   type LocalAccount,
 } from "viem";
-import type { DeliveryReceipt, ServicePromise, Signed } from "./types.js";
+import type { ContinuityReceipt, DeliveryReceipt, ServicePromise, Signed } from "./types.js";
 
 export const promiseTypes = {
   ServicePromise: [
@@ -33,6 +33,26 @@ export const receiptTypes = {
     { name: "deliveredAt", type: "uint256" },
     { name: "servicePromiseHash", type: "bytes32" },
     { name: "provider", type: "address" },
+  ],
+} as const;
+
+export const continuityTypes = {
+  ContinuityReceipt: [
+    { name: "taskId", type: "bytes32" },
+    { name: "requestHash", type: "bytes32" },
+    { name: "primaryProvider", type: "address" },
+    { name: "backupProvider", type: "address" },
+    { name: "primaryPaymentAtomic", type: "uint256" },
+    { name: "buyerPaidAtomic", type: "uint256" },
+    { name: "recoveryPaidFromBondAtomic", type: "uint256" },
+    { name: "primaryStatusHash", type: "bytes32" },
+    { name: "backupStatusHash", type: "bytes32" },
+    { name: "finalStatusHash", type: "bytes32" },
+    { name: "breachReasonHash", type: "bytes32" },
+    { name: "primaryEvidenceHash", type: "bytes32" },
+    { name: "recoveryEvidenceHash", type: "bytes32" },
+    { name: "completedAt", type: "uint256" },
+    { name: "verifier", type: "address" },
   ],
 } as const;
 
@@ -79,6 +99,26 @@ export async function receiptMessage(receipt: DeliveryReceipt) {
   } as const;
 }
 
+export async function continuityMessage(receipt: ContinuityReceipt) {
+  return {
+    taskId: receipt.taskId,
+    requestHash: receipt.requestHash,
+    primaryProvider: receipt.primaryProvider,
+    backupProvider: receipt.backupProvider,
+    primaryPaymentAtomic: BigInt(receipt.primaryPaymentAtomic),
+    buyerPaidAtomic: BigInt(receipt.buyerPaidAtomic),
+    recoveryPaidFromBondAtomic: BigInt(receipt.recoveryPaidFromBondAtomic),
+    primaryStatusHash: await sha(receipt.primaryStatus),
+    backupStatusHash: await sha(receipt.backupStatus),
+    finalStatusHash: await sha(receipt.finalStatus),
+    breachReasonHash: await sha(receipt.breachReason),
+    primaryEvidenceHash: receipt.primaryEvidenceHash,
+    recoveryEvidenceHash: receipt.recoveryEvidenceHash,
+    completedAt: BigInt(receipt.completedAt),
+    verifier: receipt.verifier,
+  } as const;
+}
+
 export async function signPromise(
   account: LocalAccount,
   promise: ServicePromise,
@@ -110,6 +150,22 @@ export async function signReceipt(
   };
 }
 
+export async function signContinuityReceipt(
+  account: LocalAccount,
+  context: { chainId: number; vault: Address },
+  receipt: ContinuityReceipt,
+): Promise<Signed<ContinuityReceipt>> {
+  return {
+    payload: receipt,
+    signature: await account.signTypedData({
+      domain: domain(context.chainId, context.vault),
+      types: continuityTypes,
+      primaryType: "ContinuityReceipt",
+      message: await continuityMessage(receipt),
+    }),
+  };
+}
+
 export async function recoverPromiseSigner(signed: Signed<ServicePromise>): Promise<Address> {
   const promise = signed.payload;
   return recoverTypedDataAddress({
@@ -130,6 +186,19 @@ export async function recoverReceiptSigner(
     types: receiptTypes,
     primaryType: "DeliveryReceipt",
     message: await receiptMessage(signed.payload),
+    signature: signed.signature,
+  });
+}
+
+export async function recoverContinuitySigner(
+  context: { chainId: number; vault: Address },
+  signed: Signed<ContinuityReceipt>,
+): Promise<Address> {
+  return recoverTypedDataAddress({
+    domain: domain(context.chainId, context.vault),
+    types: continuityTypes,
+    primaryType: "ContinuityReceipt",
+    message: await continuityMessage(signed.payload),
     signature: signed.signature,
   });
 }
