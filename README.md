@@ -105,6 +105,7 @@ The provider route returns a standards-shaped HTTP `402` challenge. If a payment
 | Real X Layer bond and rebate | PENDING | must be completed before submission |
 
 See the [prior-work disclosure](./docs/prior-work-disclosure.md) and [threat model](./docs/threat-model.md).
+Production dependencies currently pass [`npm run security:audit`](./SECURITY.md) with zero known vulnerabilities; legacy Hardhat advisories are isolated to the local development toolchain.
 
 ## Competition track
 
