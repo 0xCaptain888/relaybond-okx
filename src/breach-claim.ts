@@ -6,7 +6,8 @@ export type PaidBreachEvidence = {
   payment: {
     status: unknown;
     transactionHash: unknown;
-    receipt: Record<string, unknown>;
+    facilitatorReceipt?: Record<string, unknown>;
+    onchainSettlement: { status: unknown };
   };
   delivery: {
     request: ServiceRequest;
@@ -18,7 +19,7 @@ export type PaidBreachEvidence = {
 };
 
 export async function buildBreachClaim(evidence: PaidBreachEvidence) {
-  if (evidence.payment.status !== "success" || evidence.payment.receipt?.status !== "success") {
+  if (evidence.payment.status !== "success" || evidence.payment.onchainSettlement?.status !== "success") {
     throw new Error("A rebate requires a final-success paid settlement.");
   }
   if (evidence.verification.status !== "BREACH") throw new Error("Delivery is not classified as BREACH.");

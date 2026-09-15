@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { hashCanonical, sha256Canonical } from "../src/canonical.js";
-import { extractMerchantDelivery, requireFinalSettlement, runOnchainOs } from "../src/onchainos-buyer.js";
+import { extractMerchantDelivery, runOnchainOs } from "../src/onchainos-buyer.js";
+import { settlementTransaction, verifyOnchainSettlement } from "../src/settlement.js";
 import { verifyDelivery } from "../src/verifier.js";
 import type { DeliveryReceipt, ServicePromise, ServiceRequest, Signed } from "../src/types.js";
 
@@ -57,8 +58,18 @@ if (command === "pay") {
     "--yes",
   ]);
   const data = paid.data || {};
-  const settlement = requireFinalSettlement(data);
+  if (data.status !== "success") throw new Error(`Payment request did not succeed: ${JSON.stringify(data.error || data.status)}`);
   const delivery = extractMerchantDelivery(data) as Delivery;
+  const transactionHash = settlementTransaction(data);
+  const promise = delivery.servicePromise.payload;
+  const settlement = await verifyOnchainSettlement({
+    rpcUrl: process.env.XLAYER_TESTNET_RPC_URL || "https://testrpc.xlayer.tech/terigon",
+    transactionHash,
+    token: (process.env.USDT0_ADDRESS || "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c") as `0x${string}`,
+    payer: delivery.request.buyer,
+    payTo: (process.env.X402_PAY_TO || "0x917b04d30478E9405445CfF208eaA9d61e2EC44d") as `0x${string}`,
+    amountAtomic: promise.priceAtomic,
+  });
   const verification = await verifyDelivery({
     promise: delivery.servicePromise,
     request: delivery.request,
@@ -77,7 +88,8 @@ if (command === "pay") {
     payment: {
       status: data.status,
       transactionHash: settlement.transactionHash,
-      receipt: settlement.receipt,
+      facilitatorReceipt: data.decodedReceipt,
+      onchainSettlement: settlement,
     },
     delivery,
     verification,

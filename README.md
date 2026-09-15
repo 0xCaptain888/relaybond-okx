@@ -89,7 +89,7 @@ POST /v1/verify
 POST /v1/provider/quote
 ```
 
-The provider route never trusts a caller-supplied buyer address. After the facilitator accepts the payment authorization, RelayBond derives the payer from that verified authorization, checks its token, amount and recipient against the advertised terms, and binds the payer plus normalized request input into the signed Delivery Receipt.
+The provider route never trusts a caller-supplied buyer address. After the facilitator accepts the payment authorization, RelayBond derives the payer from that verified authorization, checks its token, amount and recipient against the advertised terms, and binds the payer plus normalized request input into the signed Delivery Receipt. The buyer runner independently confirms the exact USD₮0 `Transfer` event on X Layer even when the facilitator's first receipt is still pending.
 
 Safely inspect the exact payment terms without signing or moving funds:
 
@@ -125,6 +125,7 @@ npm run rebate:live-breach -- --confirm
 - USDT0 approval: [`0x324f…2395`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x324f21c98650608e46b317dfcfa7175fe5227c7a618fdb8c56bb733dc64e2395)
 - 5 Testnet USDT0 bond deposit: [`0xa423…6694`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xa4231e43f171c43da45a9b3412af1a2992ea23d4fd7c1e4fe13da68136d36694)
 - Agentic Wallet funding: `0.05 Testnet USD₮0`, transaction `0x2e83c5fd8e19bc5f813c662ca9dd2dea30abafacba968341b7080300b6352eaf`
+- First Agentic Wallet settlement: `0.01 Testnet USD₮0`, transaction `0x2a9b32e353a93179f6f811b687051382ce9de782c9fd4f3bc3058b0c9d2bd125`. Settlement is independently confirmed; the merchant delivery body was not persisted by the previous runner, so this is deliberately **not** labeled `ACCEPTED`.
 - Verified source: `QualityBondVault`, Solidity `0.8.28`, optimizer `200`, EVM `paris`
 - Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
 
@@ -179,7 +180,8 @@ npm run rebate:live-breach -- --confirm
 | Agentic Wallet funding | TESTNET | 0.05 USD₮0, tx `0x2e83…2eaf` |
 | Reliability Passport | LOCAL | derived from signed evidence, not user reviews |
 | Real OKX AI A2MCP listing | PENDING | must be completed before submission |
-| Real x402 payment | PENDING | must be completed before submission |
+| Real x402 settlement | TESTNET | 0.01 USD₮0 paid by Agentic Wallet, tx `0x2a9b…d125` |
+| Real paid delivery verification | PENDING | first settlement succeeded but the previous runner did not persist its delivery body |
 | Real X Layer breach rebate | PENDING | requires a paid bad delivery + verifier attestation |
 
 See the [prior-work disclosure](./docs/prior-work-disclosure.md) and [threat model](./docs/threat-model.md).

@@ -1,0 +1,19 @@
+{
+  "evidenceVersion": "1",
+  "mode": "OKX_AGENTIC_WALLET_XLAYER_TESTNET",
+  "status": "SETTLEMENT_CONFIRMED_DELIVERY_NOT_CAPTURED",
+  "honestyNote": "The payment settled successfully, but the v0.2.0 buyer runner exited when the initial facilitator receipt was pending and did not persist the merchant delivery body. This artifact proves settlement only and is not claimed as ACCEPTED delivery evidence.",
+  "network": "eip155:1952",
+  "token": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+  "payer": "0xcb83af485c066add3eca9041a78ea7c14e3f15f4",
+  "payTo": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+  "amountAtomic": "10000",
+  "amountDisplay": "0.01 USD₮0",
+  "transactionHash": "0x2a9b32e353a93179f6f811b687051382ce9de782c9fd4f3bc3058b0c9d2bd125",
+  "blockNumber": "41017435",
+  "facilitatorFinalStatus": "success",
+  "onchainStatus": "success",
+  "payerBalanceAfterAtomic": "40000",
+  "providerBalanceAfterAtomic": "4960000",
+  "recordedAt": "2026-09-15T12:48:00.000Z"
+}

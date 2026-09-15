@@ -146,7 +146,12 @@ async function loadLiveStatus() {
   try {
     await loadLiveEvidence("agentic-wallet-paid-delivery");
     paidProof.textContent = "Evidence published";
-  } catch {}
+  } catch {
+    try {
+      const settlement = await loadLiveEvidence("agentic-wallet-payment-settlement");
+      if (settlement.onchainStatus === "success") paidProof.textContent = "Settlement confirmed";
+    } catch {}
+  }
 }
 
 async function verifyEvidence() {

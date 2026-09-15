@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { extractMerchantDelivery, requireFinalSettlement } from "../src/onchainos-buyer.js";
+import { settlementTransaction } from "../src/settlement.js";
 
 test("OnchainOS result extraction rejects a missing merchant delivery", () => {
   assert.throws(() => extractMerchantDelivery({ result: "not-an-object" }), /does not contain/);
@@ -29,4 +30,12 @@ test("rejects a merchant response when the later settlement failed", () => {
     txHash: `0x${"22".repeat(32)}`,
     decodedReceipt: { status: "failed", errorReason: "on_chain_failed" },
   }), /not final-success/);
+});
+
+test("continues a pending facilitator response using its onchain transaction", () => {
+  const transaction = `0x${"33".repeat(32)}`;
+  assert.equal(settlementTransaction({
+    status: "success",
+    decodedReceipt: { status: "pending", transaction },
+  }), transaction);
 });

@@ -7,7 +7,7 @@ test("builds a replay-safe rebate claim only from paid attributable breach evide
   const judge = await createJudgeEvidence();
   const scenario = judge.scenarios.find((item) => item.name === "empty-paid-response")!;
   const claim = await buildBreachClaim({
-    payment: { status: "success", transactionHash: `0x${"11".repeat(32)}`, receipt: { status: "success" } },
+    payment: { status: "success", transactionHash: `0x${"11".repeat(32)}`, onchainSettlement: { status: "success" } },
     delivery: {
       request: scenario.request,
       result: scenario.response,
@@ -25,7 +25,7 @@ test("refuses a rebate when provider attribution is broken", async () => {
   const judge = await createJudgeEvidence();
   const scenario = judge.scenarios.find((item) => item.name === "empty-paid-response")!;
   await assert.rejects(() => buildBreachClaim({
-    payment: { status: "success", transactionHash: `0x${"11".repeat(32)}`, receipt: { status: "success" } },
+    payment: { status: "success", transactionHash: `0x${"11".repeat(32)}`, onchainSettlement: { status: "success" } },
     delivery: {
       request: scenario.request,
       result: scenario.response,
