@@ -10,6 +10,7 @@
 - [x] Register the endpoint-bound Service Promise and deposit a real 5 Testnet USDT0 Quality Bond.
 - [ ] Publish the provider as an OKX AI A2MCP service.
 - [x] Return the official x402 `exact` payment challenge from the public Vercel API.
+- [x] Ship a guarded Buyer Runner whose default mode only inspects the 402 challenge.
 - [ ] Pay once from an OKX Agentic Wallet and capture the payment identifier.
 - [ ] Return one correct signed response and verify `ACCEPTED`.
 - [ ] Return one signed empty/stale response and verify `BREACH`.

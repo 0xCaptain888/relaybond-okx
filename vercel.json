@@ -7,6 +7,9 @@
     { "source": "/v1/:path*", "destination": "/api/index" }
   ],
   "functions": {
-    "api/index.ts": { "maxDuration": 30 }
+    "api/index.ts": {
+      "maxDuration": 30,
+      "regions": ["sin1"]
+    }
   }
 }

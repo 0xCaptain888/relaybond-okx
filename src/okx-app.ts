@@ -8,6 +8,7 @@ import { hashPromise, signPromise, signReceipt } from "./signing.js";
 import type { ServiceRequest } from "./types.js";
 import { fetchOkxTicker } from "./okx-market.js";
 import { configuredServicePromise } from "./service-promise.js";
+import { ResilientFacilitatorClient } from "./resilient-facilitator.js";
 
 export function createOkxApp() {
   const required = ["OKX_API_KEY", "OKX_SECRET_KEY", "OKX_PASSPHRASE", "X402_PAY_TO", "PROVIDER_SIGNING_KEY"] as const;
@@ -18,18 +19,27 @@ export function createOkxApp() {
   const payTo = process.env.X402_PAY_TO!;
   const provider = privateKeyToAccount(process.env.PROVIDER_SIGNING_KEY as `0x${string}`);
   const promise = configuredServicePromise();
-  const facilitatorClient = new OKXFacilitatorClient({
+  const facilitatorClient = new ResilientFacilitatorClient(new OKXFacilitatorClient({
     apiKey: process.env.OKX_API_KEY!,
     secretKey: process.env.OKX_SECRET_KEY!,
     passphrase: process.env.OKX_PASSPHRASE!,
-  });
+  }));
   const resourceServer = new x402ResourceServer(facilitatorClient);
   resourceServer.register(network, new ExactEvmScheme());
 
   const app = express();
+  app.set("trust proxy", true);
   app.use(express.json({ limit: "32kb" }));
   app.get("/health", (_request, response) => {
     response.json({ status: "ok", mode: "OKX_OFFICIAL_X402", network, serviceId: promise.serviceId, provider: provider.address, vault: promise.vault });
+  });
+  app.use((request, _response, next) => {
+    // Vercel rewrites may expose the captured wildcard as an internal `path`
+    // query parameter. It must not become part of the buyer-signed resource URL.
+    if (request.path === "/v1/provider/quote" && Object.hasOwn(request.query, "path")) {
+      request.originalUrl = request.path;
+    }
+    next();
   });
   app.use(paymentMiddleware({
     "POST /v1/provider/quote": {

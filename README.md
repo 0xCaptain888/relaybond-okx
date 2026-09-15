@@ -80,6 +80,14 @@ curl -i -X POST http://localhost:8787/v1/provider/quote \
 
 The production endpoint is live at `https://relaybond-okx.vercel.app/v1/provider/quote`. An unauthenticated request returns HTTP `402` plus the official `PAYMENT-REQUIRED` header from the OKX x402 SDK. No paid call is claimed until an OKX Agentic Wallet payment is completed and captured.
 
+Safely inspect the exact payment terms without signing or moving funds:
+
+```bash
+npm run buyer:live -- --symbol BTC-USDT
+```
+
+The runner validates the network, token, payee and atomic amount ceiling. A payment is impossible unless the operator explicitly adds `--pay` and supplies a dedicated `BUYER_PRIVATE_KEY`; it never falls back to the deployer, provider or verifier key. The local-key signer is a testnet fallback while the preferred OKX Agentic Wallet adapter is completed.
+
 ## Live X Layer evidence
 
 - Service Promise: `0xca605c666adb1e0d9239634c6131509bbc66ec06e2333af49f1c5afccdeaa73c`
