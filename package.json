@@ -21,6 +21,7 @@
     "deployment:configure": "node --import tsx scripts/set-deployment-env.ts",
     "promise:generate": "node --env-file-if-exists=.env --import tsx scripts/generate-service-promise.ts",
     "buyer:live": "node --env-file-if-exists=.env --import tsx scripts/run-live-buyer.ts",
+    "buyer:okx": "node --env-file-if-exists=.env --import tsx scripts/run-onchainos-buyer.ts",
     "secrets:okx": "node --import tsx scripts/secure-okx-config.ts",
     "secrets:status": "node --env-file-if-exists=.env --import tsx scripts/secret-status.ts",
     "typecheck": "tsc --noEmit",

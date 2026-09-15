@@ -86,7 +86,17 @@ Safely inspect the exact payment terms without signing or moving funds:
 npm run buyer:live -- --symbol BTC-USDT
 ```
 
-The runner validates the network, token, payee and atomic amount ceiling. A payment is impossible unless the operator explicitly adds `--pay` and supplies a dedicated `BUYER_PRIVATE_KEY`; it never falls back to the deployer, provider or verifier key. The local-key signer is a testnet fallback while the preferred OKX Agentic Wallet adapter is completed.
+The runner validates the network, token, payee and atomic amount ceiling. A payment is impossible unless the operator explicitly adds `--pay` and supplies a dedicated `BUYER_PRIVATE_KEY`; it never falls back to the deployer, provider or verifier key. This local-key signer is retained only as a transparent testnet fallback.
+
+The preferred two-phase Agentic Wallet path delegates custody, signing, request replay and settlement to the official OnchainOS TEE wallet:
+
+```bash
+npm run buyer:okx -- quote --symbol BTC-USDT
+# review network, token, amount, balance and payee
+npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --yes
+```
+
+The quote command never signs. The pay command requires the operator's explicit `--yes`, then RelayBond independently checks the returned Service Promise and Delivery Receipt before writing portable evidence.
 
 ## Live X Layer evidence
 
