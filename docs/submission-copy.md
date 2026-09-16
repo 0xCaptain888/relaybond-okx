@@ -24,3 +24,7 @@ Response: {}
 ```
 
 “The payment worked. The provider failed. RelayBond uses its bond to make sure the task still finishes.”
+
+## Development-period disclosure
+
+RelayBond began as a feasibility prototype on September 15, 2026, before the listed September 17 Remote Build start. That pre-build phase validated the compatibility of OKX x402, Agentic Wallet, signed delivery evidence and X Layer Quality Bonds. The complete baseline is preserved publicly at tag `v0.3.0` (`aa4bc8d`) and is not claimed as official-period work. The event-period submission will identify only post-start commits and evidence as judged development, focusing on live multi-provider routing, OKX AI/A2MCP integration and deployed bond-funded backup recovery.
