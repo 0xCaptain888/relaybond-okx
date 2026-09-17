@@ -1,10 +1,12 @@
-# RelayBond v0.4.0-rc.1
+# RelayBond v0.4.0-rc.2
 
 > **The reliability clearing layer for the Agent economy.**
 
-**[Live Judge Demo + API](https://relaybond-okx.vercel.app/)** · **[GitHub Pages mirror](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **[V2 X Layer contract](https://www.okx.com/web3/explorer/xlayer-test/address/0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f)** · **Video:** pending
+**[Live Judge Demo + API](https://relaybond-okx.vercel.app/)** · **[GitHub Pages mirror](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **[V2 X Layer contract](https://www.okx.com/web3/explorer/xlayer-test/address/0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f)** · **OKX.AI Agent `#13776` — review submitted**
 
 RelayBond routes paid tasks to bonded Agent providers, verifies delivery and recovers failed work through an independent backup without charging the buyer twice. The deployed V1 proves real Testnet payment, breach verification and buyer rebate. V2 now proves the complete live path on X Layer Testnet: paid Primary breach, authenticated independent Backup delivery, verifier-signed `RECOVERED`, and a real bond-funded Backup settlement with the buyer balance unchanged.
+
+The RelayBond ASP identity and free `RelayBond Recovery Proof` A2MCP service were registered as OKX.AI Agent `#13776` and submitted for Marketplace review on September 17, 2026. The public `GET /v1/official/settlement` endpoint returns the completed settlement, before/after balances and seven verification checks.
 
 ## Official Build Delta — September 17, 2026 onward
 
@@ -259,7 +261,7 @@ npm run rebate:live-breach -- --confirm
 | Browser EIP-712 signer recovery | LIVE | recovers the provider and Promise digest without server trust |
 | Agentic Wallet funding | TESTNET | 0.05 USD₮0, tx `0x2e83…2eaf` |
 | Reliability Passport | TESTNET | 2 verified paid calls, 50% acceptance, 0.01 rebated and 499-call bond coverage |
-| Real OKX AI A2MCP listing | PENDING | must be completed before submission |
+| Real OKX AI A2MCP listing | REVIEW SUBMITTED | ASP Agent `#13776`; free `GET /v1/official/settlement` service passed listing QA and is under OKX.AI review |
 | Real x402 settlement | TESTNET | one complete accepted delivery and one complete breached delivery, each paid 0.01 USD₮0 |
 | Real paid delivery verification | TESTNET / ACCEPTED | request, OKX result, provider signatures, exact Transfer and 9/9 SLA checks |
 | Real paid breach verification | TESTNET / BREACH | stale paid quote, exact Transfer, provider signatures and `freshnessMet=false` |

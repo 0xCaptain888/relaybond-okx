@@ -8,7 +8,9 @@
 - [x] Deploy `QualityBondVault` and record the public deployment transaction.
 - [x] Verify the deployed `QualityBondVault` source on the X Layer explorer.
 - [x] Register the endpoint-bound Service Promise and deposit a real 5 Testnet USDT0 Quality Bond.
-- [ ] Publish the provider as an OKX AI A2MCP service.
+- [x] Register RelayBond as OKX.AI ASP Agent `#13776` with the free `RelayBond Recovery Proof` A2MCP service.
+- [x] Submit Agent `#13776` for OKX.AI Marketplace review on September 17, 2026.
+- [ ] Receive OKX.AI Marketplace approval; this is now an external review dependency.
 - [x] Return the official x402 `exact` payment challenge from the public Vercel API.
 - [x] Ship a guarded Buyer Runner whose default mode only inspects the 402 challenge.
 - [x] Add a two-phase OKX Agentic Wallet adapter (`quote` first, explicit `pay` second).
@@ -32,7 +34,7 @@
 - [x] RecoveryBondVaultV2 contract tests cover authorization, replay protection and buyer balance invariance.
 - [x] Deploy and source-verify RecoveryBondVaultV2 on X Layer Testnet.
 - [x] Register and bond independent Providers with six independently verified Testnet receipts.
-- [ ] Execute one real paid V2 breach and backup settlement.
+- [x] Execute one real paid V2 breach and backup settlement.
 - [x] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.
 - [x] Guarded V2 settlement executor rejects LOCAL evidence, simulates before broadcast and verifies buyer balance invariance.
 - [x] LIVE coordinator bridge re-verifies paid Primary settlement, onchain Provider bonds and HTTPS Backup delivery before emitting settlement evidence.

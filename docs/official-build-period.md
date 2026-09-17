@@ -45,7 +45,7 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 - [x] Deploy and source-verify `RecoveryBondVaultV2` after the official start.
 - [x] Register and bond independent primary and backup providers.
 - [x] Deploy the bonded Primary and authenticated Backup HTTPS Provider services.
-- [ ] Publish the provider service in the OKX AI/A2MCP marketplace.
+- [x] Register RelayBond as OKX.AI ASP Agent `#13776` with a validated free A2MCP Recovery Proof service and submit it for Marketplace review.
 - [x] Execute a paid primary delivery and independently verify `BREACH`.
 - [x] Automatically dispatch the same task to the backup provider.
 - [x] Settle backup compensation from the primary bond.

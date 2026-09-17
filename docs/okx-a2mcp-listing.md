@@ -1,48 +1,42 @@
-# OKX AI A2MCP listing package
+# OKX.AI A2MCP listing
 
-## Name
+Status: **REGISTERED / REVIEW SUBMITTED** on September 17, 2026.
 
-RelayBond Bonded Market Data
+- ASP name: `RelayBond`
+- Agent ID: `13776`
+- Service type: `A2MCP`
+- Fee: `Free`
+- Review language: `zh-CN`
 
-## Short description
+## Agent description
 
-Purchase a fresh OKX market quote from a proof-ranked bonded provider, with signed delivery evidence and a recovery path if the primary fails.
+RelayBond is the reliability clearing layer for paid AI Agents: it routes tasks to bonded providers and funds an independent backup from a failed provider's bond so the buyer pays only once.
 
-## Agent instruction
+## Service
 
-Use this service when an autonomous workflow needs a fresh OKX instrument quote plus machine-verifiable delivery evidence. Send an OKX instrument ID such as `BTC-USDT`. Inspect ranked providers before purchase, then independently verify the returned ServicePromise and DeliveryReceipt. If the primary response is empty, stale, late or malformed, request continuity recovery. V1 buyer rebates are TESTNET; backup recovery is currently LOCAL / TESTED.
+### Name
 
-## Endpoint
+`RelayBond Recovery Proof`
 
-`POST https://relaybond-okx.vercel.app/v1/provider/quote`
+### Description
 
-## Request
-
-```json
-{ "symbol": "BTC-USDT" }
+```text
+1. [Service Description] Returns RelayBond's completed X Layer Testnet recovery settlement, balance changes, and seven independent verification checks.
+2. [Parameter Spec] No parameters required.
+3. [Request Method] GET
+4. [Request Example] curl "https://relaybond-okx.vercel.app/v1/official/settlement"
 ```
 
-## Response
+### Endpoint
 
-```json
-{
-  "result": {
-    "symbol": "BTC-USDT",
-    "price": 62450.25,
-    "observedAt": 1789430400,
-    "source": "OKX_MARKET_API"
-  },
-  "servicePromise": { "payload": {}, "signature": "0x..." },
-  "deliveryReceipt": { "payload": {}, "signature": "0x..." }
-}
-```
+`GET https://relaybond-okx.vercel.app/v1/official/settlement`
 
-## Before listing
+## Listing checklist
 
-- [x] Deploy the public endpoint over HTTPS.
-- [x] Confirm an unauthenticated request returns HTTP 402 with a valid `PAYMENT-REQUIRED` header.
-- [x] Publish the signed Service Promise at `GET /v1/service/promise`.
-- [x] Keep the service price at 0.01 Testnet USD₮0 for judging.
-- [x] Confirm one Agentic Wallet paid retry settles, returns the delivery body and verifies `ACCEPTED`.
-- [ ] Publish the service in OKX AI / A2MCP after the paid proof exists.
-- [ ] After the first real V2 backup settlement, update the listing from rebate warranty to live continuity recovery. Contract deployment alone is not enough.
+- [x] Upload the RelayBond Failover Switch avatar.
+- [x] Create the RelayBond ASP identity.
+- [x] Pass Listing QA with zero findings.
+- [x] Validate that the public endpoint returns HTTP 200 and the completed `SETTLED_AND_VERIFIED` evidence.
+- [x] Create OKX.AI Agent `#13776` with the free A2MCP service.
+- [x] Submit Agent `#13776` for Marketplace review on September 17, 2026.
+- [ ] Receive OKX.AI Marketplace approval. This is an external review dependency and must not be represented as complete before OKX approves it.

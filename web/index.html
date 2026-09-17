@@ -6,6 +6,9 @@
     <meta name="theme-color" content="#090b0d" />
     <title>RelayBond — Reliability Clearing for AI Agents</title>
     <meta name="description" content="Bonded provider routing and double-pay-free recovery for paid AI Agent services on OKX AI and X Layer." />
+    <meta property="og:title" content="RelayBond — Reliability Clearing for AI Agents" />
+    <meta property="og:description" content="A failed paid Agent task still finishes: the provider bond funds an independently verified backup." />
+    <meta property="og:image" content="https://relaybond-okx.vercel.app/relaybond-avatar.svg" />
     <link rel="icon" href="./mark.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
     <link rel="stylesheet" href="./passport.css" />
@@ -54,6 +57,7 @@
         <article><span>AGENTIC WALLET</span><strong><i id="wallet-funding">0.02</i> USD₮0</strong><p>Current balance after four paid calls and one verified rebate.</p><b class="ok">TESTNET</b></article>
         <article><span>V1 PAID WARRANTY</span><strong id="paid-proof">ACCEPTED → BREACH → REBATED</strong><p><a href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a" target="_blank" rel="noreferrer">Breach ↗</a> · <a id="rebate-tx" href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x21c3e459c868efdb35da90b2976a73738347e90a38a591cff49e219101b7c03f" target="_blank" rel="noreferrer">Rebate ↗</a></p><b class="ok">TESTNET</b></article>
         <article><span>V2 PROVIDER RUNTIME</span><strong>PRIMARY + BACKUP</strong><p>Bonded identities, endpoint-bound Promise and private Backup authorization.</p><b class="ok">LIVE ENDPOINTS</b></article>
+        <article><span>OKX.AI ASP</span><strong>AGENT #13776</strong><p>Free A2MCP Recovery Proof endpoint registered and submitted for Marketplace review.</p><b class="pending">IN REVIEW</b></article>
       </section>
 
       <section class="official-shell" aria-label="Official build coordinator">
@@ -131,7 +135,7 @@
         <pre id="output">$ Ready. Probe the live payment boundary, recover the provider signer, or run the double-pay-free recovery flow.</pre>
       </section>
     </main>
-    <footer><span>OKX Dev Day 2026 · Official build branch · v0.4.0-rc.1</span><span>Evidence first. Claims second.</span></footer>
+    <footer><span>OKX Dev Day 2026 · Official build branch · v0.4.0-rc.2</span><span>Evidence first. Claims second.</span></footer>
     <script src="./relaybond-verifier.js"></script>
     <script src="./app.js" type="module"></script>
   </body>

@@ -79,7 +79,7 @@ The project will count only genuinely new post-start work as official-period dev
 
 - [x] deploy and source-verify `RecoveryBondVaultV2` after the official start;
 - [x] register and bond two independent live providers;
-- [ ] publish or integrate the provider services through OKX AI/A2MCP;
+- [x] register RelayBond as OKX.AI ASP Agent `#13776`, publish the free A2MCP Recovery Proof service configuration and submit it for Marketplace review;
 - [x] execute a real paid primary delivery that produces an objective `BREACH`;
 - [x] automatically route the same task to an independent backup;
 - [x] settle the backup from the primary provider bond on X Layer;
