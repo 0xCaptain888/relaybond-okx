@@ -1,6 +1,13 @@
 import { keccak256, stringToHex, type Hex } from "viem";
-import { hashPromise, recoverPromiseSigner, recoverReceiptSigner } from "./signing.js";
-import { recoverContinuitySigner } from "./signing.js";
+import {
+  hashPromise,
+  hashRecoveryAttestation,
+  recoverPromiseSigner,
+  recoverReceiptSigner,
+  recoverContinuitySigner,
+  recoverRecoveryAttestationSigner,
+} from "./signing.js";
+import type { OfficialCoordinatorEvidence } from "./official-build-simulator.js";
 import type { ContinuityEvidence, DeliveryReceipt, ServicePromise, ServiceRequest, Signed } from "./types.js";
 
 function normalize(value: unknown): unknown {
@@ -108,6 +115,45 @@ async function verifyContinuityEvidence(evidence: ContinuityEvidence) {
   };
 }
 
+async function verifyOfficialCoordinatorEvidence(evidence: OfficialCoordinatorEvidence) {
+  if (!evidence.recovered.recoveryAttestation || !evidence.recovered.continuityReceipt) {
+    throw new Error("Official coordinator evidence is missing signed recovery artifacts.");
+  }
+  const context = { chainId: evidence.chainId, vault: evidence.vault };
+  const [recoverySigner, continuitySigner] = await Promise.all([
+    recoverRecoveryAttestationSigner(context, evidence.recovered.recoveryAttestation),
+    recoverContinuitySigner(context, evidence.recovered.continuityReceipt),
+  ]);
+  const calculatedAttestationDigest = hashRecoveryAttestation(
+    context,
+    evidence.recovered.recoveryAttestation.payload,
+  );
+  const recoveredTrail = evidence.recovered.task.events.map((event) => event.state);
+  const frozenTrail = evidence.frozen.task.events.map((event) => event.state);
+  const checks = {
+    recoverySigner: recoverySigner.toLowerCase() === evidence.verifier.toLowerCase(),
+    continuitySigner: continuitySigner.toLowerCase() === evidence.verifier.toLowerCase(),
+    attestationDigest: calculatedAttestationDigest === evidence.recoveryAttestationDigest,
+    recoveredTerminal: evidence.recovered.task.state === "RECOVERED" && recoveredTrail.at(-1) === "RECOVERED",
+    frozenTerminal: evidence.frozen.task.state === "FROZEN" && frozenTrail.at(-1) === "FROZEN",
+    buyerPaidPrimary: evidence.recovered.recoveryAttestation.payload.buyer === evidence.buyer,
+    settlementHonesty: evidence.claims.onchainSettlement === false,
+  };
+  const { evidenceHash, portableIntegrity, ...unsigned } = evidence;
+  const evidenceHashPassed = hashCanonicalBrowser(unsigned) === evidenceHash;
+  return {
+    passed: Object.values(checks).every(Boolean) && evidenceHashPassed,
+    checks,
+    recoverySigner,
+    continuitySigner,
+    expectedVerifier: evidence.verifier,
+    calculatedAttestationDigest,
+    expectedAttestationDigest: evidence.recoveryAttestationDigest,
+    evidenceHashPassed,
+    portableHash: portableIntegrity.hash,
+  };
+}
+
 declare global {
   interface Window {
     RelayBondVerifier: {
@@ -115,8 +161,15 @@ declare global {
       verifyPaidDelivery: typeof verifyPaidDelivery;
       verifyPaidEvidenceHash: typeof verifyPaidEvidenceHash;
       verifyContinuityEvidence: typeof verifyContinuityEvidence;
+      verifyOfficialCoordinatorEvidence: typeof verifyOfficialCoordinatorEvidence;
     };
   }
 }
 
-window.RelayBondVerifier = { verifyPromiseEvidence, verifyPaidDelivery, verifyPaidEvidenceHash, verifyContinuityEvidence };
+window.RelayBondVerifier = {
+  verifyPromiseEvidence,
+  verifyPaidDelivery,
+  verifyPaidEvidenceHash,
+  verifyContinuityEvidence,
+  verifyOfficialCoordinatorEvidence,
+};

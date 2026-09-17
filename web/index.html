@@ -30,6 +30,7 @@
             <button id="probe">Probe live x402</button>
             <button id="verify-live" class="secondary">Recover live EIP-712 signer</button>
             <button id="run" class="tertiary">Run continuity recovery</button>
+            <button id="run-official" class="official-cta">Run official coordinator</button>
           </div>
           <p class="honesty">LIVE / TESTNET: x402 payment, signed delivery, verified breach and real buyer rebate. LOCAL V2: bonded-provider failover and double-pay-free recovery. V2 is tested but not yet deployed.</p>
         </div>
@@ -51,6 +52,26 @@
         <article><span>QUALITY BOND</span><strong><i id="live-bond">4.99</i> USD₮0</strong><p>Real bond after rebate; service is paused until rebonded.</p><b class="paused">AUTO-PAUSED</b></article>
         <article><span>AGENTIC WALLET</span><strong><i id="wallet-funding">0.02</i> USD₮0</strong><p>Current balance after four paid calls and one verified rebate.</p><b class="ok">TESTNET</b></article>
         <article><span>V1 PAID WARRANTY</span><strong id="paid-proof">ACCEPTED → BREACH → REBATED</strong><p><a href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a" target="_blank" rel="noreferrer">Breach ↗</a> · <a id="rebate-tx" href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x21c3e459c868efdb35da90b2976a73738347e90a38a591cff49e219101b7c03f" target="_blank" rel="noreferrer">Rebate ↗</a></p><b class="ok">TESTNET</b></article>
+      </section>
+
+      <section class="official-shell" aria-label="Official build coordinator">
+        <div class="section-heading">
+          <div><p class="eyebrow">OFFICIAL BUILD DELTA · POST-START</p><h2>Automatic recovery. Fail closed.</h2></div>
+          <span id="official-state">LOCAL / TESTED</span>
+        </div>
+        <p class="official-intro">New after the official start: an auditable coordinator selects providers, verifies both signed deliveries, emits a Solidity-compatible Recovery Attestation, and freezes the task if the backup also fails.</p>
+        <div class="official-steps">
+          <article data-official-step="0"><b>01</b><h3>Queue task</h3><span>WAITING</span></article>
+          <article data-official-step="1"><b>02</b><h3>Select primary</h3><span>WAITING</span></article>
+          <article data-official-step="2"><b>03</b><h3>Verify breach</h3><span>WAITING</span></article>
+          <article data-official-step="3"><b>04</b><h3>Select backup</h3><span>WAITING</span></article>
+          <article data-official-step="4"><b>05</b><h3>Recover / Freeze</h3><span>WAITING</span></article>
+        </div>
+        <div class="official-proof-grid">
+          <div><span>RECOVERY PATH</span><strong>RECOVERED</strong><small>Primary breach → independent backup accepted</small></div>
+          <div><span>DOUBLE FAILURE</span><strong>FROZEN</strong><small>No false success when the backup breaches</small></div>
+          <div><span>SETTLEMENT</span><strong>NOT BROADCAST</strong><small>Contract-compatible authorization; onchain step remains pending</small></div>
+        </div>
       </section>
 
       <section class="registry-shell" aria-label="Bonded provider registry">
@@ -103,11 +124,11 @@
       </section>
 
       <section class="terminal">
-        <div class="terminal-top"><span></span><span></span><span></span><b>Continuity evidence console</b><button id="verify">Verify Continuity Receipt</button></div>
+        <div class="terminal-top"><span></span><span></span><span></span><b>Continuity evidence console</b><button id="verify">Verify Continuity Receipt</button><button id="verify-official">Verify Official Build</button></div>
         <pre id="output">$ Ready. Probe the live payment boundary, recover the provider signer, or run the double-pay-free recovery flow.</pre>
       </section>
     </main>
-    <footer><span>Built for OKX Dev Day 2026 · Remote Build</span><span>Evidence first. Claims second.</span></footer>
+    <footer><span>OKX Dev Day 2026 · Official build branch · v0.4.0-rc.1</span><span>Evidence first. Claims second.</span></footer>
     <script src="./relaybond-verifier.js"></script>
     <script src="./app.js" type="module"></script>
   </body>

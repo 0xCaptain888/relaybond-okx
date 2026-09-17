@@ -23,11 +23,10 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 
 ## Official-period change log
 
-No official-period work has been recorded yet.
-
 | Date and time | Commit | New functionality | Evidence | Status |
 |---|---|---|---|---|
-| — | — | Official build period has not started. | — | PENDING |
+| 2026-09-17 10:09:47 UTC+8 | `c8beae9` | Automatic Continuity Coordinator; deterministic Primary/Backup selection; fail-closed `FROZEN`; Solidity-compatible EIP-712 Recovery Attestation; validated monotonic task store; public API and SDK access | `evidence/official-build/coordinator-v1.json`; 34 unit tests; 8 contract tests | LOCAL / TESTED |
+| 2026-09-17 10:20:24 UTC+8 | this UI/docs change | Judge-facing coordinator run plus independent browser verification of both verifier signatures, terminal states, evidence Keccak and portable SHA-256 | Local browser run: `RECOVERED + FROZEN VERIFIED` followed by `BROWSER VERIFIED`; no console errors | LOCAL / VERIFIED |
 
 ## Target official-period delta
 
@@ -39,14 +38,16 @@ No official-period work has been recorded yet.
 - [ ] Settle backup compensation from the primary bond.
 - [ ] Prove the buyer paid only once.
 - [ ] Publish a real `RECOVERED` Continuity Receipt.
-- [ ] Add the live official-period flow to the judge demo and SDK.
+- [x] Add the official-period LOCAL coordinator flow to the judge demo, API and SDK.
+- [ ] Replace LOCAL provider fixtures with independently operated service endpoints.
+- [ ] Add the live official-period settlement flow to the judge demo and SDK.
 
 ## Evidence directory
 
-Official-period machine-readable evidence will be stored under:
+Official-period machine-readable evidence is stored under:
 
 ```text
 evidence/official-build/
 ```
 
-The directory will be created only when the first valid post-start artifact exists.
+The first artifact, [`coordinator-v1.json`](../evidence/official-build/coordinator-v1.json), deliberately records `onchainSettlement: false`. It proves the post-start coordinator, signatures and fail-closed state machine without claiming the pending V2 Testnet broadcast.

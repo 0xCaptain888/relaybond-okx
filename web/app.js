@@ -2,6 +2,8 @@ const runButton = document.querySelector("#run");
 const verifyButton = document.querySelector("#verify");
 const probeButton = document.querySelector("#probe");
 const verifyLiveButton = document.querySelector("#verify-live");
+const runOfficialButton = document.querySelector("#run-official");
+const verifyOfficialButton = document.querySelector("#verify-official");
 const output = document.querySelector("#output");
 const bond = document.querySelector("#bond");
 const runState = document.querySelector("#run-state");
@@ -13,6 +15,8 @@ const walletFunding = document.querySelector("#wallet-funding");
 const paidProof = document.querySelector("#paid-proof");
 const bondStatus = document.querySelector("#bond-status");
 const steps = [...document.querySelectorAll("[data-step]")];
+const officialSteps = [...document.querySelectorAll("[data-official-step]")];
+const officialState = document.querySelector("#official-state");
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -39,6 +43,12 @@ async function loadEvidence() {
 async function loadContinuityEvidence() {
   const response = await fetch("./evidence/continuity-judge-run.json", { cache: "no-store" });
   if (!response.ok) throw new Error("Generate continuity evidence first: npm run demo:continuity");
+  return response.json();
+}
+
+async function loadOfficialEvidence() {
+  const response = await fetch("./evidence/official-build/coordinator-v1.json", { cache: "no-store" });
+  if (!response.ok) throw new Error("Generate official evidence first: npm run demo:official-coordinator");
   return response.json();
 }
 
@@ -153,6 +163,34 @@ async function runFlow() {
   runButton.disabled = false;
 }
 
+async function runOfficialFlow() {
+  runOfficialButton.disabled = true;
+  officialState.textContent = "COORDINATOR RUNNING";
+  officialSteps.forEach((step) => { step.className = ""; step.lastElementChild.textContent = "WAITING"; });
+  try {
+    const evidence = await loadOfficialEvidence();
+    output.textContent = "$ OFFICIAL BUILD COORDINATOR\n\nPost-start automatic routing evidence loaded.";
+    const events = evidence.recovered.task.events;
+    for (let index = 0; index < officialSteps.length; index += 1) {
+      const event = events[index];
+      const step = officialSteps[index];
+      step.classList.add("active");
+      await wait(550);
+      step.classList.remove("active");
+      step.classList.add(event.state === "PRIMARY_BREACH" ? "breach" : "done");
+      step.lastElementChild.textContent = event.state;
+      output.textContent += `\n\n${event.state === "PRIMARY_BREACH" ? "!" : "✓"} ${event.state}\n  ${event.description}`;
+    }
+    output.textContent += `\n\nRecovered trail\n${events.map((event) => event.state).join(" → ")}\n\nFail-closed trail\n${evidence.frozen.task.events.map((event) => event.state).join(" → ")}\n\nRecovery Attestation digest\n${evidence.recoveryAttestationDigest}\n\nEvidence hash\n${evidence.evidenceHash}\n\nOnchain settlement: ${evidence.claims.onchainSettlement}\nMode: ${evidence.mode}`;
+    officialState.textContent = "RECOVERED + FROZEN VERIFIED";
+  } catch (error) {
+    output.textContent = `$ Official coordinator failed\n${error.message}`;
+    officialState.textContent = "RUN FAILED";
+  } finally {
+    runOfficialButton.disabled = false;
+  }
+}
+
 async function loadLiveStatus() {
   try {
     const rebateEvidence = await loadLiveEvidence("rebate");
@@ -215,9 +253,29 @@ async function verifyEvidence() {
   }
 }
 
+async function verifyOfficialEvidence() {
+  verifyOfficialButton.disabled = true;
+  try {
+    const evidence = await loadOfficialEvidence();
+    const result = await window.RelayBondVerifier.verifyOfficialCoordinatorEvidence(evidence);
+    const { portableIntegrity, ...portablePayload } = evidence;
+    const portablePassed = await sha256(portablePayload) === portableIntegrity.hash;
+    const verified = result.passed && portablePassed;
+    output.textContent = `$ OFFICIAL BUILD BROWSER VERIFICATION\n\nRecovery signer:      ${result.recoverySigner}\nContinuity signer:    ${result.continuitySigner}\nExpected verifier:    ${result.expectedVerifier}\nAttestation digest:   ${result.calculatedAttestationDigest === result.expectedAttestationDigest ? "VERIFIED" : "FAILED"}\nRECOVERED terminal:   ${result.checks.recoveredTerminal}\nFROZEN terminal:      ${result.checks.frozenTerminal}\nBuyer bound:          ${result.checks.buyerPaidPrimary}\nNo onchain overclaim: ${result.checks.settlementHonesty}\nEvidence Keccak:      ${result.evidenceHashPassed ? "VERIFIED" : "FAILED"}\nPortable SHA-256:     ${portablePassed ? "VERIFIED" : "FAILED"}\n\n${verified ? "✓ OFFICIAL BUILD VERIFIED — automatic routing, recovery authorization and fail-closed behavior are independently bound." : "✗ FAILED — official build evidence was modified or overclaimed."}`;
+    officialState.textContent = verified ? "BROWSER VERIFIED" : "VERIFY FAILED";
+  } catch (error) {
+    output.textContent = `$ Official verification error\n${error.message}`;
+    officialState.textContent = "VERIFY FAILED";
+  } finally {
+    verifyOfficialButton.disabled = false;
+  }
+}
+
 runButton.addEventListener("click", () => runFlow().catch((error) => { output.textContent = `$ Run failed\n${error.message}`; runButton.disabled = false; }));
 verifyButton.addEventListener("click", verifyEvidence);
 probeButton.addEventListener("click", probeLivePayment);
 verifyLiveButton.addEventListener("click", verifyLiveSignatures);
+runOfficialButton.addEventListener("click", runOfficialFlow);
+verifyOfficialButton.addEventListener("click", verifyOfficialEvidence);
 loadPassport().catch(() => {});
 loadLiveStatus().catch(() => {});

@@ -1,10 +1,31 @@
-# RelayBond v0.3.0
+# RelayBond v0.4.0-rc.1
 
 > **The reliability clearing layer for the Agent economy.**
 
 **[Live Judge Demo + API](https://relaybond-okx.vercel.app/)** · **[GitHub Pages mirror](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **[X Layer contract](https://www.okx.com/web3/explorer/xlayer-test/address/0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5)** · **Video:** pending
 
 RelayBond routes paid tasks to bonded Agent providers, verifies delivery and recovers failed work through an independent backup without charging the buyer twice. The deployed V1 proves real Testnet payment, breach verification and buyer rebate. The tested LOCAL V2 extends that mechanism from refund-only warranties to task continuity.
+
+## Official Build Delta — September 17, 2026 onward
+
+The public pre-build baseline is frozen at [`v0.3.0`](https://github.com/0xCaptain888/relaybond-okx/tree/v0.3.0). Work on the [`official-build-2026`](https://github.com/0xCaptain888/relaybond-okx/tree/official-build-2026) branch is recorded separately and never relabels the earlier feasibility work as official-period development.
+
+The first post-start feature is an automatic Continuity Coordinator that:
+
+- ranks eligible bonded providers and selects independent Primary and Backup providers;
+- verifies both signed deliveries instead of trusting orchestration success;
+- transitions through an auditable monotonic state machine;
+- emits a Solidity-compatible EIP-712 Recovery Attestation when the backup succeeds;
+- ends in `FROZEN`, never false success, when both providers breach;
+- exposes its Evidence Pack through the browser, API and TypeScript SDK.
+
+Current status: **LOCAL / TESTED / BROWSER VERIFIED**. The generated evidence honestly records `onchainSettlement: false`; V2 Testnet deployment and bond-funded backup settlement remain **PENDING**.
+
+```bash
+npm run demo:official-coordinator
+```
+
+Open the Judge Demo and select **Run official coordinator**, then **Verify Official Build**. The browser independently recovers both verifier signatures and checks the Recovery Attestation digest, `RECOVERED` and `FROZEN` terminal states, canonical Keccak evidence hash and portable SHA-256 integrity.
 
 ## The five-second problem
 
@@ -97,11 +118,12 @@ GET  /health
 GET  /v1/service/promise
 GET  /v1/providers
 GET  /v1/recovery/demo
+GET  /v1/official/coordinator
 POST /v1/verify
 POST /v1/provider/quote
 ```
 
-`/v1/providers` and `/v1/recovery/demo` are explicitly labeled `LOCAL V2`; the production API exposes them for judge inspection without claiming an onchain V2 settlement.
+`/v1/providers`, `/v1/recovery/demo` and `/v1/official/coordinator` are explicitly labeled `LOCAL`; the API exposes them for judge inspection without claiming an onchain V2 settlement.
 
 The provider route never trusts a caller-supplied buyer address. After the facilitator accepts the payment authorization, RelayBond derives the payer from that verified authorization, checks its token, amount and recipient against the advertised terms, and binds the payer plus normalized request input into the signed Delivery Receipt. The buyer runner independently confirms the exact USD₮0 `Transfer` event on X Layer even when the facilitator's first receipt is still pending.
 
@@ -156,6 +178,9 @@ npm run rebate:live-breach -- --confirm
 - [`src/registry.ts`](./src/registry.ts) — filters and ranks bonded providers by SLA, coverage and verified history.
 - [`src/continuity.ts`](./src/continuity.ts) — Continuity Receipt construction and double-pay-free economic invariants.
 - [`src/continuity-simulator.ts`](./src/continuity-simulator.ts) — deterministic primary-breach → backup-delivery → recovery evidence.
+- [`src/coordinator.ts`](./src/coordinator.ts) — official-period automatic provider routing, verification, recovery authorization and fail-closed orchestration.
+- [`src/task-store.ts`](./src/task-store.ts) — validated monotonic continuity-task transitions with defensive reads.
+- [`src/official-build-simulator.ts`](./src/official-build-simulator.ts) — reproducible `RECOVERED` and double-failure `FROZEN` Evidence Pack.
 - [`src/signing.ts`](./src/signing.ts) — EIP-712 ServicePromise and DeliveryReceipt signatures.
 - [`src/verifier.ts`](./src/verifier.ts) — independent objective SLA verifier.
 - [`src/payment.ts`](./src/payment.ts) — x402 `exact` payment challenge.
@@ -213,8 +238,11 @@ npm run rebate:live-breach -- --confirm
 | Double-pay-free backup recovery | LOCAL / RECOVERED | primary `BREACH`, backup `ACCEPTED`, buyer charged once |
 | RecoveryBondVaultV2 contract | LOCAL / TESTED | backup authorization, replay protection and balance invariants |
 | RecoveryBondVaultV2 deployment | PENDING | no V2 Testnet deployment is claimed |
+| Official Continuity Coordinator | LOCAL / TESTED | automatic Primary/Backup selection, independent receipt verification and monotonic state transitions |
+| Recovery Attestation | LOCAL / BROWSER VERIFIED | EIP-712 signer recovery, Solidity-compatible digest and canonical Evidence Pack integrity |
+| Double-provider failure | LOCAL / FROZEN | coordinator fails closed rather than presenting a failed backup as recovery |
 
-See the detailed [prior-work and pre-build disclosure](./docs/prior-work-disclosure.md), the separate [official build-period record](./docs/official-build-period.md) and the [threat model](./docs/threat-model.md). The pre-build disclosure explains why feasibility work began early and lists every September 15 commit with exact UTC+8 timestamps; the official-period record will contain only post-start functionality and evidence.
+See the detailed [prior-work and pre-build disclosure](./docs/prior-work-disclosure.md), the separate [official build-period record](./docs/official-build-period.md) and the [threat model](./docs/threat-model.md). The pre-build disclosure explains why feasibility work began early and lists every September 15 commit with exact UTC+8 timestamps; the official-period record contains only post-start functionality and evidence.
 Production dependencies currently pass [`npm run security:audit`](./SECURITY.md) with zero known vulnerabilities; legacy Hardhat advisories are isolated to the local development toolchain.
 
 ## Competition track
