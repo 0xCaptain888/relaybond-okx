@@ -51,7 +51,14 @@ export class RelayBondClient {
     configuration: ProviderConfigurationStatus;
     transport: { executor: string; endpointBinding: boolean; redirectsAllowed: boolean; timeoutMs: number; maximumResponseBytes: number };
     paymentBoundary: { automaticPayment: boolean; behavior: string };
-    settlement: { v2Broadcast: boolean; status: "PENDING" | "TESTNET" | "LIVE" };
+    settlement: {
+      v2Broadcast: boolean;
+      status: "PENDING" | "TESTNET" | "LIVE";
+      contract?: `0x${string}`;
+      sourceVerified?: boolean;
+      providerRegistration?: "PENDING" | "TESTNET" | "LIVE";
+      backupSettlement?: "PENDING" | "TESTNET" | "LIVE";
+    };
   }> {
     const response = await fetch(`${this.baseUrl}/v1/official/readiness`);
     if (!response.ok) throw new Error(`RelayBond official runtime readiness failed: ${response.status}`);

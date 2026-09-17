@@ -45,4 +45,4 @@ Use this service when an autonomous workflow needs a fresh OKX instrument quote 
 - [x] Keep the service price at 0.01 Testnet USD₮0 for judging.
 - [x] Confirm one Agentic Wallet paid retry settles, returns the delivery body and verifies `ACCEPTED`.
 - [ ] Publish the service in OKX AI / A2MCP after the paid proof exists.
-- [ ] After V2 deployment, update the listing from rebate warranty to live continuity recovery.
+- [ ] After the first real V2 backup settlement, update the listing from rebate warranty to live continuity recovery. Contract deployment alone is not enough.

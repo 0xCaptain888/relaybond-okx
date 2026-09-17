@@ -30,7 +30,8 @@
 - [x] Deterministic backup-provider recovery without double-charging the buyer (`LOCAL / TESTED`).
 - [x] Verifier-signed Continuity Receipt binds primary breach, backup delivery and recovery economics.
 - [x] RecoveryBondVaultV2 contract tests cover authorization, replay protection and buyer balance invariance.
-- [ ] Deploy RecoveryBondVaultV2 to X Layer Testnet and execute one real backup settlement.
+- [x] Deploy and source-verify RecoveryBondVaultV2 on X Layer Testnet.
+- [ ] Register and bond independent Providers, then execute one real backup settlement.
 - [x] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.
 - [ ] Two to three outside builders test the integration.
 

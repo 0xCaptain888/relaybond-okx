@@ -1,6 +1,6 @@
 {
   "evidenceVersion": "official-v2-plan-1",
-  "mode": "XLAYER_TESTNET_READ_ONLY_PLAN",
+  "mode": "XLAYER_TESTNET",
   "chainId": 1952,
   "contract": "RecoveryBondVaultV2",
   "settlementToken": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
@@ -18,7 +18,28 @@
   "nonce": 2,
   "predictedAddress": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
   "predictedAddressUnused": true,
-  "broadcast": false,
+  "broadcast": true,
   "requiredConfirmation": "DEPLOY_RECOVERY_BOND_V2_XLAYER_TESTNET",
-  "generatedAt": "2026-09-17T06:50:13.411Z"
+  "generatedAt": "2026-09-17T06:50:13.411Z",
+  "address": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+  "transactionHash": "0x43531981582981657566ff26a25427f5313381487062f398719d2f4a096ad9d0",
+  "blockNumber": 41168978,
+  "receipt": {
+    "status": 1,
+    "gasUsed": "838409",
+    "effectiveGasPriceAtomic": "20000001",
+    "gasCostAtomic": "16768180838409",
+    "valueAtomic": "0"
+  },
+  "confirmedConstructor": {
+    "settlementToken": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+    "verifier": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE"
+  },
+  "postReceiptVerification": {
+    "runtimeBytecodeBytes": 3608,
+    "settlementTokenGetterMatched": true,
+    "verifierGetterMatched": true,
+    "recoveredAfterTransientRpcReadFailure": true
+  },
+  "deployedAt": "2026-09-17T06:50:15.000Z"
 }

@@ -17,7 +17,7 @@ ACCEPTED                               QualityBondVault V1 on X Layer
                                                 └── USDT0 rebate to buyer
 ```
 
-The deployed V1 proves the warranty boundary. The LOCAL / TESTED V2 extends it into continuity:
+The deployed V1 proves the warranty boundary. The source-verified V2 settlement contract is deployed on X Layer Testnet; the coordinator and Provider flow below remain LOCAL / TESTED until funded Providers execute a real settlement:
 
 ```text
 Bonded Provider Registry
@@ -56,5 +56,6 @@ Every listed service carries a visible Quality Bond. A failed seller does not me
 
 - `QualityBondVault`: TESTNET / SOURCE VERIFIED.
 - x402 paid calls and V1 rebate: TESTNET.
-- registry, Continuity Receipt and `RecoveryBondVaultV2`: LOCAL / TESTED.
-- V2 X Layer deployment and live backup settlement: PENDING.
+- registry, Continuity Receipt and coordinator execution: LOCAL / TESTED.
+- `RecoveryBondVaultV2`: TESTNET / DEPLOYED / SOURCE VERIFIED.
+- Provider registration, bonding and live backup settlement: PENDING.

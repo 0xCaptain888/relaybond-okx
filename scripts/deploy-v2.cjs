@@ -1,5 +1,5 @@
 const hre = require("hardhat");
-const { mkdir, writeFile } = require("node:fs/promises");
+const { mkdir, unlink, writeFile } = require("node:fs/promises");
 
 const EXPECTED_CHAIN_ID = 1952n;
 const CONFIRMATION = "DEPLOY_RECOVERY_BOND_V2_XLAYER_TESTNET";
@@ -64,11 +64,37 @@ async function main() {
   const receipt = await deploymentTransaction.wait();
   if (!receipt || receipt.status !== 1) throw new Error("V2 deployment did not reach a successful receipt.");
   const address = await vault.getAddress();
-  const [deployedCode, onchainToken, onchainVerifier] = await Promise.all([
-    hre.ethers.provider.getCode(address),
-    vault.settlementToken(),
-    vault.verifier(),
-  ]);
+  const provisionalEvidencePath = "evidence/official-build/v2-deployment-pending-verification.json";
+  await writeFile(provisionalEvidencePath, `${JSON.stringify({
+    evidenceVersion: "official-v2-deployment-pending-verification-1",
+    mode: "XLAYER_TESTNET",
+    address,
+    transactionHash: deploymentTransaction.hash,
+    blockNumber: receipt.blockNumber,
+    receiptStatus: receipt.status,
+    note: "Receipt confirmed. Constructor getters and runtime bytecode still require post-receipt verification.",
+    recordedAt: new Date().toISOString(),
+  }, null, 2)}\n`);
+  let deployedCode;
+  let onchainToken;
+  let onchainVerifier;
+  let postReceiptError;
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
+    try {
+      [deployedCode, onchainToken, onchainVerifier] = await Promise.all([
+        hre.ethers.provider.getCode(address),
+        vault.settlementToken(),
+        vault.verifier(),
+      ]);
+      if (deployedCode === "0x") throw new Error("Runtime bytecode is not visible yet.");
+      postReceiptError = undefined;
+      break;
+    } catch (error) {
+      postReceiptError = error;
+      if (attempt < 8) await new Promise((resolve) => setTimeout(resolve, attempt * 1_000));
+    }
+  }
+  if (postReceiptError) throw postReceiptError;
   if (deployedCode === "0x") throw new Error("V2 deployment address has no runtime bytecode.");
   if (onchainToken.toLowerCase() !== settlementToken.toLowerCase()) throw new Error("V2 settlement token mismatch.");
   if (onchainVerifier.toLowerCase() !== verifier.toLowerCase()) throw new Error("V2 verifier mismatch.");
@@ -83,6 +109,7 @@ async function main() {
     deployedAt: new Date().toISOString(),
   };
   await writeFile("evidence/official-build/v2-deployment.json", `${JSON.stringify(evidence, null, 2)}\n`);
+  await unlink(provisionalEvidencePath).catch(() => {});
   console.log(JSON.stringify(evidence, null, 2));
 }
 

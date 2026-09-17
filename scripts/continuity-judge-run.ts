@@ -23,4 +23,4 @@ console.log(`Backup funded from bond: ${evidence.economics.fundedFromPrimaryBond
 console.log(`Buyer double charged: ${evidence.economics.buyerDoubleCharged}`);
 console.log(`Evidence: evidence/continuity-judge-run.json`);
 console.log(`Hash: ${evidence.evidenceHash}`);
-console.log("Mode: DETERMINISTIC_LOCAL_RECOVERY (V2 contract is not yet deployed)\n");
+console.log("Mode: DETERMINISTIC_LOCAL_RECOVERY (V2 contract is deployed; this recovery run is not onchain)\n");

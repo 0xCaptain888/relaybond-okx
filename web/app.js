@@ -56,12 +56,21 @@ async function loadOfficialEvidence() {
 }
 
 async function loadV2Readiness() {
-  const [planResponse, readinessResponse] = await Promise.all([
+  const [planResponse, readinessResponse, deploymentResponse, verificationResponse] = await Promise.all([
     fetch("./evidence/official-build/v2-deployment-plan.json", { cache: "no-store" }),
     fetch("./evidence/official-build/v2-readiness.json", { cache: "no-store" }),
+    fetch("./evidence/official-build/v2-deployment.json", { cache: "no-store" }),
+    fetch("./evidence/official-build/v2-contract-verification.json", { cache: "no-store" }),
   ]);
-  if (!planResponse.ok || !readinessResponse.ok) throw new Error("V2 readiness evidence is not published yet");
-  return { plan: await planResponse.json(), readiness: await readinessResponse.json() };
+  if (!planResponse.ok || !readinessResponse.ok || !deploymentResponse.ok || !verificationResponse.ok) {
+    throw new Error("V2 deployment evidence is not published yet");
+  }
+  return {
+    plan: await planResponse.json(),
+    readiness: await readinessResponse.json(),
+    deployment: await deploymentResponse.json(),
+    verification: await verificationResponse.json(),
+  };
 }
 
 async function loadLiveEvidence(name) {
@@ -195,8 +204,8 @@ async function runOfficialFlow() {
     }
     let readinessText = "V2 deployment plan: unavailable";
     try {
-      const { plan, readiness } = await loadV2Readiness();
-      readinessText = `V2 deployment plan: READ-ONLY READY\nChain: ${plan.chainId}\nPredicted address: ${plan.predictedAddress}\nGas estimate: ${Number(plan.gasEstimate).toLocaleString()}\nIndependent Provider identities: ${readiness.checks.independentProviders}\nReady for deployment: ${readiness.readyForDeployment}\nReady for registration: ${readiness.readyForRegistration}`;
+      const { readiness, deployment, verification } = await loadV2Readiness();
+      readinessText = `V2 contract: TESTNET / DEPLOYED\nChain: ${deployment.chainId}\nAddress: ${deployment.address}\nDeployment tx: ${deployment.transactionHash}\nSource verified: ${verification.verified}\nIndependent Provider identities: ${readiness.checks.independentProviders}\nReady for registration: ${readiness.readyForRegistration}`;
     } catch {}
     output.textContent += `\n\nRecovered trail\n${events.map((event) => event.state).join(" → ")}\n\nFail-closed trail\n${evidence.frozen.task.events.map((event) => event.state).join(" → ")}\n\nRecovery Attestation digest\n${evidence.recoveryAttestationDigest}\n\nEvidence hash\n${evidence.evidenceHash}\n\n${readinessText}\n\nOnchain settlement: ${evidence.claims.onchainSettlement}\nMode: ${evidence.mode}`;
     officialState.textContent = "RECOVERED + FROZEN VERIFIED";
@@ -252,11 +261,11 @@ async function loadLiveStatus() {
 
 async function loadV2Status() {
   try {
-    const { plan, readiness } = await loadV2Readiness();
-    v2PlanStatus.textContent = readiness.readyForDeployment ? "PLAN READY" : "NOT READY";
-    v2PlanDetail.textContent = `${plan.chainId} · gas ${Number(plan.gasEstimate).toLocaleString()} · ${plan.predictedAddress.slice(0, 6)}…${plan.predictedAddress.slice(-4)}`;
+    const { readiness, deployment, verification } = await loadV2Readiness();
+    v2PlanStatus.textContent = readiness.checks.v2Deployed && verification.verified ? "TESTNET / DEPLOYED" : "VERIFYING";
+    v2PlanDetail.textContent = `${deployment.chainId} · block ${deployment.blockNumber.toLocaleString()} · ${deployment.address.slice(0, 6)}…${deployment.address.slice(-4)} · source ${verification.verified ? "verified" : "pending"}`;
     const configured = [readiness.checks.primaryConfigured, readiness.checks.backupConfigured].filter(Boolean).length;
-    v2ReadinessDetail.textContent = `${configured}/2 identities · registration ${readiness.readyForRegistration ? "ready" : "pending"}`;
+    v2ReadinessDetail.textContent = `${configured}/2 identities · registration ${readiness.readyForRegistration ? "ready" : "pending funding"}`;
   } catch {
     v2PlanStatus.textContent = "PENDING";
   }

@@ -73,25 +73,25 @@ The following capabilities existed before the official period and will not be cl
 - LOCAL verifier-signed Continuity Receipt;
 - LOCAL / TESTED `RecoveryBondVaultV2` and deterministic `RECOVERED` flow.
 
-## What remains for the official build period
+## Official build-period target and current progress
 
 The project will count only genuinely new post-start work as official-period development. The intended delta is:
 
-- deploy `RecoveryBondVaultV2` after the official start;
-- register and bond two independent live providers;
-- publish or integrate the provider services through OKX AI/A2MCP;
-- execute a real paid primary delivery that produces an objective `BREACH`;
-- automatically route the same task to an independent backup;
-- settle the backup from the primary provider bond on X Layer;
-- prove the buyer was not charged a second time;
-- publish a real `RECOVERED` Continuity Receipt and transaction evidence;
-- expose the official-period workflow through the public judge demo and SDK.
+- [x] deploy and source-verify `RecoveryBondVaultV2` after the official start;
+- [ ] register and bond two independent live providers;
+- [ ] publish or integrate the provider services through OKX AI/A2MCP;
+- [ ] execute a real paid primary delivery that produces an objective `BREACH`;
+- [ ] automatically route the same task to an independent backup;
+- [ ] settle the backup from the primary provider bond on X Layer;
+- [ ] prove the buyer was not charged a second time;
+- [ ] publish a real `RECOVERED` Continuity Receipt and transaction evidence;
+- [x] expose the official-period coordinator workflow through the public judge demo and SDK.
 
 New commits, evidence and transactions will be recorded separately in `docs/official-build-period.md` and `evidence/official-build/` after the official start.
 
 ## Copy-ready submission disclosure
 
-> RelayBond began as a feasibility prototype on September 15, 2026, before the listed September 17 Remote Build start. We used that pre-build phase to validate OKX x402 settlement, Agentic Wallet payment, signed delivery evidence and the X Layer Quality Bond model. The complete pre-build baseline is publicly preserved at tag `v0.3.0` (`aa4bc8d`) and is not claimed as event-period work. During the official build period, judging should focus only on the documented post-start delta: live multi-provider routing, OKX AI/A2MCP integration, deployed V2 recovery settlement, real backup delivery and proof that a breached provider's bond completed the task without charging the buyer twice.
+> RelayBond began as a feasibility prototype on September 15, 2026, before the listed September 17 Remote Build start. We used that pre-build phase to validate OKX x402 settlement, Agentic Wallet payment, signed delivery evidence and the X Layer Quality Bond model. The complete pre-build baseline is publicly preserved at tag `v0.3.0` (`aa4bc8d`) and is not claimed as event-period work. During the official build period, judging should focus only on the documented post-start delta: live multi-provider routing, OKX AI/A2MCP integration, the deployed V2 recovery contract, real backup delivery and proof that a breached provider's bond completed the task without charging the buyer twice.
 
 The repository will distinguish these statuses without ambiguity:
 

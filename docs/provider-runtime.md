@@ -1,6 +1,6 @@
 # Independent provider runtime
 
-Status: **LOCAL / TESTED**. This runtime was implemented after the official OKX Dev Day build start. It does not claim that two independent Testnet services or V2 settlement are already live.
+Status: **LOCAL / TESTED**. This runtime was implemented after the official OKX Dev Day build start. The V2 contract is deployed and source-verified, but this runtime does not claim that two independent Testnet services are registered or that a V2 recovery has settled.
 
 ## Why this layer exists
 

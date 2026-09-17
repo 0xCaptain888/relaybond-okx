@@ -30,10 +30,11 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 | 2026-09-17 10:35:53 UTC+8 | `6821ea4` | Strict secret-free Provider configuration; endpoint-bound HTTP executor; no redirects; response/time limits; explicit 402 stop; coordinator request and Provider Profile binding | 42 unit tests; 8 contract tests; Vercel build; repeated browser verification | LOCAL / TESTED |
 | 2026-09-17 14:27:00 UTC+8 | `64a9310` | Two independent HTTP Provider processes; signed Primary breach and Backup delivery; guarded V2 readiness/deployment/bonding/source-verification workflow; independent Backup identity | opt-in HTTP integration test; `v2-readiness.json`; `v2-deployment-plan.json` | LOCAL / TESTED + TESTNET / READ-ONLY |
 | 2026-09-17 14:31:32 UTC+8 | `cfdd686` | Unified Vercel and GitHub Pages artifact; CI runs the real two-process HTTP recovery test and production dependency audit | `public/` contains pre-build, live and official-period evidence | CI / PENDING RUN |
+| 2026-09-17 14:50:15 UTC+8 | deployment evidence | Deployed `RecoveryBondVaultV2` with zero token value; confirmed runtime bytecode and constructor getters; independently verified source and ABI | tx `0x4353…d9d0`; block `41168978`; `v2-deployment.json`; `v2-contract-verification.json` | TESTNET / DEPLOYED / VERIFIED |
 
 ## Target official-period delta
 
-- [ ] Deploy `RecoveryBondVaultV2` after the official start.
+- [x] Deploy and source-verify `RecoveryBondVaultV2` after the official start.
 - [ ] Register and bond independent primary and backup providers.
 - [ ] Publish or integrate live OKX AI/A2MCP provider services.
 - [ ] Execute a paid primary delivery and independently verify `BREACH`.
@@ -56,4 +57,4 @@ Official-period machine-readable evidence is stored under:
 evidence/official-build/
 ```
 
-The first artifact, [`coordinator-v1.json`](../evidence/official-build/coordinator-v1.json), deliberately records `onchainSettlement: false`. It proves the post-start coordinator, signatures and fail-closed state machine without claiming the pending V2 Testnet broadcast.
+The first artifact, [`coordinator-v1.json`](../evidence/official-build/coordinator-v1.json), deliberately records `onchainSettlement: false`. It proves the post-start coordinator, signatures and fail-closed state machine. The later [`v2-deployment.json`](../evidence/official-build/v2-deployment.json) separately proves contract deployment; it does not turn the LOCAL coordinator run into a settled Testnet recovery.

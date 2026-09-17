@@ -54,4 +54,4 @@ The competition deployment must use the documented USDT0 contract. Arbitrary fee
 - replacing OKX escrow or payment settlement;
 - guaranteeing market accuracy beyond machine-readable criteria;
 - pretending that a local simulation is a live transaction.
-- claiming the LOCAL / TESTED V2 recovery path is already deployed.
+- claiming that the deployed V2 contract has already executed a live recovery before Provider registration, bonding and transaction evidence exist.

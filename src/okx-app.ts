@@ -95,8 +95,12 @@ export function createOkxApp() {
         behavior: "HTTP 402 stops execution and requires a separately reviewed authorization.",
       },
       settlement: {
-        v2Broadcast: false,
-        status: "PENDING",
+        v2Broadcast: true,
+        status: "TESTNET",
+        contract: "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+        sourceVerified: true,
+        providerRegistration: "PENDING",
+        backupSettlement: "PENDING",
       },
     });
   });

@@ -41,6 +41,7 @@
     "deploy:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/deploy.cjs --network xLayerTestnet",
     "deploy:xlayer": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/deploy.cjs --network xLayer",
     "deploy:v2:plan": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/deploy-v2.cjs --network xLayerTestnet",
+    "deployment:v2:configure": "node --import tsx scripts/set-v2-deployment-env.ts",
     "readiness:v2": "node --env-file-if-exists=.env --import tsx scripts/v2-readiness.ts",
     "wallets:backup-provider": "node --env-file-if-exists=.env --import tsx scripts/bootstrap-backup-provider.ts",
     "bond:v2:plan": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/register-and-bond-v2.cjs --network xLayerTestnet",

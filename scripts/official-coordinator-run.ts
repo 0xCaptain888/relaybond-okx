@@ -11,4 +11,4 @@ console.log(`Recovered run: ${evidence.recovered.task.events.map((event) => even
 console.log(`Frozen run:    ${evidence.frozen.task.events.map((event) => event.state).join(" → ")}`);
 console.log(`Attestation:   ${evidence.recoveryAttestationDigest}`);
 console.log(`Evidence:      ${evidence.evidenceHash}`);
-console.log("Settlement:    LOCAL / NOT YET BROADCAST\n");
+console.log("Settlement:    LOCAL COORDINATOR / V2 CONTRACT TESTNET DEPLOYED / NO RECOVERY BROADCAST\n");

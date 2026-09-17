@@ -1,14 +1,14 @@
 {
   "evidenceVersion": "official-v2-readiness-1",
   "mode": "XLAYER_TESTNET_READ_ONLY",
-  "generatedAt": "2026-09-17T06:21:41.377Z",
+  "generatedAt": "2026-09-17T07:26:44.063Z",
   "chainId": 1952,
   "settlementToken": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
-  "vault": null,
+  "vault": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
   "roles": {
     "deployer": {
       "address": "0xC0F33b0334B1d000Cc40Dd0001762C1232dDAC08",
-      "nativeBalance": "0.199973030018651501"
+      "nativeBalance": "0.199956261837813092"
     },
     "primary": {
       "address": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
@@ -36,7 +36,7 @@
     "primaryConfigured": true,
     "backupConfigured": true,
     "independentProviders": true,
-    "v2Deployed": false,
+    "v2Deployed": true,
     "primaryBondFunded": false,
     "backupBondFunded": false
   },

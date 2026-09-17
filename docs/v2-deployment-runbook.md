@@ -1,6 +1,6 @@
 # RecoveryBondVaultV2 deployment runbook
 
-Status: **PENDING BROADCAST**. The read-only deployment plan was generated on September 17, 2026 after the official build start. No transaction was sent.
+Status: **TESTNET / DEPLOYED / SOURCE VERIFIED**. `RecoveryBondVaultV2` was deployed after the official build start on September 17, 2026 at `0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f`. Transaction `0x43531981582981657566ff26a25427f5313381487062f398719d2f4a096ad9d0` transferred zero token value. Provider registration, bonding and backup settlement remain **PENDING** and require a separate confirmation.
 
 ## Safety sequence
 
@@ -33,6 +33,8 @@ The checked-in artifacts are:
 
 - [`v2-readiness.json`](../evidence/official-build/v2-readiness.json)
 - [`v2-deployment-plan.json`](../evidence/official-build/v2-deployment-plan.json)
+- [`v2-deployment.json`](../evidence/official-build/v2-deployment.json)
+- [`v2-contract-verification.json`](../evidence/official-build/v2-contract-verification.json)
 
 The plan binds chain ID `1952`, Testnet USD₮0, verifier, deployer, constructor arguments, bytecode hash, estimated Gas, nonce and predicted address. It cannot broadcast without the exact `V2_DEPLOY_CONFIRMATION` value printed by the script after review.
 
@@ -40,7 +42,13 @@ The plan binds chain ID `1952`, Testnet USD₮0, verifier, deployer, constructor
 
 Primary and Backup use separate signing keys. `npm run wallets:backup-provider` creates or preserves the Backup key only in gitignored `.env` with mode `600`; it prints only the public address.
 
-After deployment, set `RECOVERY_BOND_VAULT_V2_ADDRESS` to the verified address, fund both Provider addresses on X Layer Testnet, then run:
+The deployed address can be copied into the local gitignored configuration without exposing any key:
+
+```bash
+npm run deployment:v2:configure
+```
+
+Fund both Provider addresses on X Layer Testnet, then run:
 
 ```bash
 npm run readiness:v2
@@ -51,7 +59,7 @@ The bonding script defaults to read-only inspection and refuses duplicate Provid
 
 ## Source verification
 
-After deployment:
+The source was submitted and independently confirmed through the OKX verification API with source and ABI present:
 
 ```bash
 npm run verify:contract:v2:xlayer-testnet
