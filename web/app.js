@@ -1,3 +1,5 @@
+import { sha256Canonical as sha256 } from "./canonical.js";
+
 const runButton = document.querySelector("#run");
 const verifyButton = document.querySelector("#verify");
 const probeButton = document.querySelector("#probe");
@@ -32,20 +34,6 @@ const LIVE_API_BASE = window.location.hostname === "relaybond-okx.vercel.app"
   : "https://relaybond-okx.vercel.app";
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-function canonical(value) {
-  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
-  if (value && typeof value === "object") {
-    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`).join(",")}}`;
-  }
-  return JSON.stringify(value);
-}
-
-async function sha256(value) {
-  const bytes = new TextEncoder().encode(canonical(value));
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return `0x${[...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("")}`;
-}
 
 async function loadEvidence() {
   const response = await fetch("./evidence/judge-run.json", { cache: "no-store" });
