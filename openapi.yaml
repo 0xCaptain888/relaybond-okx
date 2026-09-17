@@ -63,6 +63,13 @@ paths:
       responses:
         "200":
           description: Official-period LOCAL coordinator evidence with RECOVERED and FROZEN runs
+  /v1/official/readiness:
+    get:
+      operationId: getOfficialProviderRuntimeReadiness
+      summary: Inspect provider configuration, transport and payment safety without exposing secrets
+      responses:
+        "200":
+          description: Honest runtime readiness with explicit configuration and V2 settlement status
   /v1/verify:
     post:
       operationId: verifyRelayBondDelivery

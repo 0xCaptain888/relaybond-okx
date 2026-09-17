@@ -192,6 +192,8 @@ export type VerificationResult = {
     freshnessMet: boolean;
     schemaMet: boolean;
     recordCountMet: boolean;
+    coordinatorRequestBound?: boolean;
+    providerProfileBound?: boolean;
   };
   evidenceHash: Hex;
 };

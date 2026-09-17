@@ -43,6 +43,50 @@ export type ContinuityCoordinatorResult = {
   recoveryAttestation?: Signed<RecoveryAttestation>;
 };
 
+async function verifyCoordinatedDelivery(input: {
+  chainId: number;
+  vault: Address;
+  provider: RankedProvider;
+  requirement: ProviderRequirement;
+  request: ServiceRequest;
+  delivery: ProviderDelivery;
+}): Promise<VerificationResult> {
+  const base = await verifyDelivery({
+    promise: input.delivery.servicePromise,
+    request: input.request,
+    response: input.delivery.response,
+    receipt: input.delivery.deliveryReceipt,
+    checkedAt: input.delivery.deliveryReceipt.payload.deliveredAt,
+  });
+  const promise = input.delivery.servicePromise.payload;
+  const receipt = input.delivery.deliveryReceipt.payload;
+  const extraChecks = {
+    coordinatorRequestBound: hashCanonical(input.delivery.request) === hashCanonical(input.request),
+    providerProfileBound:
+      promise.chainId === input.chainId
+      && promise.vault.toLowerCase() === input.vault.toLowerCase()
+      && promise.serviceId === input.provider.serviceId
+      && promise.endpoint === input.provider.endpoint
+      && promise.provider.toLowerCase() === input.provider.provider.toLowerCase()
+      && promise.priceAtomic === input.provider.priceAtomic
+      && promise.bondAmountAtomic === input.provider.bondAtomic
+      && promise.responseTimeMs === input.provider.maximumLatencyMs
+      && promise.maxDataAgeSeconds === input.provider.maximumDataAgeSeconds
+      && promise.requiredSchema === input.requirement.schema
+      && input.provider.supportedSchemas.includes(promise.requiredSchema)
+      && receipt.provider.toLowerCase() === input.provider.provider.toLowerCase(),
+  };
+  const checks = { ...base.checks, ...extraChecks };
+  const violations = Object.entries(checks).filter(([, passed]) => !passed).map(([name]) => name);
+  const unsigned = {
+    status: violations.length === 0 ? ("ACCEPTED" as const) : ("BREACH" as const),
+    checkedAt: base.checkedAt,
+    violations,
+    checks,
+  };
+  return { ...unsigned, evidenceHash: hashCanonical(unsigned) };
+}
+
 export class ContinuityCoordinator {
   constructor(private readonly dependencies: {
     chainId: number;
@@ -107,14 +151,15 @@ export class ContinuityCoordinator {
       });
       throw new ContinuityExecutionError("PRIMARY_EXECUTION_FAILED", task, error);
     }
-    const primaryVerification = await verifyDelivery({
-      promise: primaryDelivery.servicePromise,
-      request: primaryDelivery.request,
-      response: primaryDelivery.response,
-      receipt: primaryDelivery.deliveryReceipt,
-      checkedAt: primaryDelivery.deliveryReceipt.payload.deliveredAt,
+    const primaryVerification = await verifyCoordinatedDelivery({
+      chainId: this.dependencies.chainId,
+      vault: this.dependencies.vault,
+      provider: selection.primary,
+      requirement: input.requirement,
+      request: primaryRequest,
+      delivery: primaryDelivery,
     });
-    const primary = { ...primaryDelivery, verification: primaryVerification };
+    const primary = { ...primaryDelivery, request: primaryRequest, verification: primaryVerification };
     if (primaryVerification.status === "ACCEPTED") {
       const task = await this.dependencies.store.transition(taskId, {
         state: "ACCEPTED",
@@ -163,14 +208,15 @@ export class ContinuityCoordinator {
       });
       throw new ContinuityExecutionError("BACKUP_EXECUTION_FAILED", task, error);
     }
-    const backupVerification = await verifyDelivery({
-      promise: backupDelivery.servicePromise,
-      request: backupDelivery.request,
-      response: backupDelivery.response,
-      receipt: backupDelivery.deliveryReceipt,
-      checkedAt: backupDelivery.deliveryReceipt.payload.deliveredAt,
+    const backupVerification = await verifyCoordinatedDelivery({
+      chainId: this.dependencies.chainId,
+      vault: this.dependencies.vault,
+      provider: selection.backup,
+      requirement: input.requirement,
+      request: backupRequest,
+      delivery: backupDelivery,
     });
-    const backup = { ...backupDelivery, verification: backupVerification };
+    const backup = { ...backupDelivery, request: backupRequest, verification: backupVerification };
     if (backupVerification.status !== "ACCEPTED") {
       const task = await this.dependencies.store.transition(taskId, {
         state: "FROZEN",

@@ -86,7 +86,7 @@
           "state": "PRIMARY_BREACH",
           "at": 1789606802,
           "providerId": "official-atlas-primary",
-          "evidenceHash": "0xf9bc1158d9c6e6eefbf62ab6c7e07c719af564c45aea95410dbe8fc1f2eeddd1",
+          "evidenceHash": "0x62affa7948f902b3f8132ad2335fc00f4fe550b66ed5fc95bedb536c38d8456c",
           "description": "Primary delivery breached: freshnessMet."
         },
         {
@@ -99,7 +99,7 @@
           "state": "RECOVERED",
           "at": 1789606805,
           "providerId": "official-harbor-backup",
-          "evidenceHash": "0x1a75589ca99ecb854c618f42b5b4d57d9d7c0ec5fdd767ff47097225dd7563fc",
+          "evidenceHash": "0x2bd8b2313583637f4d102427315d1d1ad9fe588700ca95cb19d008cf0500b9d4",
           "description": "Backup delivery accepted; verifier authorized bond-funded settlement."
         }
       ],
@@ -170,9 +170,11 @@
           "deadlineMet": true,
           "freshnessMet": false,
           "schemaMet": true,
-          "recordCountMet": true
+          "recordCountMet": true,
+          "coordinatorRequestBound": true,
+          "providerProfileBound": true
         },
-        "evidenceHash": "0xf9bc1158d9c6e6eefbf62ab6c7e07c719af564c45aea95410dbe8fc1f2eeddd1"
+        "evidenceHash": "0x62affa7948f902b3f8132ad2335fc00f4fe550b66ed5fc95bedb536c38d8456c"
       }
     },
     "backup": {
@@ -238,9 +240,11 @@
           "deadlineMet": true,
           "freshnessMet": true,
           "schemaMet": true,
-          "recordCountMet": true
+          "recordCountMet": true,
+          "coordinatorRequestBound": true,
+          "providerProfileBound": true
         },
-        "evidenceHash": "0xd7bd4591f3c52a797728b4caf191cf4dfeed5fb516312d23138d77ac9647e914"
+        "evidenceHash": "0xeecb760f8707fc31291def47a11f00bc3bcc4622f511baa8351cea89dd36b3ad"
       }
     },
     "continuityReceipt": {
@@ -257,12 +261,12 @@
         "backupStatus": "ACCEPTED",
         "finalStatus": "RECOVERED",
         "breachReason": "freshnessMet",
-        "primaryEvidenceHash": "0xf9bc1158d9c6e6eefbf62ab6c7e07c719af564c45aea95410dbe8fc1f2eeddd1",
-        "recoveryEvidenceHash": "0xd7bd4591f3c52a797728b4caf191cf4dfeed5fb516312d23138d77ac9647e914",
+        "primaryEvidenceHash": "0x62affa7948f902b3f8132ad2335fc00f4fe550b66ed5fc95bedb536c38d8456c",
+        "recoveryEvidenceHash": "0xeecb760f8707fc31291def47a11f00bc3bcc4622f511baa8351cea89dd36b3ad",
         "completedAt": 1789606805,
         "verifier": "0x083ED08F75C4cb12e97C13c07F9d836e93DF5E60"
       },
-      "signature": "0xeca0f526af640ab29a7e6f5430058dd94651c01074b15f3f808bf5f02ff01555621c98b511c3ee8de9ea5ce37221310c614e82772f3c28fc84a2ab8bbb914d2b1b"
+      "signature": "0x951380f0e159d013aae85f2a4f873564534134fb40ccba503c994a8320d5c5c964b5ee09c8baafee51771d853afee8efcbfe226ffd225fd32269b22644653a5d1b"
     },
     "recoveryAttestation": {
       "payload": {
@@ -307,7 +311,7 @@
           "state": "PRIMARY_BREACH",
           "at": 1789610402,
           "providerId": "official-atlas-primary",
-          "evidenceHash": "0xea90f928616691a7616b4fb27bb49e8d6c6f1eaaea3bba9183d3a1550044c536",
+          "evidenceHash": "0x03601f8d2091b462b6e0321134a437ddca95e646ed4786d3d2c54fb229b267e5",
           "description": "Primary delivery breached: freshnessMet."
         },
         {
@@ -320,7 +324,7 @@
           "state": "FROZEN",
           "at": 1789610405,
           "providerId": "official-harbor-backup",
-          "evidenceHash": "0xedafb6b869a06b9f291861adf8ff4d633e34f3193b9d974ba7c7cf612c8c0c16",
+          "evidenceHash": "0x4c7e6f8192082914c66aaffe8840d39e487ca35ebaaab81869aaa132d2ad2d52",
           "description": "Backup delivery also breached: freshnessMet."
         }
       ],
@@ -391,9 +395,11 @@
           "deadlineMet": true,
           "freshnessMet": false,
           "schemaMet": true,
-          "recordCountMet": true
+          "recordCountMet": true,
+          "coordinatorRequestBound": true,
+          "providerProfileBound": true
         },
-        "evidenceHash": "0xea90f928616691a7616b4fb27bb49e8d6c6f1eaaea3bba9183d3a1550044c536"
+        "evidenceHash": "0x03601f8d2091b462b6e0321134a437ddca95e646ed4786d3d2c54fb229b267e5"
       }
     },
     "backup": {
@@ -461,9 +467,11 @@
           "deadlineMet": true,
           "freshnessMet": false,
           "schemaMet": true,
-          "recordCountMet": true
+          "recordCountMet": true,
+          "coordinatorRequestBound": true,
+          "providerProfileBound": true
         },
-        "evidenceHash": "0xedafb6b869a06b9f291861adf8ff4d633e34f3193b9d974ba7c7cf612c8c0c16"
+        "evidenceHash": "0x4c7e6f8192082914c66aaffe8840d39e487ca35ebaaab81869aaa132d2ad2d52"
       }
     }
   },
@@ -476,9 +484,9 @@
     "doubleFailureFreezes": true,
     "onchainSettlement": false
   },
-  "evidenceHash": "0x250a9792c6ea793d03ec37c0cd52390da268134bd200f90ae105612023defc20",
+  "evidenceHash": "0xfffa9f4b3452273949e7cb7d492c1fd804cb34ad03e92c27274690deba024efc",
   "portableIntegrity": {
     "algorithm": "SHA-256",
-    "hash": "0x2178973206a55dc43708348ef8ed4e466118f7214ff24e591d6c53ffbac01a38"
+    "hash": "0xe08b5864a80b668870b7ab26f6bf2eb6946b31a7da4e7ae883528dfd0fc4cf45"
   }
 }

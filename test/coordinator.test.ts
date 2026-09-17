@@ -165,3 +165,22 @@ test("freezes the task when both independent providers breach", async () => {
   assert.equal(result.recoveryAttestation, undefined);
   assert.match(result.task.events.at(-1)?.description ?? "", /Backup delivery also breached/);
 });
+
+test("treats a provider-returned request substitution as a breach", async () => {
+  let clock = baseTime;
+  const store = new MemoryContinuityTaskStore();
+  const honest = new DeterministicExecutor({ primary: "accepted", backup: "accepted" });
+  const executor: ProviderExecutor = {
+    async execute(input) {
+      const result = await honest.execute(input);
+      if (input.provider.providerId !== "primary") return result;
+      return { ...result, request: { ...result.request, buyer: backupAccount.address } };
+    },
+  };
+  const subject = new ContinuityCoordinator({ chainId, vault, verifier, providers, executor, store, now: () => ++clock });
+  const result = await subject.execute({ buyer: buyer.address, requestInput: { symbol: "BTC-USDT" }, requirement, requestedAt: baseTime });
+  assert.equal(result.primary.verification.status, "BREACH");
+  assert.equal(result.primary.verification.checks.coordinatorRequestBound, false);
+  assert.ok(result.primary.verification.violations.includes("coordinatorRequestBound"));
+  assert.equal(result.task.state, "RECOVERED");
+});

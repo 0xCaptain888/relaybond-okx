@@ -14,6 +14,7 @@ import { verifyDelivery, type VerificationInput } from "./verifier.js";
 import { APP_VERSION } from "./version.js";
 import { createContinuityEvidence } from "./continuity-simulator.js";
 import { createOfficialCoordinatorEvidence } from "./official-build-simulator.js";
+import { providerConfigurationStatus } from "./provider-config.js";
 
 export function createOkxApp() {
   const required = ["OKX_API_KEY", "OKX_SECRET_KEY", "OKX_PASSPHRASE", "X402_PAY_TO", "PROVIDER_SIGNING_KEY"] as const;
@@ -77,6 +78,27 @@ export function createOkxApp() {
     } catch (error) {
       next(error);
     }
+  });
+  app.get("/v1/official/readiness", (_request, response) => {
+    response.json({
+      mode: "OFFICIAL_PERIOD_PROVIDER_RUNTIME",
+      configuration: providerConfigurationStatus(),
+      transport: {
+        executor: "HttpProviderExecutor",
+        endpointBinding: true,
+        redirectsAllowed: false,
+        timeoutMs: 10_000,
+        maximumResponseBytes: 1_000_000,
+      },
+      paymentBoundary: {
+        automaticPayment: false,
+        behavior: "HTTP 402 stops execution and requires a separately reviewed authorization.",
+      },
+      settlement: {
+        v2Broadcast: false,
+        status: "PENDING",
+      },
+    });
   });
   app.post("/v1/verify", async (request, response, next) => {
     try {

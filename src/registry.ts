@@ -55,5 +55,8 @@ export function selectPrimaryAndBackup(
 ) {
   const eligible = rankBondedProviders(providers, requirement).filter((provider) => provider.eligible);
   if (eligible.length < 2) throw new Error("Continuity recovery requires at least two eligible bonded providers.");
-  return { primary: eligible[0], backup: eligible[1], ranked: eligible };
+  const primary = eligible[0]!;
+  const backup = eligible.slice(1).find((provider) => BigInt(provider.priceAtomic) <= BigInt(primary.priceAtomic));
+  if (!backup) throw new Error("No independent backup fits within the buyer's primary payment.");
+  return { primary, backup, ranked: eligible };
 }

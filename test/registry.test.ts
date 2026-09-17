@@ -30,3 +30,16 @@ test("ranks only active bonded providers that satisfy the task policy", () => {
   assert.equal(selection.primary.providerId, "primary");
   assert.equal(selection.backup.providerId, "backup");
 });
+
+test("selects a backup that can be paid from the buyer's original payment", () => {
+  const expensiveBackup = { ...base, providerId: "expensive", provider: "0x2222222222222222222222222222222222222222" as const, serviceId: "expensive", priceAtomic: "20000", maximumLatencyMs: 1, reliability: { verifiedCalls: 10, acceptedCalls: 10, recoveredCalls: 10 } };
+  const affordableBackup = { ...base, providerId: "affordable", provider: "0x3333333333333333333333333333333333333333" as const, serviceId: "affordable", priceAtomic: "9000", reliability: { verifiedCalls: 10, acceptedCalls: 5, recoveredCalls: 0 } };
+  const primary = { ...base, providerId: "primary", provider: "0x1111111111111111111111111111111111111111" as const, serviceId: "primary", priceAtomic: "10000", reliability: { verifiedCalls: 20, acceptedCalls: 20, recoveredCalls: 20 } };
+  const selection = selectPrimaryAndBackup([primary, expensiveBackup, affordableBackup], {
+    schema: "market-quote-v1",
+    maximumPriceAtomic: "20000",
+    maximumLatencyMs: 2_000,
+  });
+  assert.equal(selection.primary.providerId, "primary");
+  assert.equal(selection.backup.providerId, "affordable");
+});

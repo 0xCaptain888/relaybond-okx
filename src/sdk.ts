@@ -3,6 +3,7 @@ import type { VerificationResult } from "./types.js";
 import type { ServicePromise, Signed } from "./types.js";
 import type { BondedProviderProfile, ContinuityEvidence } from "./types.js";
 import type { OfficialCoordinatorEvidence } from "./official-build-simulator.js";
+import type { ProviderConfigurationStatus } from "./provider-config.js";
 
 export class RelayBondClient {
   private readonly baseUrl: string;
@@ -43,6 +44,18 @@ export class RelayBondClient {
     const response = await fetch(`${this.baseUrl}/v1/official/coordinator`);
     if (!response.ok) throw new Error(`RelayBond official coordinator lookup failed: ${response.status}`);
     return response.json() as Promise<OfficialCoordinatorEvidence>;
+  }
+
+  async officialReadiness(): Promise<{
+    mode: "OFFICIAL_PERIOD_PROVIDER_RUNTIME";
+    configuration: ProviderConfigurationStatus;
+    transport: { executor: string; endpointBinding: boolean; redirectsAllowed: boolean; timeoutMs: number; maximumResponseBytes: number };
+    paymentBoundary: { automaticPayment: boolean; behavior: string };
+    settlement: { v2Broadcast: boolean; status: "PENDING" | "TESTNET" | "LIVE" };
+  }> {
+    const response = await fetch(`${this.baseUrl}/v1/official/readiness`);
+    if (!response.ok) throw new Error(`RelayBond official runtime readiness failed: ${response.status}`);
+    return response.json();
   }
 
   async paymentChallenge(input: { symbol: string; scenario?: "accepted" | "empty" | "stale" }) {
