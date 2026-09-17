@@ -17,6 +17,9 @@ const bondStatus = document.querySelector("#bond-status");
 const steps = [...document.querySelectorAll("[data-step]")];
 const officialSteps = [...document.querySelectorAll("[data-official-step]")];
 const officialState = document.querySelector("#official-state");
+const v2PlanStatus = document.querySelector("#v2-plan-status");
+const v2PlanDetail = document.querySelector("#v2-plan-detail");
+const v2ReadinessDetail = document.querySelector("#v2-readiness-detail");
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -50,6 +53,15 @@ async function loadOfficialEvidence() {
   const response = await fetch("./evidence/official-build/coordinator-v1.json", { cache: "no-store" });
   if (!response.ok) throw new Error("Generate official evidence first: npm run demo:official-coordinator");
   return response.json();
+}
+
+async function loadV2Readiness() {
+  const [planResponse, readinessResponse] = await Promise.all([
+    fetch("./evidence/official-build/v2-deployment-plan.json", { cache: "no-store" }),
+    fetch("./evidence/official-build/v2-readiness.json", { cache: "no-store" }),
+  ]);
+  if (!planResponse.ok || !readinessResponse.ok) throw new Error("V2 readiness evidence is not published yet");
+  return { plan: await planResponse.json(), readiness: await readinessResponse.json() };
 }
 
 async function loadLiveEvidence(name) {
@@ -181,7 +193,12 @@ async function runOfficialFlow() {
       step.lastElementChild.textContent = event.state;
       output.textContent += `\n\n${event.state === "PRIMARY_BREACH" ? "!" : "✓"} ${event.state}\n  ${event.description}`;
     }
-    output.textContent += `\n\nRecovered trail\n${events.map((event) => event.state).join(" → ")}\n\nFail-closed trail\n${evidence.frozen.task.events.map((event) => event.state).join(" → ")}\n\nRecovery Attestation digest\n${evidence.recoveryAttestationDigest}\n\nEvidence hash\n${evidence.evidenceHash}\n\nOnchain settlement: ${evidence.claims.onchainSettlement}\nMode: ${evidence.mode}`;
+    let readinessText = "V2 deployment plan: unavailable";
+    try {
+      const { plan, readiness } = await loadV2Readiness();
+      readinessText = `V2 deployment plan: READ-ONLY READY\nChain: ${plan.chainId}\nPredicted address: ${plan.predictedAddress}\nGas estimate: ${Number(plan.gasEstimate).toLocaleString()}\nIndependent Provider identities: ${readiness.checks.independentProviders}\nReady for deployment: ${readiness.readyForDeployment}\nReady for registration: ${readiness.readyForRegistration}`;
+    } catch {}
+    output.textContent += `\n\nRecovered trail\n${events.map((event) => event.state).join(" → ")}\n\nFail-closed trail\n${evidence.frozen.task.events.map((event) => event.state).join(" → ")}\n\nRecovery Attestation digest\n${evidence.recoveryAttestationDigest}\n\nEvidence hash\n${evidence.evidenceHash}\n\n${readinessText}\n\nOnchain settlement: ${evidence.claims.onchainSettlement}\nMode: ${evidence.mode}`;
     officialState.textContent = "RECOVERED + FROZEN VERIFIED";
   } catch (error) {
     output.textContent = `$ Official coordinator failed\n${error.message}`;
@@ -233,6 +250,18 @@ async function loadLiveStatus() {
   }
 }
 
+async function loadV2Status() {
+  try {
+    const { plan, readiness } = await loadV2Readiness();
+    v2PlanStatus.textContent = readiness.readyForDeployment ? "PLAN READY" : "NOT READY";
+    v2PlanDetail.textContent = `${plan.chainId} · gas ${Number(plan.gasEstimate).toLocaleString()} · ${plan.predictedAddress.slice(0, 6)}…${plan.predictedAddress.slice(-4)}`;
+    const configured = [readiness.checks.primaryConfigured, readiness.checks.backupConfigured].filter(Boolean).length;
+    v2ReadinessDetail.textContent = `${configured}/2 identities · registration ${readiness.readyForRegistration ? "ready" : "pending"}`;
+  } catch {
+    v2PlanStatus.textContent = "PENDING";
+  }
+}
+
 async function verifyEvidence() {
   verifyButton.disabled = true;
   try {
@@ -279,3 +308,4 @@ runOfficialButton.addEventListener("click", runOfficialFlow);
 verifyOfficialButton.addEventListener("click", verifyOfficialEvidence);
 loadPassport().catch(() => {});
 loadLiveStatus().catch(() => {});
+loadV2Status().catch(() => {});

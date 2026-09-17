@@ -1,0 +1,24 @@
+{
+  "evidenceVersion": "official-v2-plan-1",
+  "mode": "XLAYER_TESTNET_READ_ONLY_PLAN",
+  "chainId": 1952,
+  "contract": "RecoveryBondVaultV2",
+  "settlementToken": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+  "verifier": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
+  "deployer": "0xC0F33b0334B1d000Cc40Dd0001762C1232dDAC08",
+  "deployerNativeBalanceAtomic": "199973030018651501",
+  "constructorArguments": [
+    "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+    "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE"
+  ],
+  "bytecodeHash": "0xf4e076f62962dbf49597696c10e7e673e13f7c963f7d20ee32ae5dea57f84793",
+  "gasEstimate": "846230",
+  "gasPriceAtomic": "20000001",
+  "estimatedGasCostAtomic": "16924600846230",
+  "nonce": 2,
+  "predictedAddress": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+  "predictedAddressUnused": true,
+  "broadcast": false,
+  "requiredConfirmation": "DEPLOY_RECOVERY_BOND_V2_XLAYER_TESTNET",
+  "generatedAt": "2026-09-17T06:17:23.826Z"
+}

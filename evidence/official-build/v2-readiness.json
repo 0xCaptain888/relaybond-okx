@@ -1,0 +1,46 @@
+{
+  "evidenceVersion": "official-v2-readiness-1",
+  "mode": "XLAYER_TESTNET_READ_ONLY",
+  "generatedAt": "2026-09-17T06:21:41.377Z",
+  "chainId": 1952,
+  "settlementToken": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+  "vault": null,
+  "roles": {
+    "deployer": {
+      "address": "0xC0F33b0334B1d000Cc40Dd0001762C1232dDAC08",
+      "nativeBalance": "0.199973030018651501"
+    },
+    "primary": {
+      "address": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+      "nativeBalance": "0.199993901959695098",
+      "tokenBalance": "4.99",
+      "requiredTokenBalance": "5"
+    },
+    "backup": {
+      "address": "0x3d5462243c7c69914Bfa0d2d4089cef79482ee03",
+      "nativeBalance": "0",
+      "tokenBalance": "0",
+      "requiredTokenBalance": "3"
+    },
+    "verifier": {
+      "address": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
+      "gasRequired": false
+    }
+  },
+  "checks": {
+    "correctChain": true,
+    "settlementTokenHasCode": true,
+    "deployerConfigured": true,
+    "deployerHasGas": true,
+    "verifierConfigured": true,
+    "primaryConfigured": true,
+    "backupConfigured": true,
+    "independentProviders": true,
+    "v2Deployed": false,
+    "primaryBondFunded": false,
+    "backupBondFunded": false
+  },
+  "readyForDeployment": true,
+  "readyForRegistration": false,
+  "broadcastPerformed": false
+}

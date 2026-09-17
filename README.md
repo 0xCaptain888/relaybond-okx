@@ -17,13 +17,18 @@ The first post-start feature is an automatic Continuity Coordinator that:
 - transitions through an auditable monotonic state machine;
 - emits a Solidity-compatible EIP-712 Recovery Attestation when the backup succeeds;
 - ends in `FROZEN`, never false success, when both providers breach;
-- exposes its Evidence Pack through the browser, API and TypeScript SDK.
+- exposes its Evidence Pack through the browser, API and TypeScript SDK;
 - loads independent provider metadata from a strict secret-free configuration and executes bound HTTPS deliveries without automatic payment.
+
+The official-period runtime now also passes an opt-in end-to-end test using two separate loopback HTTP services and two signing identities: Primary returns a signed stale quote, Backup returns a signed fresh quote, and the coordinator reaches `RECOVERED` with one buyer payment. This is **LOCAL / TESTED**, not a claim of two deployed public Providers.
 
 Current status: **LOCAL / TESTED / BROWSER VERIFIED**. The generated evidence honestly records `onchainSettlement: false`; V2 Testnet deployment and bond-funded backup settlement remain **PENDING**.
 
 ```bash
 npm run demo:official-coordinator
+npm run test:integration:http
+npm run readiness:v2
+npm run deploy:v2:plan
 ```
 
 Open the Judge Demo and select **Run official coordinator**, then **Verify Official Build**. The browser independently recovers both verifier signatures and checks the Recovery Attestation digest, `RECOVERED` and `FROZEN` terminal states, canonical Keccak evidence hash and portable SHA-256 integrity.
@@ -185,6 +190,7 @@ npm run rebate:live-breach -- --confirm
 - [`src/official-build-simulator.ts`](./src/official-build-simulator.ts) — reproducible `RECOVERED` and double-failure `FROZEN` Evidence Pack.
 - [`src/provider-config.ts`](./src/provider-config.ts) — strict, secret-free independent-provider configuration validation.
 - [`src/http-provider-executor.ts`](./src/http-provider-executor.ts) — endpoint-bound HTTPS delivery transport that stops at payment boundaries.
+- [`src/provider-service.ts`](./src/provider-service.ts) — isolated signed-delivery service used by independently configured Provider processes.
 - [`src/signing.ts`](./src/signing.ts) — EIP-712 ServicePromise and DeliveryReceipt signatures.
 - [`src/verifier.ts`](./src/verifier.ts) — independent objective SLA verifier.
 - [`src/payment.ts`](./src/payment.ts) — x402 `exact` payment challenge.
@@ -196,6 +202,7 @@ npm run rebate:live-breach -- --confirm
 - [`openapi.yaml`](./openapi.yaml) — machine-readable integration surface.
 - [`docs/okx-a2mcp-listing.md`](./docs/okx-a2mcp-listing.md) — copy-ready OKX AI listing package.
 - [`docs/provider-runtime.md`](./docs/provider-runtime.md) — provider endpoint contract, safety boundary and production configuration.
+- [`docs/v2-deployment-runbook.md`](./docs/v2-deployment-runbook.md) — guarded deployment, verification, bonding and settlement sequence.
 - [`web/`](./web) — judge-facing interactive proof narrative.
 - [`docs/architecture.md`](./docs/architecture.md) — system and trust boundaries.
 - [`docs/live-checklist.md`](./docs/live-checklist.md) — honest path from local foundation to live submission.
@@ -247,6 +254,8 @@ npm run rebate:live-breach -- --confirm
 | Recovery Attestation | LOCAL / BROWSER VERIFIED | EIP-712 signer recovery, Solidity-compatible digest and canonical Evidence Pack integrity |
 | Double-provider failure | LOCAL / FROZEN | coordinator fails closed rather than presenting a failed backup as recovery |
 | Independent provider runtime | LOCAL / TESTED | strict configuration, endpoint binding, request/profile binding, limits and fail-closed HTTP 402 behavior |
+| Two-process Provider recovery | LOCAL / TESTED | real HTTP Primary `BREACH` → independent Backup `ACCEPTED` → `RECOVERED`; buyer payment remains singular |
+| V2 deployment readiness | TESTNET / READ-ONLY | chain, bytecode dependency, roles, balances, Gas, nonce and predicted address checked; no broadcast |
 
 See the detailed [prior-work and pre-build disclosure](./docs/prior-work-disclosure.md), the separate [official build-period record](./docs/official-build-period.md) and the [threat model](./docs/threat-model.md). The pre-build disclosure explains why feasibility work began early and lists every September 15 commit with exact UTC+8 timestamps; the official-period record contains only post-start functionality and evidence.
 Production dependencies currently pass [`npm run security:audit`](./SECURITY.md) with zero known vulnerabilities; legacy Hardhat advisories are isolated to the local development toolchain.

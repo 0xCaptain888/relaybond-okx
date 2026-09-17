@@ -16,6 +16,7 @@ export { rankBondedProviders, selectPrimaryAndBackup } from "./registry.js";
 export { ContinuityCoordinator, ContinuityExecutionError } from "./coordinator.js";
 export { MemoryContinuityTaskStore } from "./task-store.js";
 export { HttpProviderExecutor, ProviderPaymentRequiredError, ProviderTransportError } from "./http-provider-executor.js";
+export { createProviderService } from "./provider-service.js";
 export { parseProviderConfiguration, providerConfigurationStatus } from "./provider-config.js";
 export type { ProviderConfigurationStatus } from "./provider-config.js";
 export type {
