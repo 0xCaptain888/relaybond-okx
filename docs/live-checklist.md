@@ -43,7 +43,8 @@
 ## Submission hygiene
 
 - [x] README links first: demo, live API, source and contract.
-- [ ] 2–4 minute video starts with `Payment: SUCCESS / Response: {}`.
+- [x] Local 3:08 submission video starts with `Payment: SUCCESS / Response: {}` and passed media/content QA.
+- [ ] Upload the final MP4 as an Unlisted or Public video and add its URL to the submission.
 - [x] Prior-work disclosure is linked.
 - [x] Every claim is labeled LOCAL, TESTNET, LIVE, MAINNET or DESIGN.
 - [ ] Submission is frozen and checked before 2026-09-25 23:59 UTC.
