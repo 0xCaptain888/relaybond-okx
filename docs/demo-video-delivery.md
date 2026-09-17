@@ -4,8 +4,8 @@ Rendered and verified on September 17, 2026 for the OKX Dev Day 2026 Remote Buil
 
 ## Final local files
 
-- Video: `artifacts/demo-video/relaybond-okx-dev-day-demo-final.mp4`
-- English captions: `artifacts/demo-video/relaybond-okx-dev-day-demo-final.srt`
+- Video: `artifacts/demo-video/relaybond-okx-dev-day-demo-male-final.mp4`
+- English captions: `artifacts/demo-video/relaybond-okx-dev-day-demo-male-final.srt`
 - Source script: `docs/demo-video-script.md`
 - Source evidence commit: `a885496`
 
@@ -13,15 +13,16 @@ The `artifacts/` directory is intentionally gitignored so a generated binary is 
 
 ## Verified media properties
 
-- Duration: `00:03:07.758`
+- Duration: `00:03:49.732`
 - Resolution: `1280 × 720`
 - Frame rate: `30 fps`
 - Video codec: `H.264`
 - Audio codec: `AAC`, mono, `22.05 kHz`
-- Audio mean: `-15.9 dB`
-- Audio peak: `-1.5 dB`
-- File size: `3,288,319 bytes`
-- SHA-256: `31415ab04217cd1a358778b37cddcf184ca8ee1d50a3d1191d602d8bf716ef53`
+- Voice: natural American English male voice, paced for a judge walkthrough
+- Audio mean: `-16.5 dB`
+- Audio peak: `-1.3 dB`
+- File size: `3,937,640 bytes`
+- SHA-256: `30beaf2eba7fb31171a72d8aa8a913c6cb0d4d546709b4db2297bc2bdd0362a7`
 
 ## Content verification
 

@@ -1,6 +1,6 @@
-# RelayBond 3:08 submission video
+# RelayBond 3:50 submission video
 
-Rendered length: **3 minutes 08 seconds**. Language: English. Format: 16:9, 720p.
+Rendered length: **3 minutes 50 seconds**. Language: English with a natural American male voice. Format: 16:9, 720p.
 
 The video must show the real public Demo and real evidence. Do not imply that the read-only Judge Run creates a new transaction.
 
@@ -13,7 +13,7 @@ Payment: SUCCESS
 Response: {}
 ```
 
-## 0:04–0:21 — The unfinished task
+## 0:04–0:24 — The unfinished task
 
 ### Screen
 
@@ -21,13 +21,13 @@ RelayBond hero and Failover Switch logo.
 
 ### Voiceover
 
-> An AI Agent paid for a service. The payment succeeded. The provider failed. A refund still leaves the task unfinished. RelayBond makes sure the task finishes without charging the buyer twice.
+> An AI agent paid for a service. The payment went through, but the provider failed. A refund might return the money, but it still leaves the job unfinished. RelayBond closes that gap. The agent can fail, the task still finishes, and the buyer is never charged twice.
 
 ### Caption
 
 `The agent failed. The task still finishes.`
 
-## 0:21–0:39 — The missing reliability layer
+## 0:24–0:46 — The missing reliability layer
 
 ### Screen
 
@@ -35,9 +35,9 @@ Show the live deployment cards: HTTP 402, Quality Bond, Agentic Wallet, Primary 
 
 ### Voiceover
 
-> RelayBond is the reliability clearing layer for paid AI Agents. Providers publish signed service promises, lock USD₮0 bonds and sign every delivery. Routing is based on verifiable performance, not marketing claims.
+> RelayBond is the reliability clearing layer for paid AI agents. Providers publish clear service promises, lock USD₮0 quality bonds, and sign every delivery. Buyers can route work using verified performance and real financial coverage, instead of trusting a promise that nobody can measure.
 
-## 0:39–1:34 — One-click Judge Proof
+## 0:46–1:54 — One-click Judge Proof
 
 ### Screen
 
@@ -45,7 +45,11 @@ Click **Run 60-second Judge Proof**. Keep the five verification stages visible.
 
 ### Voiceover
 
-> This is a read-only verification of a completed live recovery. First, the browser inspects the production OKX x402 payment boundary. The Agentic Wallet payment succeeded, but the Primary returned stale market data, producing an objective signed breach. RelayBond then authenticated an independent bonded Backup. The Backup returned a fresh signed result, and the verifier issued a recovered Continuity Receipt.
+> Here is the one-click Judge Proof. It is a read-only verification of a completed, live recovery. It does not ask for a wallet signature, and it does not pretend to create a new transaction. First, the browser checks the production OKX x402 payment boundary on X Layer Testnet.
+
+> The OKX Agentic Wallet payment succeeded. But the bonded Primary returned stale market data and broke its signed freshness promise. Before recovery can continue, RelayBond verifies the payment, the original request, the provider identity, the delivery signature, and the exact reason for the breach.
+
+> RelayBond sends the same task to a different, bonded provider through an authenticated Backup endpoint. The Backup returns a fresh, signed result. Right here in the browser, RelayBond recovers both signers and verifies the EIP-712 evidence and the portable SHA-256 integrity hash.
 
 ### Captions
 
@@ -54,7 +58,7 @@ Click **Run 60-second Judge Proof**. Keep the five verification stages visible.
 - `INDEPENDENT BACKUP: ACCEPTED`
 - `EIP-712 SIGNERS RECOVERED IN BROWSER`
 
-## 1:34–1:54 — Real X Layer settlement
+## 1:54–2:18 — Real X Layer settlement
 
 ### Screen
 
@@ -62,13 +66,13 @@ Show the final Judge Proof console and the settlement transaction hash. Briefly 
 
 ### Voiceover
 
-> Recovery was not paid by the buyer. The X Layer contract transferred exactly 0.01 USD₮0 from the failed Primary bond to the Backup. The buyer balance remained unchanged, the Primary bond fell from 5.00 to 4.99 USD₮0 and auto-paused, and all seven post-settlement checks passed.
+> The buyer did not pay for recovery. The X Layer contract transferred exactly 0.01 USD₮0 from the failed Primary bond to the Backup. The buyer balance stayed unchanged. The Backup balance increased, the Primary bond dropped from 5.00 to 4.99, and all seven settlement checks passed.
 
 ### Caption
 
 `Buyer paid once · Primary bond funded recovery · 7/7 checks passed`
 
-## 1:54–2:14 — Portable evidence
+## 2:18–2:43 — Portable evidence
 
 ### Screen
 
@@ -76,9 +80,9 @@ Show the final evidence console and public verification paths.
 
 ### Voiceover
 
-> The final console binds the live payment, Primary breach, independent Backup delivery, verifier signatures, settlement transaction, and buyer-paid-once economics into one inspectable result. Anyone can pause the video, copy the transaction hashes, call the public evidence endpoint, or run the same verification in their own browser.
+> The final console ties everything together: the live payment, the Primary breach, the independent Backup delivery, both signatures, the settlement transaction, and proof that the buyer paid once. Anyone can pause the video, inspect the hashes, call the public evidence endpoint, or repeat the same verification in their own browser.
 
-## 2:14–2:33 — Fail closed, never false success
+## 2:43–3:06 — Fail closed, never false success
 
 ### Screen
 
@@ -86,9 +90,9 @@ Show the Official Coordinator and the `RECOVERED` and `FROZEN` paths.
 
 ### Voiceover
 
-> RelayBond never converts a failed retry into fake success. If the independent Backup also breaches, the task moves to FROZEN. Every state transition, delivery signature and recovery decision is bound into portable evidence.
+> RelayBond also fails closed. If the independent Backup fails, the task becomes FROZEN instead of being shown as recovered. Every state change is permanent and tied to evidence. That is the difference between honest orchestration and a retry system that quietly turns a second failure into a fake success screen.
 
-## 2:33–2:53 — Why OKX
+## 3:06–3:31 — Why OKX
 
 ### Screen
 
@@ -96,9 +100,9 @@ Show the X Layer contract, OKX.AI Agent card and public A2MCP Recovery Proof end
 
 ### Voiceover
 
-> OKX x402 provides the payment boundary. Agentic Wallet authorizes the buyer payment. X Layer makes service reliability enforceable capital. OKX.AI Agent thirteen-seven-seven-six exposes the completed Recovery Proof as a free A2MCP service.
+> OKX x402 provides the payment boundary. Agentic Wallet provides programmable buyer authorization. X Layer turns provider reliability into enforceable capital. And OKX.AI Agent thirteen-seven-seven-six exposes the completed Recovery Proof as a free A2MCP service for other agents and applications.
 
-## 2:53–3:08 — Close
+## 3:31–3:50 — Close
 
 ### Screen
 
@@ -106,7 +110,7 @@ Return to the hero and logo. Display the Demo and GitHub URLs.
 
 ### Voiceover
 
-> Payments make Agent commerce possible. RelayBond makes it dependable. One payment, one completed task, and evidence anyone can verify.
+> Payments make agent commerce possible. RelayBond makes it dependable. One buyer payment, one completed task, an independent recovery provider, and evidence anyone can verify. RelayBond is the reliability clearing layer for the agent economy.
 
 ### Final caption
 
