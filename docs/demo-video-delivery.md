@@ -4,39 +4,42 @@ Rendered and verified on September 17, 2026 for the OKX Dev Day 2026 Remote Buil
 
 ## Final local files
 
-- Video: `artifacts/demo-video/relaybond-okx-dev-day-demo-male-final.mp4`
-- English captions: `artifacts/demo-video/relaybond-okx-dev-day-demo-male-final.srt`
+- Video: `artifacts/demo-video/relaybond-okx-dev-day-demo-ryan-final.mp4`
+- English captions: `artifacts/demo-video/relaybond-okx-dev-day-demo-ryan-final.srt`
 - Source script: `docs/demo-video-script.md`
-- Source evidence commit: `a885496`
+- Source evidence commit: `0a01daf`
 
-The `artifacts/` directory is intentionally gitignored so a generated binary is not committed to the source repository.
+The `artifacts/` directory is intentionally gitignored. Generated media and the local TTS environment are not committed to the source repository.
 
 ## Verified media properties
 
-- Duration: `00:03:49.732`
+- Duration: `00:03:25.967`
 - Resolution: `1280 × 720`
 - Frame rate: `30 fps`
 - Video codec: `H.264`
 - Audio codec: `AAC`, mono, `22.05 kHz`
-- Voice: natural American English male voice, paced for a judge walkthrough
-- Audio mean: `-16.5 dB`
-- Audio peak: `-1.3 dB`
-- File size: `3,937,640 bytes`
-- SHA-256: `30beaf2eba7fb31171a72d8aa8a913c6cb0d4d546709b4db2297bc2bdd0362a7`
+- Voice model: `mlx-community/Qwen3-TTS-12Hz-0.6B-CustomVoice-8bit`
+- Voice preset: `Ryan`, speed `0.9×`
+- Integrated loudness: `-16.76 LUFS`
+- True peak: `-1.40 dBTP`
+- File size: `3,537,091 bytes`
+- SHA-256: `ee3fe943bd3ddfd3e0dd6efb75dbff9f2f1d3e41440e61e403080085e93eb051`
+
+The narration is locally generated neural speech, not a human recording. Its direction is calm, warm, conversational and deliberately avoids an advertisement or trailer cadence.
 
 ## Content verification
 
 - Opens for four seconds with `Payment: SUCCESS` and `Response: {}`.
 - Uses captures from the real public deployment at `https://relaybond-okx.vercel.app/`.
-- Demonstrates the read-only one-click Judge Proof and clearly says it does not create a new payment or transaction.
+- Demonstrates the read-only Judge Proof and says that it does not create a new payment or transaction.
 - Shows `HTTP 402 VERIFIED → PAID BREACH → ACCEPTED + SIGNED → 7/7 ONCHAIN → JUDGE PASS`.
 - Explains that the buyer paid once and the failed Primary bond funded the independent Backup.
-- Shows the fail-closed `FROZEN` path without representing it as a successful recovery.
-- Names the OKX x402, Agentic Wallet, X Layer and OKX.AI/A2MCP integrations.
+- Shows the fail-closed `FROZEN` path without presenting it as successful recovery.
+- Names the OKX payment boundary, Agentic Wallet authorization, X Layer settlement and OKX.AI/A2MCP integration.
 - Ends with the public Demo and GitHub project context.
 
-QA frames were inspected at the opening, middle and closing timestamps. The final encode has a valid video stream and a non-silent audio stream.
+Opening, middle and closing frames were inspected after the final encode. The file has valid H.264 video, audible AAC audio and no clipped peaks.
 
 ## External publication step
 
-Upload the MP4 to YouTube as **Unlisted** or **Public**, upload the SRT as English captions, and add the resulting public URL to the submission form. A private video is not suitable for judging.
+Upload the MP4 to YouTube as **Unlisted** or **Public**, upload the SRT as English captions, and add the public URL to the submission form. Private visibility is unsuitable for judging.

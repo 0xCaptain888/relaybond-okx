@@ -43,7 +43,7 @@
 ## Submission hygiene
 
 - [x] README links first: demo, live API, source and contract.
-- [x] Local 3:50 submission video uses a natural male voice, starts with `Payment: SUCCESS / Response: {}` and passed media/content QA.
+- [x] Local 3:26 submission video uses the approved Ryan local neural male voice, starts with `Payment: SUCCESS / Response: {}` and passed media/content QA.
 - [ ] Upload the final MP4 as an Unlisted or Public video and add its URL to the submission.
 - [x] Prior-work disclosure is linked.
 - [x] Every claim is labeled LOCAL, TESTNET, LIVE, MAINNET or DESIGN.
