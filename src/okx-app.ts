@@ -15,6 +15,8 @@ import { APP_VERSION } from "./version.js";
 import { createContinuityEvidence } from "./continuity-simulator.js";
 import { createOfficialCoordinatorEvidence } from "./official-build-simulator.js";
 import { providerConfigurationStatus } from "./provider-config.js";
+import { createProviderService } from "./provider-service.js";
+import { backupAuthorizationMatches, configuredV2ProviderRuntime } from "./v2-provider-runtime.js";
 
 export function createOkxApp() {
   const required = ["OKX_API_KEY", "OKX_SECRET_KEY", "OKX_PASSPHRASE", "X402_PAY_TO", "PROVIDER_SIGNING_KEY"] as const;
@@ -25,6 +27,10 @@ export function createOkxApp() {
   const payTo = process.env.X402_PAY_TO!;
   const provider = privateKeyToAccount(process.env.PROVIDER_SIGNING_KEY as `0x${string}`);
   const promise = configuredServicePromise();
+  const v2Runtime = configuredV2ProviderRuntime();
+  if (v2Runtime.primary.provider.toLowerCase() !== payTo.toLowerCase()) {
+    throw new Error("X402_PAY_TO must match the bonded V2 Primary Provider.");
+  }
   const facilitatorClient = new ResilientFacilitatorClient(new OKXFacilitatorClient({
     apiKey: process.env.OKX_API_KEY!,
     secretKey: process.env.OKX_SECRET_KEY!,
@@ -44,7 +50,21 @@ export function createOkxApp() {
   app.options(/.*/, (_request, response) => response.status(204).end());
   app.use(express.json({ limit: "32kb" }));
   app.get("/health", (_request, response) => {
-    response.json({ status: "ok", version: APP_VERSION, mode: "OKX_OFFICIAL_X402", network, serviceId: promise.serviceId, provider: provider.address, vault: promise.vault });
+    response.json({
+      status: "ok",
+      version: APP_VERSION,
+      mode: "OKX_OFFICIAL_X402",
+      network,
+      serviceId: promise.serviceId,
+      provider: provider.address,
+      vault: promise.vault,
+      v2: {
+        primaryServiceId: v2Runtime.primary.serviceId,
+        backupServiceId: v2Runtime.backup.serviceId,
+        vault: v2Runtime.primaryPromise.vault,
+        providers: "TESTNET / BONDED",
+      },
+    });
   });
   app.get("/v1/service/promise", async (_request, response, next) => {
     try {
@@ -53,13 +73,23 @@ export function createOkxApp() {
       next(error);
     }
   });
+  app.get("/v1/service/v2-primary/promise", async (_request, response, next) => {
+    try {
+      response.json({
+        mode: "TESTNET / BONDED",
+        servicePromise: await signPromise(v2Runtime.primaryAccount, v2Runtime.primaryPromise),
+        promiseHash: await hashPromise(v2Runtime.primaryPromise),
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
   app.get("/v1/providers", async (_request, response, next) => {
     try {
-      const evidence = await createContinuityEvidence();
       response.json({
-        mode: evidence.mode,
-        notice: "LOCAL V2 recovery registry. Live provider publication remains separately labeled.",
-        providers: evidence.providers,
+        mode: "XLAYER_TESTNET_BONDED_PROVIDERS",
+        notice: "Public routing metadata only. Signing keys and Backup authorization are never returned.",
+        providers: v2Runtime.providers,
       });
     } catch (error) {
       next(error);
@@ -93,6 +123,12 @@ export function createOkxApp() {
       paymentBoundary: {
         automaticPayment: false,
         behavior: "HTTP 402 stops execution and requires a separately reviewed authorization.",
+      },
+      providerEndpoints: {
+        primary: v2Runtime.primary.endpoint,
+        backup: v2Runtime.backup.endpoint,
+        backupAuthorizationRequired: true,
+        primaryBreachScenarioEnabled: process.env.ALLOW_V2_PAID_BREACH === "true",
       },
       settlement: {
         v2Broadcast: true,
@@ -132,10 +168,26 @@ export function createOkxApp() {
       response.status(400).json({ error: "INVALID_SERVICE_REQUEST", message: error instanceof Error ? error.message : "Invalid request" });
     }
   });
+  app.use("/v1/provider/v2-primary", (request, response, next) => {
+    try {
+      const { scenario } = normalizeServiceInput(request.body, request.query);
+      if (process.env.ALLOW_V2_PAID_BREACH !== "true") {
+        response.status(403).json({ error: "V2_BREACH_DEMO_DISABLED" });
+        return;
+      }
+      if (scenario !== "stale") {
+        response.status(400).json({ error: "V2_PRIMARY_REQUIRES_STALE_SCENARIO" });
+        return;
+      }
+      next();
+    } catch (error) {
+      response.status(400).json({ error: "INVALID_SERVICE_REQUEST", message: error instanceof Error ? error.message : "Invalid request" });
+    }
+  });
   app.use((request, _response, next) => {
     // Vercel rewrites may expose the captured wildcard as an internal `path`
     // query parameter. It must not become part of the buyer-signed resource URL.
-    if (request.path === "/v1/provider/quote" && Object.hasOwn(request.query, "path")) {
+    if (["/v1/provider/quote", "/v1/provider/v2-primary"].includes(request.path) && Object.hasOwn(request.query, "path")) {
       request.originalUrl = request.path;
     }
     next();
@@ -146,9 +198,20 @@ export function createOkxApp() {
       description: "Bond-backed fresh OKX market quote with a provider-signed Delivery Receipt",
       mimeType: "application/json",
     },
+    "POST /v1/provider/v2-primary": {
+      accepts: [{ scheme: "exact", network, payTo, price: "$0.01" }],
+      description: "Bonded V2 Primary delivery used to prove objective breach and continuity recovery",
+      mimeType: "application/json",
+    },
   }, resourceServer));
 
-  app.post("/v1/provider/quote", async (request, response, next) => {
+  async function paidDelivery(
+    request: express.Request,
+    response: express.Response,
+    next: express.NextFunction,
+    servicePromise: typeof promise,
+    account: typeof provider,
+  ) {
     try {
       const now = Math.floor(Date.now() / 1000);
       const normalized = normalizeServiceInput(request.body, request.query);
@@ -156,33 +219,51 @@ export function createOkxApp() {
       const payment = paymentContextFromVerifiedHeader(paymentHeader, {
         network,
         asset: (process.env.USDT0_ADDRESS || "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c") as `0x${string}`,
-        amount: promise.priceAtomic,
+        amount: servicePromise.priceAtomic,
         payTo: payTo as `0x${string}`,
       });
       const serviceRequest: ServiceRequest = {
-        serviceId: promise.serviceId,
+        serviceId: servicePromise.serviceId,
         requestedAt: now,
         input: normalized.input,
         buyer: payment.buyer,
       };
       const quote = await fetchOkxTicker(normalized.symbol);
-      const serviceResponse = buildScenarioResponse(quote, normalized.scenario, promise.maxDataAgeSeconds);
-      const signedPromise = await signPromise(provider, promise);
-      const deliveryReceipt = await signReceipt(provider, promise, {
+      const serviceResponse = buildScenarioResponse(quote, normalized.scenario, servicePromise.maxDataAgeSeconds);
+      const signedPromise = await signPromise(account, servicePromise);
+      const deliveryReceipt = await signReceipt(account, servicePromise, {
         version: "1",
-        serviceId: promise.serviceId,
+        serviceId: servicePromise.serviceId,
         requestHash: hashCanonical(serviceRequest),
         responseHash: hashCanonical(serviceResponse),
         paymentId: payment.paymentId,
         deliveredAt: now,
-        servicePromiseHash: await hashPromise(promise),
-        provider: provider.address,
+        servicePromiseHash: await hashPromise(servicePromise),
+        provider: account.address,
       });
       response.json({ request: serviceRequest, result: serviceResponse, servicePromise: signedPromise, deliveryReceipt });
     } catch (error) {
       next(error);
     }
+  }
+
+  app.post("/v1/provider/quote", (request, response, next) => paidDelivery(request, response, next, promise, provider));
+  app.post("/v1/provider/v2-primary", (request, response, next) => paidDelivery(request, response, next, v2Runtime.primaryPromise, v2Runtime.primaryAccount));
+
+  const backupApp = createProviderService({
+    profile: v2Runtime.backup,
+    account: v2Runtime.backupAccount,
+    chainId: 1952,
+    vault: v2Runtime.primaryPromise.vault,
+    scenario: "accepted",
   });
+  app.use("/v1/provider/v2-backup", (request, response, next) => {
+    if (!backupAuthorizationMatches(request.header("x-relaybond-backup-authorization"), v2Runtime.backupAuthorizationToken)) {
+      response.status(401).json({ error: "BACKUP_AUTHORIZATION_REQUIRED" });
+      return;
+    }
+    next();
+  }, backupApp);
   app.use((error: unknown, _request: express.Request, response: express.Response, _next: express.NextFunction) => {
     response.status(502).json({ error: "SERVICE_DELIVERY_FAILED", message: error instanceof Error ? error.message : "Unknown delivery failure" });
   });

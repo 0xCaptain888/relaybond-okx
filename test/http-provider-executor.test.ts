@@ -73,14 +73,28 @@ async function signedDelivery() {
 test("posts the exact coordinator task and returns a signed provider delivery", async () => {
   const expected = await signedDelivery();
   let observedBody: unknown;
+  let observedAuthorization: string | null = null;
   const fetchFn = (async (_url: string | URL | Request, init?: RequestInit) => {
     observedBody = JSON.parse(String(init?.body));
+    observedAuthorization = new Headers(init?.headers).get("x-relaybond-backup-authorization");
     return Response.json(expected);
   }) as typeof fetch;
-  const executor = new HttpProviderExecutor({ providers: [profile], fetchFn });
+  const executor = new HttpProviderExecutor({
+    providers: [profile],
+    fetchFn,
+    authorizationHeaders: { [profile.providerId]: { "x-relaybond-backup-authorization": "test-only-token" } },
+  });
   const actual = await executor.execute({ provider: { ...profile, score: 1, bondCoverageCalls: 100, acceptanceRateBps: 9_000, eligible: true, reasons: [] }, taskId, request, paymentSource: "BUYER" });
   assert.deepEqual(actual, expected);
   assert.deepEqual(observedBody, { taskId, request, paymentSource: "BUYER" });
+  assert.equal(observedAuthorization, "test-only-token");
+});
+
+test("rejects authorization headers that override coordinator bindings", () => {
+  assert.throws(() => new HttpProviderExecutor({
+    providers: [profile],
+    authorizationHeaders: { [profile.providerId]: { "x-relaybond-task-id": "substituted" } },
+  }), /cannot override reserved header/);
 });
 
 test("stops at a provider payment boundary instead of signing or replaying", async () => {

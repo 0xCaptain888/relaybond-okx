@@ -1,7 +1,7 @@
 import { execFile as execFileCallback } from "node:child_process";
 import { access } from "node:fs/promises";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { join, normalize, sep } from "node:path";
 import { promisify } from "node:util";
 
 const execFile = promisify(execFileCallback);
@@ -42,6 +42,19 @@ export function paidEvidencePath(expectedStatus: "ACCEPTED" | "BREACH", actualSt
   return actualStatus === "ACCEPTED"
     ? "evidence/live/agentic-wallet-paid-delivery.json"
     : "evidence/live/agentic-wallet-paid-breach.json";
+}
+
+export function safeEvidenceOutputPath(requested: string, fallback: string): string {
+  if (!requested) return fallback;
+  const normalized = normalize(requested);
+  if (
+    !normalized.endsWith(".json")
+    || normalized.startsWith(`..${sep}`)
+    || !normalized.startsWith(`evidence${sep}`)
+  ) {
+    throw new Error("--evidence-path must be a .json file inside the evidence/ directory.");
+  }
+  return normalized;
 }
 
 export async function runOnchainOs(arguments_: string[]): Promise<OnchainOsEnvelope> {

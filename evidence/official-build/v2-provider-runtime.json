@@ -1,0 +1,58 @@
+{
+  "evidenceVersion": "official-v2-provider-runtime-1",
+  "mode": "XLAYER_TESTNET_BONDED_PROVIDERS",
+  "configuredAt": "2026-09-17T09:09:42.249Z",
+  "publicBaseUrl": "https://relaybond-okx.vercel.app",
+  "providers": [
+    {
+      "providerId": "official-xlayer-primary",
+      "name": "RelayBond OKX Market Primary",
+      "serviceId": "official-market-primary-v1",
+      "endpoint": "https://relaybond-okx.vercel.app/v1/provider/v2-primary",
+      "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+      "mode": "TESTNET",
+      "active": true,
+      "priceAtomic": "10000",
+      "bondAtomic": "5000000",
+      "minimumBondAtomic": "5000000",
+      "maximumLatencyMs": 2000,
+      "maximumDataAgeSeconds": 30,
+      "supportedSchemas": [
+        "market-quote-v1"
+      ],
+      "reliability": {
+        "verifiedCalls": 0,
+        "acceptedCalls": 0,
+        "recoveredCalls": 0
+      }
+    },
+    {
+      "providerId": "official-xlayer-backup",
+      "name": "RelayBond OKX Market Backup",
+      "serviceId": "official-market-backup-v1",
+      "endpoint": "https://relaybond-okx.vercel.app/v1/provider/v2-backup/deliver",
+      "provider": "0x3d5462243c7c69914Bfa0d2d4089cef79482ee03",
+      "mode": "TESTNET",
+      "active": true,
+      "priceAtomic": "10000",
+      "bondAtomic": "3000000",
+      "minimumBondAtomic": "3000000",
+      "maximumLatencyMs": 2000,
+      "maximumDataAgeSeconds": 30,
+      "supportedSchemas": [
+        "market-quote-v1"
+      ],
+      "reliability": {
+        "verifiedCalls": 0,
+        "acceptedCalls": 0,
+        "recoveredCalls": 0
+      }
+    }
+  ],
+  "controls": {
+    "primaryPaidBreachRequiresExplicitPayment": true,
+    "backupRequiresPrivateAuthorization": true,
+    "backupAuthorizationTokenStoredLocally": true,
+    "secretsPrinted": false
+  }
+}

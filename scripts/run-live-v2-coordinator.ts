@@ -25,10 +25,14 @@ const vault = process.env.RECOVERY_BOND_VAULT_V2_ADDRESS;
 const token = process.env.USDT0_ADDRESS;
 const verifierKey = process.env.VERIFIER_PRIVATE_KEY;
 const providersRaw = process.env.CONTINUITY_PROVIDERS_JSON;
+const backupAuthorizationToken = process.env.BACKUP_PROVIDER_AUTH_TOKEN;
 if (!vault || !isAddress(vault)) throw new Error("RECOVERY_BOND_VAULT_V2_ADDRESS is required.");
 if (!token || !isAddress(token)) throw new Error("USDT0_ADDRESS is required.");
 if (!verifierKey || !/^0x[0-9a-fA-F]{64}$/.test(verifierKey)) throw new Error("VERIFIER_PRIVATE_KEY is required.");
 if (!providersRaw) throw new Error("CONTINUITY_PROVIDERS_JSON is required.");
+if (!backupAuthorizationToken || backupAuthorizationToken.length < 32) {
+  throw new Error("BACKUP_PROVIDER_AUTH_TOKEN must be configured with at least 32 characters.");
+}
 
 const raw = JSON.parse(await readFile(evidencePath, "utf8")) as Record<string, unknown>;
 const payment = raw.payment as Record<string, unknown> | undefined;
@@ -50,6 +54,9 @@ const primaryDelivery: ProviderDelivery = {
   deliveryReceipt,
 };
 const providers = parseProviderConfiguration(providersRaw);
+const backupServiceId = process.env.V2_BACKUP_SERVICE_ID || "official-market-backup-v1";
+const backupProvider = providers.find((provider) => provider.serviceId === backupServiceId);
+if (!backupProvider) throw new Error(`Configured Backup service ${backupServiceId} was not found.`);
 const verifier = privateKeyToAccount(verifierKey as Hex);
 const rpcUrl = process.env.XLAYER_TESTNET_RPC_URL || "https://testrpc.xlayer.tech/terigon";
 const publicClient = createPublicClient({ transport: http(rpcUrl) });
@@ -91,7 +98,14 @@ const evidence = await createLiveCoordinatorEvidence({
   providers,
   primaryDelivery,
   primarySettlement,
-  backupExecutor: new HttpProviderExecutor({ providers }),
+  backupExecutor: new HttpProviderExecutor({
+    providers,
+    authorizationHeaders: {
+      [backupProvider.providerId]: {
+        "x-relaybond-backup-authorization": backupAuthorizationToken,
+      },
+    },
+  }),
   requirement: {
     schema: servicePromise.payload.requiredSchema,
     maximumPriceAtomic: servicePromise.payload.priceAtomic,

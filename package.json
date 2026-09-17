@@ -47,6 +47,8 @@
     "bond:v2:plan": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/register-and-bond-v2.cjs --network xLayerTestnet",
     "verify:bonding:v2": "node --env-file-if-exists=.env --import tsx scripts/verify-v2-bonding.ts",
     "coordinator:v2:live": "node --env-file-if-exists=.env --import tsx scripts/run-live-v2-coordinator.ts",
+    "runtime:v2:configure": "node --env-file-if-exists=.env --import tsx scripts/configure-v2-provider-runtime.ts",
+    "runtime:v2:vercel": "node --env-file-if-exists=.env --import tsx scripts/push-v2-env-to-vercel.ts",
     "settlement:v2:plan": "node --env-file-if-exists=.env --import tsx scripts/settle-v2-recovery.ts",
     "bond:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/register-and-bond.cjs --network xLayerTestnet",
     "rebate:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/claim-rebate.cjs --network xLayerTestnet",

@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
 import { hashCanonical, sha256Canonical } from "../src/canonical.js";
-import { buildPaymentReplayArguments, extractMerchantDelivery, paidEvidencePath, runOnchainOs, type PaidScenario } from "../src/onchainos-buyer.js";
+import { buildPaymentReplayArguments, extractMerchantDelivery, paidEvidencePath, runOnchainOs, safeEvidenceOutputPath, type PaidScenario } from "../src/onchainos-buyer.js";
 import { settlementTransaction, verifyOnchainSettlement } from "../src/settlement.js";
 import { verifyDelivery } from "../src/verifier.js";
 import type { DeliveryReceipt, ServicePromise, ServiceRequest, Signed } from "../src/types.js";
@@ -95,8 +96,11 @@ if (command === "pay") {
     evidenceHash: hashCanonical(unsignedEvidence),
     portableIntegrity: { algorithm: "SHA-256", hash: sha256Canonical(unsignedEvidence) },
   };
-  await mkdir("evidence/live", { recursive: true });
-  const evidencePath = paidEvidencePath(expectedStatus as "ACCEPTED" | "BREACH", verification.status);
+  const evidencePath = safeEvidenceOutputPath(
+    value("--evidence-path"),
+    paidEvidencePath(expectedStatus as "ACCEPTED" | "BREACH", verification.status),
+  );
+  await mkdir(dirname(evidencePath), { recursive: true });
   await writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`);
   if (verification.status !== expectedStatus) {
     throw new Error(`Expected ${expectedStatus}, received ${verification.status}: ${verification.violations.join(", ") || "no violations"}. Unexpected delivery saved to ${evidencePath}.`);
@@ -111,6 +115,6 @@ console.log(`Preferred OKX Agentic Wallet runner
    npm run buyer:okx -- quote --symbol BTC-USDT --scenario accepted
 
 2. After reviewing and explicitly approving the displayed terms:
-   npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --symbol BTC-USDT --scenario accepted --expect accepted --yes
+   npm run buyer:okx -- pay --payment-id <id> --selected-index <n> --symbol BTC-USDT --scenario accepted --expect accepted --yes [--evidence-path evidence/...json]
 
 The second command delegates signing, replay and settlement to the logged-in OnchainOS TEE wallet, then independently verifies the provider-signed RelayBond delivery.`);

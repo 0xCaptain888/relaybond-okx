@@ -53,19 +53,27 @@ export class HttpProviderExecutor implements ProviderExecutor {
   private readonly fetchFn: Fetch;
   private readonly timeoutMs: number;
   private readonly maximumResponseBytes: number;
+  private readonly authorizationHeaders: Map<string, Record<string, string>>;
 
   constructor(options: {
     providers: BondedProviderProfile[];
     fetchFn?: Fetch;
     timeoutMs?: number;
     maximumResponseBytes?: number;
+    authorizationHeaders?: Record<string, Record<string, string>>;
   }) {
     this.profiles = new Map(options.providers.map((provider) => [provider.providerId, structuredClone(provider)]));
     this.fetchFn = options.fetchFn ?? fetch;
     this.timeoutMs = options.timeoutMs ?? 10_000;
     this.maximumResponseBytes = options.maximumResponseBytes ?? 1_000_000;
+    this.authorizationHeaders = new Map(Object.entries(options.authorizationHeaders ?? {}).map(([providerId, headers]) => [providerId, { ...headers }]));
     if (this.profiles.size !== options.providers.length) throw new Error("HTTP executor provider IDs must be unique.");
     if (this.timeoutMs <= 0 || this.maximumResponseBytes <= 0) throw new Error("HTTP executor limits must be positive.");
+    for (const [providerId, headers] of this.authorizationHeaders) {
+      if (!this.profiles.has(providerId)) throw new Error(`Authorization headers reference unknown Provider ${providerId}.`);
+      const reserved = Object.keys(headers).find((name) => ["accept", "content-type", "x-relaybond-task-id", "x-relaybond-payment-source"].includes(name.toLowerCase()));
+      if (reserved) throw new Error(`Authorization headers cannot override reserved header ${reserved}.`);
+    }
   }
 
   async execute(input: ProviderExecution): Promise<ProviderDelivery> {
@@ -90,6 +98,7 @@ export class HttpProviderExecutor implements ProviderExecutor {
           "content-type": "application/json",
           "x-relaybond-task-id": input.taskId,
           "x-relaybond-payment-source": input.paymentSource,
+          ...this.authorizationHeaders.get(configured.providerId),
         },
         body: JSON.stringify({ taskId: input.taskId, request: input.request, paymentSource: input.paymentSource }),
       });

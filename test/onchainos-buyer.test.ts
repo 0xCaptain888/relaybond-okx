@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildPaymentReplayArguments, extractMerchantDelivery, paidEvidencePath, requireFinalSettlement } from "../src/onchainos-buyer.js";
+import { buildPaymentReplayArguments, extractMerchantDelivery, paidEvidencePath, requireFinalSettlement, safeEvidenceOutputPath } from "../src/onchainos-buyer.js";
 import { settlementTransaction } from "../src/settlement.js";
 
 test("OnchainOS result extraction rejects a missing merchant delivery", () => {
@@ -55,4 +55,13 @@ test("paid replay carries the exact reviewed business parameters", () => {
 test("unexpected paid results are preserved instead of discarded", () => {
   assert.equal(paidEvidencePath("BREACH", "ACCEPTED"), "evidence/live/agentic-wallet-unexpected-accepted.json");
   assert.equal(paidEvidencePath("BREACH", "BREACH"), "evidence/live/agentic-wallet-paid-breach.json");
+});
+
+test("custom paid evidence paths stay inside the evidence directory", () => {
+  assert.equal(
+    safeEvidenceOutputPath("evidence/official-build/v2-primary-paid-breach.json", "fallback.json"),
+    "evidence/official-build/v2-primary-paid-breach.json",
+  );
+  assert.throws(() => safeEvidenceOutputPath("../secrets.json", "fallback.json"), /inside the evidence/);
+  assert.throws(() => safeEvidenceOutputPath("outside.json", "fallback.json"), /inside the evidence/);
 });
