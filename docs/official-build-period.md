@@ -27,7 +27,7 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 |---|---|---|---|---|
 | 2026-09-17 10:09:47 UTC+8 | `c8beae9` | Automatic Continuity Coordinator; deterministic Primary/Backup selection; fail-closed `FROZEN`; Solidity-compatible EIP-712 Recovery Attestation; validated monotonic task store; public API and SDK access | `evidence/official-build/coordinator-v1.json`; 34 unit tests; 8 contract tests | LOCAL / TESTED |
 | 2026-09-17 10:20:45 UTC+8 | `82bf8c1` | Judge-facing coordinator run plus independent browser verification of both verifier signatures, terminal states, evidence Keccak and portable SHA-256 | Local browser run: `RECOVERED + FROZEN VERIFIED` followed by `BROWSER VERIFIED`; no console errors | LOCAL / VERIFIED |
-| 2026-09-17 10:35:31 UTC+8 | this runtime change | Strict secret-free Provider configuration; endpoint-bound HTTP executor; no redirects; response/time limits; explicit 402 stop; coordinator request and Provider Profile binding | 42 unit tests; 8 contract tests; Vercel build; repeated browser verification | LOCAL / TESTED |
+| 2026-09-17 10:35:53 UTC+8 | `6821ea4` | Strict secret-free Provider configuration; endpoint-bound HTTP executor; no redirects; response/time limits; explicit 402 stop; coordinator request and Provider Profile binding | 42 unit tests; 8 contract tests; Vercel build; repeated browser verification | LOCAL / TESTED |
 
 ## Target official-period delta
 
