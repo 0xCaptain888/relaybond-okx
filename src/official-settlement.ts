@@ -43,3 +43,9 @@ export const officialV2Settlement: OfficialV2Settlement = {
     recoveryEventBound: true,
   },
 };
+
+export function applyOfficialSettlementProviderState<T extends { provider: string; bondAtomic: string; active: boolean }>(providers: T[]): T[] {
+  return providers.map((provider) => provider.provider.toLowerCase() === officialV2Settlement.primaryProvider.toLowerCase()
+    ? { ...provider, bondAtomic: officialV2Settlement.balancesAfter.primaryBondAtomic, active: officialV2Settlement.primaryActiveAfter }
+    : provider);
+}

@@ -293,13 +293,15 @@ async function loadLiveStatus() {
 async function loadV2Status() {
   try {
     const [{ readiness, deployment, verification, bonding, settlementPlan, liveCoordinator }, runtime] = await Promise.all([loadV2Readiness(), loadV2Runtime()]);
-    const publicRuntimeReady = runtime.health.status === "ok" && runtime.providers.providers?.length === 2 && runtime.readiness.configuration?.configured;
-    v2PlanStatus.textContent = publicRuntimeReady ? "PUBLIC / BONDED" : bonding.verificationPassed ? "TESTNET / BONDED" : readiness.checks.v2Deployed && verification.verified ? "TESTNET / DEPLOYED" : "VERIFYING";
-    v2PlanDetail.textContent = `${deployment.chainId} · block ${deployment.blockNumber.toLocaleString()} · ${deployment.address.slice(0, 6)}…${deployment.address.slice(-4)} · source ${verification.verified ? "verified" : "pending"} · 5 + 3 USD₮0 active bonds · ${runtime.providers.providers.length} endpoints`;
     const configured = [readiness.checks.primaryConfigured, readiness.checks.backupConfigured].filter(Boolean).length;
     const settlementVerified = settlementPlan.broadcast === true
       && Object.values(settlementPlan.settlementChecks || {}).length >= 7
       && Object.values(settlementPlan.settlementChecks || {}).every(Boolean);
+    const publicRuntimeReady = runtime.health.status === "ok" && runtime.providers.providers?.length === 2 && runtime.readiness.configuration?.configured;
+    v2PlanStatus.textContent = settlementVerified ? "TESTNET / SETTLED" : publicRuntimeReady ? "PUBLIC / BONDED" : bonding.verificationPassed ? "TESTNET / BONDED" : readiness.checks.v2Deployed && verification.verified ? "TESTNET / DEPLOYED" : "VERIFYING";
+    v2PlanDetail.textContent = settlementVerified
+      ? `${deployment.chainId} · ${deployment.address.slice(0, 6)}…${deployment.address.slice(-4)} · source verified · 2 registered / 1 active after recovery`
+      : `${deployment.chainId} · block ${deployment.blockNumber.toLocaleString()} · ${deployment.address.slice(0, 6)}…${deployment.address.slice(-4)} · source ${verification.verified ? "verified" : "pending"} · ${runtime.providers.providers.length} endpoints`;
     v2SettlementStatus.textContent = settlementVerified ? "SETTLED / VERIFIED" : settlementPlan.ready ? "READY / NOT SENT" : "FAIL-CLOSED";
     v2ReadinessDetail.textContent = settlementVerified
       ? `${configured}/2 identities · buyer unchanged · Backup +0.01 USD₮0 · Primary bond 5.00 → 4.99 · tx ${settlementPlan.transactionHash.slice(0, 8)}…${settlementPlan.transactionHash.slice(-6)}`

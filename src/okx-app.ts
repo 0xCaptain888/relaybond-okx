@@ -17,7 +17,7 @@ import { createOfficialCoordinatorEvidence } from "./official-build-simulator.js
 import { providerConfigurationStatus } from "./provider-config.js";
 import { createProviderService } from "./provider-service.js";
 import { backupAuthorizationMatches, configuredV2ProviderRuntime } from "./v2-provider-runtime.js";
-import { officialV2Settlement } from "./official-settlement.js";
+import { applyOfficialSettlementProviderState, officialV2Settlement } from "./official-settlement.js";
 
 export function createOkxApp() {
   const required = ["OKX_API_KEY", "OKX_SECRET_KEY", "OKX_PASSPHRASE", "X402_PAY_TO", "PROVIDER_SIGNING_KEY"] as const;
@@ -63,7 +63,7 @@ export function createOkxApp() {
         primaryServiceId: v2Runtime.primary.serviceId,
         backupServiceId: v2Runtime.backup.serviceId,
         vault: v2Runtime.primaryPromise.vault,
-        providers: "TESTNET / BONDED",
+        providers: "TESTNET / SETTLED / PRIMARY AUTO-PAUSED",
       },
     });
   });
@@ -77,7 +77,7 @@ export function createOkxApp() {
   app.get("/v1/service/v2-primary/promise", async (_request, response, next) => {
     try {
       response.json({
-        mode: "TESTNET / BONDED",
+        mode: "TESTNET / SETTLED / PRIMARY_AUTO_PAUSED",
         servicePromise: await signPromise(v2Runtime.primaryAccount, v2Runtime.primaryPromise),
         promiseHash: await hashPromise(v2Runtime.primaryPromise),
       });
@@ -90,7 +90,7 @@ export function createOkxApp() {
       response.json({
         mode: "XLAYER_TESTNET_BONDED_PROVIDERS",
         notice: "Public routing metadata only. Signing keys and Backup authorization are never returned.",
-        providers: v2Runtime.providers,
+        providers: applyOfficialSettlementProviderState(v2Runtime.providers),
       });
     } catch (error) {
       next(error);
@@ -132,7 +132,8 @@ export function createOkxApp() {
         primary: v2Runtime.primary.endpoint,
         backup: v2Runtime.backup.endpoint,
         backupAuthorizationRequired: true,
-        primaryBreachScenarioEnabled: process.env.ALLOW_V2_PAID_BREACH === "true",
+        primaryBreachScenarioEnabled: false,
+        primaryAutoPausedAfterSettlement: true,
       },
       settlement: {
         v2Broadcast: true,
@@ -177,6 +178,14 @@ export function createOkxApp() {
   });
   app.use("/v1/provider/v2-primary", (request, response, next) => {
     try {
+      if (officialV2Settlement.status === "SETTLED_AND_VERIFIED" && !officialV2Settlement.primaryActiveAfter) {
+        response.status(410).json({
+          error: "V2_PRIMARY_AUTO_PAUSED",
+          message: "The official V2 Primary auto-paused after its bond funded the verified Backup settlement.",
+          settlementTransaction: officialV2Settlement.transactionHash,
+        });
+        return;
+      }
       const { scenario } = normalizeServiceInput(request.body, request.query);
       if (process.env.ALLOW_V2_PAID_BREACH !== "true") {
         response.status(403).json({ error: "V2_BREACH_DEMO_DISABLED" });

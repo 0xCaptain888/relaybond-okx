@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { officialV2Settlement } from "../src/official-settlement.js";
+import { applyOfficialSettlementProviderState, officialV2Settlement } from "../src/official-settlement.js";
 
 test("published V2 settlement summary matches the machine-readable final evidence", async () => {
   const evidence = JSON.parse(await readFile("evidence/official-build/v2-live-settlement.json", "utf8"));
@@ -22,4 +22,19 @@ test("published V2 settlement summary matches the machine-readable final evidenc
     BigInt(officialV2Settlement.balancesBefore.primaryBondAtomic) - BigInt(officialV2Settlement.balancesAfter.primaryBondAtomic),
     BigInt(officialV2Settlement.recoveryAmountAtomic),
   );
+});
+
+test("official provider registry reflects the Primary auto-pause after settlement", () => {
+  const providers = applyOfficialSettlementProviderState([
+    { provider: officialV2Settlement.primaryProvider, bondAtomic: "5000000", active: true, id: "primary" },
+    { provider: officialV2Settlement.backupProvider, bondAtomic: "3000000", active: true, id: "backup" },
+  ]);
+  assert.deepEqual(providers[0], {
+    provider: officialV2Settlement.primaryProvider,
+    bondAtomic: "4990000",
+    active: false,
+    id: "primary",
+  });
+  assert.equal(providers[1].active, true);
+  assert.equal(providers[1].bondAtomic, "3000000");
 });
