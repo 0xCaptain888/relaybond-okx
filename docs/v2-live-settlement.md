@@ -20,6 +20,16 @@ Before producing a transaction plan it independently checks:
 
 The generated transaction sends zero native value. Broadcast is impossible without the separate exact confirmation `SETTLE_V2_RECOVERY_XLAYER_TESTNET` and a valid relayer key. After confirmation it still performs `eth_call` simulation before broadcast, then checks the receipt, `BreachRecovered` event, primary bond debit, exact Backup token credit, replay marker and unchanged buyer token balance.
 
+## Generate the LIVE coordinator evidence
+
+After both Provider services are registered and bonded, capture a real paid Primary breach through the guarded OKX Agentic Wallet buyer path. Configure `CONTINUITY_PROVIDERS_JSON` with two active `TESTNET` or `LIVE` HTTPS Providers, point `V2_PRIMARY_PAID_EVIDENCE_PATH` at that paid breach artifact, then run:
+
+```bash
+npm run coordinator:v2:live
+```
+
+The command re-queries the exact USD₮0 payment transaction, confirms both Provider registrations and bonds on `RecoveryBondVaultV2`, rejects LOCAL profiles, independently calls the Backup and publishes the required `XLAYER_TESTNET_LIVE_COORDINATOR` Evidence Pack only if the verified trail ends in `RECOVERED`. It never signs a payment or invokes `settleRecovery`.
+
 ```bash
 V2_LIVE_EVIDENCE_PATH=evidence/official-build/v2-live-coordinator.json npm run settlement:v2:plan
 ```

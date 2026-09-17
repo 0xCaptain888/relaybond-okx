@@ -29,10 +29,13 @@ npm run demo:official-coordinator
 npm run test:integration:http
 npm run readiness:v2
 npm run verify:contract:v2:status
+npm run coordinator:v2:live # requires real paid Primary breach evidence + bonded HTTPS Backup
 npm run settlement:v2:plan # requires a future LIVE coordinator Evidence Pack
 ```
 
 The settlement command is intentionally safe to run before that LIVE Evidence Pack exists: it emits a structured `ready: false`, `broadcast: false` plan and exits normally. It never treats missing evidence as permission to fall back to the LOCAL coordinator fixture.
+
+Once both Providers are bonded, `coordinator:v2:live` closes the gap between payment and settlement without manufacturing a LIVE label. It re-queries the exact Primary USD₮0 transfer, rejects `LOCAL`/`DESIGN` Provider profiles, confirms both service identities and bonds onchain, replays only the recorded paid Primary delivery, calls the independent HTTPS Backup, re-verifies both signatures and publishes `v2-live-coordinator.json` only after a real `BREACH → ACCEPTED → RECOVERED` result. It signs no payment and broadcasts no settlement.
 
 Open the Judge Demo and select **Run official coordinator**, then **Verify Official Build**. The browser independently recovers both verifier signatures and checks the Recovery Attestation digest, `RECOVERED` and `FROZEN` terminal states, canonical Keccak evidence hash and portable SHA-256 integrity.
 

@@ -34,6 +34,7 @@
 - [ ] Register and bond independent Providers, then execute one real backup settlement.
 - [x] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.
 - [x] Guarded V2 settlement executor rejects LOCAL evidence, simulates before broadcast and verifies buyer balance invariance.
+- [x] LIVE coordinator bridge re-verifies paid Primary settlement, onchain Provider bonds and HTTPS Backup delivery before emitting settlement evidence.
 - [ ] Two to three outside builders test the integration.
 
 ## Submission hygiene

@@ -33,6 +33,7 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 | 2026-09-17 14:50:15 UTC+8 | `df954e9` | Deployed `RecoveryBondVaultV2` with zero token value; confirmed runtime bytecode and constructor getters; independently verified source and ABI | tx `0x4353…d9d0`; block `41168978`; `v2-deployment.json`; `v2-contract-verification.json` | TESTNET / DEPLOYED / VERIFIED |
 | 2026-09-17 15:56:07 UTC+8 | `2b4f7ad` | Guarded live V2 settlement executor; strict LIVE Evidence Pack binding; LOCAL-evidence rejection; onchain replay/bond checks; simulation and post-settlement buyer-balance invariants; exact six-transaction Provider registration plan | 47 unit tests; 8 contract tests; HTTP integration; `v2-bond-plan.json`; `v2-settlement-plan.json` | LOCAL / TESTED + TESTNET / READ-ONLY |
 | 2026-09-17 16:05 UTC+8 | `13ae6f0` | Fail-closed missing-evidence readiness: `settlement:v2:plan` now returns structured `ready: false` output instead of a filesystem exception and never broadcasts | 48 unit tests; CLI rehearsal with LIVE Evidence Pack absent | LOCAL / TESTED |
+| 2026-09-17 16:29 UTC+8 | pending commit | LIVE coordinator bridge between a real paid Primary breach and guarded V2 settlement; rejects LOCAL profiles, rechecks payment and Provider bonds onchain, calls the HTTPS Backup and emits evidence only after verified recovery | 50 unit tests; 8 contract tests; two-process HTTP integration; production build | LOCAL / TESTED + TESTNET / READ-ONLY |
 
 ## Target official-period delta
 

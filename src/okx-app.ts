@@ -103,6 +103,9 @@ export function createOkxApp() {
         backupSettlement: "PENDING",
         guard: {
           rejectsLocalEvidence: true,
+          liveCoordinatorBridge: true,
+          rechecksPrimaryPaymentOnchain: true,
+          rechecksProviderBondsOnchain: true,
           simulationRequired: true,
           separateConfirmationRequired: true,
           buyerBalanceInvariantChecked: true,
