@@ -4,6 +4,7 @@ import type { ServicePromise, Signed } from "./types.js";
 import type { BondedProviderProfile, ContinuityEvidence } from "./types.js";
 import type { OfficialCoordinatorEvidence } from "./official-build-simulator.js";
 import type { ProviderConfigurationStatus } from "./provider-config.js";
+import type { OfficialV2Settlement } from "./official-settlement.js";
 
 export class RelayBondClient {
   private readonly baseUrl: string;
@@ -46,6 +47,12 @@ export class RelayBondClient {
     return response.json() as Promise<OfficialCoordinatorEvidence>;
   }
 
+  async officialSettlement(): Promise<OfficialV2Settlement> {
+    const response = await fetch(`${this.baseUrl}/v1/official/settlement`);
+    if (!response.ok) throw new Error(`RelayBond official settlement lookup failed: ${response.status}`);
+    return response.json() as Promise<OfficialV2Settlement>;
+  }
+
   async officialReadiness(): Promise<{
     mode: "OFFICIAL_PERIOD_PROVIDER_RUNTIME";
     configuration: ProviderConfigurationStatus;
@@ -58,6 +65,9 @@ export class RelayBondClient {
       sourceVerified?: boolean;
       providerRegistration?: "PENDING" | "TESTNET" | "LIVE";
       backupSettlement?: "PENDING" | "TESTNET" | "LIVE";
+      transactionHash?: `0x${string}`;
+      buyerBalanceUnchanged?: boolean;
+      postSettlementChecksPassed?: boolean;
       guard?: {
         rejectsLocalEvidence: boolean;
         simulationRequired: boolean;

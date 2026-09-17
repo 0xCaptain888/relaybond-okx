@@ -1,6 +1,6 @@
 # Independent provider runtime
 
-Status: **TESTNET / LIVE RECOVERY VERIFIED / SETTLEMENT PENDING**. This runtime was implemented after the official OKX Dev Day build start. The V2 contract is source-verified, both independent Provider identities are registered and bonded, the Primary x402 route and authenticated Backup delivery route are deployed on Vercel, and production identity checks pass. A real paid Primary breach now reaches an authenticated Backup `ACCEPTED` delivery and verifier-signed `RECOVERED`; bond-funded settlement remains separately gated and not broadcast.
+Status: **TESTNET / LIVE RECOVERY / SETTLED / VERIFIED**. This runtime was implemented after the official OKX Dev Day build start. The V2 contract is source-verified, both independent Provider identities were registered and bonded, the Primary x402 route and authenticated Backup delivery route are deployed on Vercel, and production identity checks pass. A real paid Primary breach reached an authenticated Backup `ACCEPTED` delivery and verifier-signed `RECOVERED`; transaction `0x49150b2ec1eafece6e8c11a03ecb70b3562725f8153a18f237b5dafb9ec5ea99` then paid the Backup from the Primary bond while leaving the buyer balance unchanged.
 
 ## Why this layer exists
 
@@ -70,8 +70,9 @@ The endpoint exposes configuration count, modes, transport limits, automatic-pay
 
 ```text
 GET  /v1/service/v2-primary/promise
+GET  /v1/official/settlement
 POST /v1/provider/v2-primary
 POST /v1/provider/v2-backup/deliver  # private coordinator authorization required
 ```
 
-The Primary route intentionally accepts only the `stale` test scenario and remains behind a normal OKX x402 payment confirmation. The Backup is not another buyer-paid endpoint: it is invoked only by the coordinator with `paymentSource=PRIMARY_BOND`, exact task bindings and the private authorization header. Production validation confirms that an unauthenticated Backup request receives `401`, while the authorized route returns a receipt signed by the independently bonded Backup identity.
+The Primary route intentionally accepts only the `stale` test scenario and remains behind a normal OKX x402 payment confirmation. The Backup is not another buyer-paid endpoint: it is invoked only by the coordinator with `paymentSource=PRIMARY_BOND`, exact task bindings and the private authorization header. Production validation confirms that an unauthenticated Backup request receives `401`, while the authorized route returns a receipt signed by the independently bonded Backup identity. The public settlement endpoint returns the completed Testnet transaction, before/after balances and seven post-settlement checks without exposing any credential.

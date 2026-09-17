@@ -78,13 +78,13 @@ The following capabilities existed before the official period and will not be cl
 The project will count only genuinely new post-start work as official-period development. The intended delta is:
 
 - [x] deploy and source-verify `RecoveryBondVaultV2` after the official start;
-- [ ] register and bond two independent live providers;
+- [x] register and bond two independent live providers;
 - [ ] publish or integrate the provider services through OKX AI/A2MCP;
-- [ ] execute a real paid primary delivery that produces an objective `BREACH`;
-- [ ] automatically route the same task to an independent backup;
-- [ ] settle the backup from the primary provider bond on X Layer;
-- [ ] prove the buyer was not charged a second time;
-- [ ] publish a real `RECOVERED` Continuity Receipt and transaction evidence;
+- [x] execute a real paid primary delivery that produces an objective `BREACH`;
+- [x] automatically route the same task to an independent backup;
+- [x] settle the backup from the primary provider bond on X Layer;
+- [x] prove the buyer was not charged a second time;
+- [x] publish a real `RECOVERED` Continuity Receipt and transaction evidence;
 - [x] expose the official-period coordinator workflow through the public judge demo and SDK.
 
 New commits, evidence and transactions will be recorded separately in `docs/official-build-period.md` and `evidence/official-build/` after the official start.

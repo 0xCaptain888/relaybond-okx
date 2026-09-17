@@ -33,7 +33,7 @@
             <button id="run-official" class="official-cta">Run official coordinator</button>
             <button id="verify-v2-live" class="official-cta">Verify live V2 recovery</button>
           </div>
-          <p class="honesty">LIVE / TESTNET V1: x402 payment, signed delivery, verified breach and real buyer rebate. LIVE / TESTNET V2: a real 0.01 USD₮0 Primary payment breached freshness, the authenticated Backup was accepted and the task reached RECOVERED without a second buyer payment. Bond-funded settlement is validated and remains PENDING confirmation.</p>
+          <p class="honesty">LIVE / TESTNET V1: x402 payment, signed delivery, verified breach and real buyer rebate. LIVE / TESTNET V2: a real 0.01 USD₮0 Primary payment breached freshness, the authenticated Backup was accepted, and <a href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x49150b2ec1eafece6e8c11a03ecb70b3562725f8153a18f237b5dafb9ec5ea99" target="_blank" rel="noreferrer">the Primary bond paid the Backup onchain ↗</a> while the buyer paid only once.</p>
         </div>
         <aside class="bond-card">
           <div class="card-head"><span>Provider Quality Bond</span><span id="bond-status" class="paused">AUTO-PAUSED</span></div>
@@ -59,7 +59,7 @@
       <section class="official-shell" aria-label="Official build coordinator">
         <div class="section-heading">
           <div><p class="eyebrow">OFFICIAL BUILD DELTA · POST-START</p><h2>Automatic recovery. Fail closed.</h2></div>
-          <span id="official-state">LIVE RECOVERY · SETTLEMENT PENDING</span>
+          <span id="official-state">LIVE RECOVERY · SETTLED ONCHAIN</span>
         </div>
         <p class="official-intro">New after the official start: an auditable coordinator selects providers, verifies both signed deliveries, emits a Solidity-compatible Recovery Attestation, and freezes the task if the backup also fails.</p>
         <div class="official-steps">
@@ -73,7 +73,7 @@
           <div><span>RECOVERY PATH</span><strong>LIVE / RECOVERED</strong><small>Paid Primary breach → independent HTTPS Backup accepted</small></div>
           <div><span>DOUBLE FAILURE</span><strong>FROZEN</strong><small>No false success when the backup breaches</small></div>
           <div><span>V2 CONTRACT</span><strong id="v2-plan-status">LOADING</strong><small id="v2-plan-detail">Checking X Layer Testnet evidence</small></div>
-          <div><span>ONCHAIN EXECUTOR</span><strong id="v2-settlement-status">READY / NOT SENT</strong><small id="v2-readiness-detail">LIVE recovery verified; separate settlement confirmation required</small></div>
+          <div><span>ONCHAIN EXECUTOR</span><strong id="v2-settlement-status">SETTLED / VERIFIED</strong><small id="v2-readiness-detail">0.01 USD₮0 paid from Primary bond; buyer balance unchanged</small></div>
         </div>
       </section>
 
@@ -86,7 +86,7 @@
           <article>
             <div><b>#1 PRIMARY</b><span>RelayBond OKX Market Primary</span></div>
             <strong>PUBLIC <small>x402 endpoint</small></strong>
-            <dl><div><dt>Bond</dt><dd>5.00 USD₮0</dd></div><div><dt>SLA</dt><dd>2.0s / 30s fresh</dd></div><div><dt>Price</dt><dd>0.01 USD₮0</dd></div></dl>
+            <dl><div><dt>Bond after recovery</dt><dd>4.99 USD₮0</dd></div><div><dt>Status</dt><dd>AUTO-PAUSED</dd></div><div><dt>Recovery paid</dt><dd>0.01 USD₮0</dd></div></dl>
           </article>
           <article>
             <div><b>#2 BACKUP</b><span>RelayBond OKX Market Backup</span></div>

@@ -1,6 +1,6 @@
 # V2 live recovery settlement
 
-Status: **LIVE EVIDENCE VERIFIED / READY / NOT YET BROADCAST**.
+Status: **XLAYER TESTNET / SETTLED / VERIFIED**.
 
 `settlement:v2:plan` is the final safety boundary between a verified live Provider recovery and `RecoveryBondVaultV2.settleRecovery`. It refuses deterministic LOCAL evidence and requires a future Evidence Pack explicitly labeled `XLAYER_TESTNET_LIVE_COORDINATOR`.
 
@@ -18,7 +18,7 @@ Before producing a transaction plan it independently checks:
 - onchain Provider registration, active bonds and maximum recovery;
 - replay state, settlement token and verifier getters.
 
-The generated transaction sends zero native value. Broadcast is impossible without the separate exact confirmation `SETTLE_V2_RECOVERY_XLAYER_TESTNET` and a valid relayer key. After confirmation it still performs `eth_call` simulation before broadcast, then checks the receipt, `BreachRecovered` event, primary bond debit, exact Backup token credit, replay marker and unchanged buyer token balance.
+The generated transaction sends zero native value. Broadcast is impossible without the separate exact confirmation `SETTLE_V2_RECOVERY_XLAYER_TESTNET` and a valid relayer key. After confirmation it still performs `eth_call` simulation before broadcast, then checks the receipt, bound `BreachRecovered` event, primary bond debit, exact Backup token credit, replay marker, activity state and unchanged buyer token balance. RPC finality is polled, and a captured successful receipt can be resumed from pending evidence without rebroadcasting.
 
 ## Generate the LIVE coordinator evidence
 
@@ -34,4 +34,4 @@ The command re-queries the exact USD₮0 payment transaction, confirms both Prov
 V2_LIVE_EVIDENCE_PATH=evidence/official-build/v2-live-coordinator.json npm run settlement:v2:plan
 ```
 
-The repository now contains the real [`v2-primary-paid-breach.json`](../evidence/official-build/v2-primary-paid-breach.json) and [`v2-live-coordinator.json`](../evidence/official-build/v2-live-coordinator.json) Evidence Packs. The read-only settlement plan passes every evidence and onchain check and reports `ready: true`, `broadcast: false`. The deterministic coordinator artifact remains deliberately rejected and cannot trigger the Testnet contract.
+The repository contains the real [`v2-primary-paid-breach.json`](../evidence/official-build/v2-primary-paid-breach.json), [`v2-live-coordinator.json`](../evidence/official-build/v2-live-coordinator.json) and [`v2-live-settlement.json`](../evidence/official-build/v2-live-settlement.json) Evidence Packs. Settlement transaction [`0x4915…ea99`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x49150b2ec1eafece6e8c11a03ecb70b3562725f8153a18f237b5dafb9ec5ea99) paid exactly 0.01 USD₮0 from the Primary bond to the Backup at block `41181054`. The buyer balance remained unchanged, the Primary bond changed 5.00 → 4.99 USD₮0 and auto-paused, and all seven post-settlement checks passed. The deterministic coordinator artifact remains deliberately rejected and cannot trigger the Testnet contract.

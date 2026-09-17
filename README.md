@@ -4,7 +4,7 @@
 
 **[Live Judge Demo + API](https://relaybond-okx.vercel.app/)** · **[GitHub Pages mirror](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **[V2 X Layer contract](https://www.okx.com/web3/explorer/xlayer-test/address/0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f)** · **Video:** pending
 
-RelayBond routes paid tasks to bonded Agent providers, verifies delivery and recovers failed work through an independent backup without charging the buyer twice. The deployed V1 proves real Testnet payment, breach verification and buyer rebate. V2 now proves a real paid Primary breach, authenticated independent Backup delivery and verifier-signed `RECOVERED` result on X Layer Testnet; the separately confirmed bond-funded settlement remains pending.
+RelayBond routes paid tasks to bonded Agent providers, verifies delivery and recovers failed work through an independent backup without charging the buyer twice. The deployed V1 proves real Testnet payment, breach verification and buyer rebate. V2 now proves the complete live path on X Layer Testnet: paid Primary breach, authenticated independent Backup delivery, verifier-signed `RECOVERED`, and a real bond-funded Backup settlement with the buyer balance unchanged.
 
 ## Official Build Delta — September 17, 2026 onward
 
@@ -20,9 +20,9 @@ The first post-start feature is an automatic Continuity Coordinator that:
 - exposes its Evidence Pack through the browser, API and TypeScript SDK;
 - loads independent provider metadata from a strict secret-free configuration and executes bound HTTPS deliveries without automatic payment.
 
-The official-period runtime now passes an opt-in end-to-end test using two separate loopback HTTP services and two signing identities. Its production counterpart is also deployed: the bonded Primary exposes a dedicated x402 endpoint and signed Service Promise, while the independent bonded Backup exposes a private authenticated HTTPS delivery endpoint. The paid `BREACH → RECOVERED` run itself is still pending and is not inferred from deployment.
+The official-period runtime passes an opt-in end-to-end test using two separate loopback HTTP services and two signing identities. Its production counterpart is deployed: the bonded Primary exposes a dedicated x402 endpoint and signed Service Promise, while the independent bonded Backup exposes a private authenticated HTTPS delivery endpoint. A real paid `BREACH → RECOVERED → SETTLED` run now backs the strongest claim; it is not inferred from deployment.
 
-Current status: coordinator **TESTNET / LIVE RECOVERY EVIDENCE / BROWSER VERIFIABLE**; `RecoveryBondVaultV2` **TESTNET / DEPLOYED / SOURCE VERIFIED**; independent Providers **TESTNET / REGISTERED / BONDED / PUBLIC RUNTIME DEPLOYED**. Transaction `0x12a5…9b3a` paid the bonded Primary exactly 0.01 USD₮0 and produced an objective freshness `BREACH`; the authenticated Backup returned an independently signed `ACCEPTED` delivery and the verifier issued `RECOVERED`. The settlement plan passes every evidence and onchain check, but remains **NOT BROADCAST** pending separate confirmation.
+Current status: coordinator **TESTNET / LIVE RECOVERY / BROWSER VERIFIABLE**; `RecoveryBondVaultV2` **TESTNET / DEPLOYED / SOURCE VERIFIED / SETTLED**; independent Providers **TESTNET / REGISTERED / BONDED / PUBLIC RUNTIME DEPLOYED**. Transaction `0x12a5…9b3a` paid the bonded Primary exactly 0.01 USD₮0 and produced an objective freshness `BREACH`; the authenticated Backup returned an independently signed `ACCEPTED` delivery and the verifier issued `RECOVERED`. Settlement transaction [`0x4915…ea99`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x49150b2ec1eafece6e8c11a03ecb70b3562725f8153a18f237b5dafb9ec5ea99) then transferred exactly 0.01 USD₮0 from the Primary bond to the Backup. The buyer balance remained unchanged, all seven post-settlement checks passed, and the Primary auto-paused at a 4.99 USD₮0 bond.
 
 ```bash
 npm run demo:official-coordinator
@@ -31,10 +31,10 @@ npm run readiness:v2
 npm run verify:contract:v2:status
 npm run runtime:v2:configure # writes runtime metadata + private Backup auth only to gitignored .env
 npm run coordinator:v2:live # replays paid Primary evidence through the bonded HTTPS Backup
-npm run settlement:v2:plan # validates LIVE evidence and onchain state without broadcasting
+npm run settlement:v2:plan # safely reports the finalized LIVE settlement; a fresh request still defaults to read-only planning
 ```
 
-The settlement command is intentionally safe: it emits a structured read-only plan and never treats missing or invalid evidence as permission to fall back to the LOCAL coordinator fixture. With the current LIVE Evidence Pack it reports `ready: true`, `broadcast: false`; transaction submission still requires a separate exact confirmation.
+The settlement command is intentionally safe: it emits a structured read-only plan and never treats missing or invalid evidence as permission to fall back to the LOCAL coordinator fixture. A fresh request can broadcast only after exact, action-specific confirmation. If a receipt is returned before an RPC exposes the new state, the command preserves pending evidence, polls finality and can resume verification without rebroadcasting. The checked-in completed run reports `ready: true`, `broadcast: true` and seven passing post-settlement invariants.
 
 Once both Providers are bonded, `coordinator:v2:live` closes the gap between payment and settlement without manufacturing a LIVE label. It re-queries the exact Primary USD₮0 transfer, rejects `LOCAL`/`DESIGN` Provider profiles, confirms both service identities and bonds onchain, replays only the recorded paid Primary delivery, calls the independent HTTPS Backup, re-verifies both signatures and publishes `v2-live-coordinator.json` only after a real `BREACH → ACCEPTED → RECOVERED` result. It signs no payment and broadcasts no settlement.
 
@@ -63,7 +63,7 @@ Rank bonded providers
 
 The public build exposes a live OKX payment boundary, browser-verifiable EIP-712 promises and the complete Testnet V1 warranty lifecycle. `QualityBondVault` is deployed and source-verified on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. One real **0.01 Testnet USD₮0** Agentic Wallet delivery was independently verified `ACCEPTED`; a second was verified `BREACH` for stale data; transaction `0x21c3…03f` then returned **0.01 Testnet USD₮0** from the provider bond to the buyer.
 
-The same demo keeps a deterministic LOCAL V2 Judge Run for repeatability, but it is no longer the strongest claim. The public Evidence Pack now binds one real X Layer payment, the Primary's signed stale result, the Backup's authenticated fresh result, verifier signatures, buyer-paid-once economics and a settlement-ready contract plan. The only remaining V2 boundary is the separately authorized bond-to-Backup settlement transaction.
+The same demo keeps a deterministic LOCAL V2 Judge Run for repeatability, but it is no longer the strongest claim. The public Evidence Pack binds one real X Layer payment, the Primary's signed stale result, the Backup's authenticated fresh result, verifier signatures, buyer-paid-once economics and the completed bond-to-Backup settlement transaction.
 
 ## Why this is different
 
@@ -191,8 +191,9 @@ npm run rebate:live-breach -- --confirm
 - V2 Backup Provider: registration [`0x0069…eaa0`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x00692058206167eb896b5940c582c3b8d59f05a8b017ba04bdc05144e92ceaa0), approval [`0xb7f6…732e`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xb7f64c7e69b96d557376c4180198601aba857f1f06aeefe8962723e796e9732e), 3 USD₮0 deposit [`0x1547…a32b`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x15470010df05569c9d6eb5abe604511177b595e2f6bd7afe7265f10afdc0a32b); active and independent from Primary.
 - V2 bonding evidence: [`v2-bonding.json`](./evidence/official-build/v2-bonding.json) independently rechecks all six successful receipts, both identities, exact bonds and active states.
 - V2 paid Primary breach: `0.01 Testnet USD₮0`, transaction [`0x12a5…9b3a`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x12a5976b3a0d82870644d87bca481ce99130a481bf39557437bbfd5af2ed9b3a), block `41180307`; all signature, binding, deadline, schema and count checks pass, with only `freshnessMet=false`.
-- V2 live coordinator: Primary `BREACH` → authenticated independent Backup `ACCEPTED` → `RECOVERED`; buyer paid exactly once; evidence hash `0x5e70…ba26`; settlement not broadcast.
-- V2 settlement plan: every Evidence Pack and onchain check passes; `ready=true`, `broadcast=false`, recovery amount `0.01 USD₮0` from the Primary bond to the Backup.
+- V2 live coordinator: Primary `BREACH` → authenticated independent Backup `ACCEPTED` → `RECOVERED`; buyer paid exactly once; evidence hash `0x5e70…ba26`.
+- V2 bond-funded settlement: [`0x4915…ea99`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x49150b2ec1eafece6e8c11a03ecb70b3562725f8153a18f237b5dafb9ec5ea99), block `41181054`; exactly 0.01 USD₮0 moved from the Primary bond to the Backup, the buyer stayed at 0.01 USD₮0, the Primary bond changed 5.00 → 4.99 USD₮0 and auto-paused, and all seven receipt/state/balance/event checks passed.
+- V2 final settlement evidence: [`v2-live-settlement.json`](./evidence/official-build/v2-live-settlement.json), `ready=true`, `broadcast=true`; retry-safe verification resumes from a captured receipt and never rebroadcasts an already recovered request.
 - Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json), [`agentic-wallet-paid-delivery.json`](./evidence/live/agentic-wallet-paid-delivery.json), [`agentic-wallet-paid-breach.json`](./evidence/live/agentic-wallet-paid-breach.json), [`rebate.json`](./evidence/live/rebate.json), [`agentic-wallet-scenario-mismatch-settlement.json`](./evidence/live/agentic-wallet-scenario-mismatch-settlement.json), [`agentic-wallet-balance.json`](./evidence/live/agentic-wallet-balance.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
 
 ## Repository map
@@ -269,14 +270,14 @@ npm run rebate:live-breach -- --confirm
 | RecoveryBondVaultV2 contract | LOCAL / TESTED | backup authorization, replay protection and balance invariants |
 | RecoveryBondVaultV2 deployment | TESTNET / DEPLOYED | tx `0x4353…d9d0`, block `41168978`, zero token value |
 | RecoveryBondVaultV2 source | VERIFIED | OKX verification API reports source + ABI present |
-| V2 Provider registration and bonding | TESTNET / BONDED | Primary 5.00 USD₮0 active; Backup 3.00 USD₮0 active; all 6 receipts independently verified |
+| V2 Provider registration and bonding | TESTNET / BONDED | Initial Primary 5.00 + Backup 3.00 USD₮0 bonds; all 6 registration receipts independently verified |
 | Official Continuity Coordinator | LOCAL / TESTED | automatic Primary/Backup selection, independent receipt verification and monotonic state transitions |
 | Recovery Attestation | LOCAL / BROWSER VERIFIED | EIP-712 signer recovery, Solidity-compatible digest and canonical Evidence Pack integrity |
 | Double-provider failure | LOCAL / FROZEN | coordinator fails closed rather than presenting a failed backup as recovery |
 | Independent provider runtime | TESTNET / LIVE ENDPOINTS | bonded Primary x402 + signed Promise; private authenticated Backup HTTPS delivery; identity and endpoint bindings verified in production |
 | Two-process Provider recovery | LOCAL / TESTED | real HTTP Primary `BREACH` → independent Backup `ACCEPTED` → `RECOVERED`; buyer payment remains singular |
-| Guarded V2 live settlement executor | LOCAL / TESTED | rejects LOCAL evidence; validates signatures/bindings/onchain state; simulates before any separately confirmed broadcast |
-| V2 live settlement readiness | TESTNET / READY / NOT SENT | all evidence + onchain checks pass; 0.01 USD₮0 Primary-bond settlement awaits separate confirmation |
+| Guarded V2 live settlement executor | TESTNET / EXECUTED | rejects LOCAL evidence; validates signatures/bindings/onchain state; simulates before exact confirmation; preserves receipt and resumes verification without rebroadcasting |
+| V2 live settlement | TESTNET / SETTLED / VERIFIED | tx `0x4915…ea99`; 0.01 USD₮0 Primary bond → Backup; buyer unchanged; all 7 post-settlement checks pass |
 | V2 deployment readiness | TESTNET / BONDED | runtime bytecode, constructor getters, source, six registration receipts and both active bonds independently checked |
 
 See the detailed [prior-work and pre-build disclosure](./docs/prior-work-disclosure.md), the separate [official build-period record](./docs/official-build-period.md) and the [threat model](./docs/threat-model.md). The pre-build disclosure explains why feasibility work began early and lists every September 15 commit with exact UTC+8 timestamps; the official-period record contains only post-start functionality and evidence.

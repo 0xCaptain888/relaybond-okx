@@ -59,4 +59,4 @@ Every listed service carries a visible Quality Bond. A failed seller does not me
 - registry, Continuity Receipt and coordinator execution: LOCAL / TESTED.
 - `RecoveryBondVaultV2`: TESTNET / DEPLOYED / SOURCE VERIFIED.
 - Provider registration and bonding: TESTNET / VERIFIED (Primary 5 USD₮0, Backup 3 USD₮0, both active).
-- Live paid V2 breach, Backup delivery and recovery settlement: PENDING.
+- Live paid V2 breach, authenticated Backup delivery and bond-funded recovery settlement: TESTNET / VERIFIED (`0x4915…ea99`).

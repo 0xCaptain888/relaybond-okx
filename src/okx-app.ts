@@ -17,6 +17,7 @@ import { createOfficialCoordinatorEvidence } from "./official-build-simulator.js
 import { providerConfigurationStatus } from "./provider-config.js";
 import { createProviderService } from "./provider-service.js";
 import { backupAuthorizationMatches, configuredV2ProviderRuntime } from "./v2-provider-runtime.js";
+import { officialV2Settlement } from "./official-settlement.js";
 
 export function createOkxApp() {
   const required = ["OKX_API_KEY", "OKX_SECRET_KEY", "OKX_PASSPHRASE", "X402_PAY_TO", "PROVIDER_SIGNING_KEY"] as const;
@@ -109,6 +110,9 @@ export function createOkxApp() {
       next(error);
     }
   });
+  app.get("/v1/official/settlement", (_request, response) => {
+    response.json(officialV2Settlement);
+  });
   app.get("/v1/official/readiness", (_request, response) => {
     response.json({
       mode: "OFFICIAL_PERIOD_PROVIDER_RUNTIME",
@@ -136,7 +140,10 @@ export function createOkxApp() {
         contract: "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
         sourceVerified: true,
         providerRegistration: "TESTNET",
-        backupSettlement: "PENDING",
+        backupSettlement: "TESTNET",
+        transactionHash: officialV2Settlement.transactionHash,
+        buyerBalanceUnchanged: officialV2Settlement.checks.buyerBalanceUnchanged,
+        postSettlementChecksPassed: Object.values(officialV2Settlement.checks).every(Boolean),
         guard: {
           rejectsLocalEvidence: true,
           liveCoordinatorBridge: true,

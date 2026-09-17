@@ -236,7 +236,7 @@ async function runOfficialFlow() {
     let readinessText = "V2 deployment plan: unavailable";
     try {
       const { readiness, deployment, verification, bondPlan, bonding, settlementPlan } = await loadV2Readiness();
-      readinessText = `V2 contract: TESTNET / DEPLOYED\nChain: ${deployment.chainId}\nAddress: ${deployment.address}\nDeployment tx: ${deployment.transactionHash}\nSource verified: ${verification.verified}\nProvider bonding verified: ${bonding.verificationPassed}\nPrimary bond: ${Number(bonding.final.primary.bondBalanceAtomic) / 1_000_000} USD₮0 · active ${bonding.final.primary.active}\nBackup bond: ${Number(bonding.final.backup.bondBalanceAtomic) / 1_000_000} USD₮0 · active ${bonding.final.backup.active}\nPending registration transactions: ${bondPlan.totalTransactionCount}\nLOCAL evidence accepted for settlement: ${settlementPlan.evidenceValidation.checks.liveMode}\nSettlement broadcast: ${settlementPlan.broadcast}`;
+      readinessText = `V2 contract: TESTNET / DEPLOYED\nChain: ${deployment.chainId}\nAddress: ${deployment.address}\nDeployment tx: ${deployment.transactionHash}\nSource verified: ${verification.verified}\nProvider bonding verified: ${bonding.verificationPassed}\nPrimary bond before recovery: ${Number(bonding.final.primary.bondBalanceAtomic) / 1_000_000} USD₮0\nBackup bond: ${Number(bonding.final.backup.bondBalanceAtomic) / 1_000_000} USD₮0\nRegistration transactions: ${bondPlan.totalTransactionCount}\nLIVE evidence accepted: ${settlementPlan.evidenceValidation.checks.liveMode}\nSettlement broadcast: ${settlementPlan.broadcast}\nSettlement tx: ${settlementPlan.transactionHash}`;
     } catch {}
     output.textContent += `\n\nRecovered trail\n${events.map((event) => event.state).join(" → ")}\n\nFail-closed trail\n${evidence.frozen.task.events.map((event) => event.state).join(" → ")}\n\nRecovery Attestation digest\n${evidence.recoveryAttestationDigest}\n\nEvidence hash\n${evidence.evidenceHash}\n\n${readinessText}\n\nOnchain settlement: ${evidence.claims.onchainSettlement}\nMode: ${evidence.mode}`;
     officialState.textContent = "RECOVERED + FROZEN VERIFIED";
@@ -297,8 +297,13 @@ async function loadV2Status() {
     v2PlanStatus.textContent = publicRuntimeReady ? "PUBLIC / BONDED" : bonding.verificationPassed ? "TESTNET / BONDED" : readiness.checks.v2Deployed && verification.verified ? "TESTNET / DEPLOYED" : "VERIFYING";
     v2PlanDetail.textContent = `${deployment.chainId} · block ${deployment.blockNumber.toLocaleString()} · ${deployment.address.slice(0, 6)}…${deployment.address.slice(-4)} · source ${verification.verified ? "verified" : "pending"} · 5 + 3 USD₮0 active bonds · ${runtime.providers.providers.length} endpoints`;
     const configured = [readiness.checks.primaryConfigured, readiness.checks.backupConfigured].filter(Boolean).length;
-    v2SettlementStatus.textContent = settlementPlan.ready ? "READY / NOT SENT" : "FAIL-CLOSED";
-    v2ReadinessDetail.textContent = `${configured}/2 identities · ${liveCoordinator.recovered.task.state} · Primary ${liveCoordinator.recovered.primary.verification.status} · Backup ${liveCoordinator.recovered.backup.verification.status} · settlement confirmation required`;
+    const settlementVerified = settlementPlan.broadcast === true
+      && Object.values(settlementPlan.settlementChecks || {}).length >= 7
+      && Object.values(settlementPlan.settlementChecks || {}).every(Boolean);
+    v2SettlementStatus.textContent = settlementVerified ? "SETTLED / VERIFIED" : settlementPlan.ready ? "READY / NOT SENT" : "FAIL-CLOSED";
+    v2ReadinessDetail.textContent = settlementVerified
+      ? `${configured}/2 identities · buyer unchanged · Backup +0.01 USD₮0 · Primary bond 5.00 → 4.99 · tx ${settlementPlan.transactionHash.slice(0, 8)}…${settlementPlan.transactionHash.slice(-6)}`
+      : `${configured}/2 identities · ${liveCoordinator.recovered.task.state} · Primary ${liveCoordinator.recovered.primary.verification.status} · Backup ${liveCoordinator.recovered.backup.verification.status}`;
   } catch {
     v2PlanStatus.textContent = "PENDING";
     v2SettlementStatus.textContent = "PENDING";
@@ -350,12 +355,15 @@ async function verifyLiveV2Evidence() {
     const result = await window.RelayBondVerifier.verifyLiveCoordinatorEvidence(evidence);
     const { portableIntegrity, ...portablePayload } = evidence;
     const portablePassed = await sha256(portablePayload) === portableIntegrity.hash;
+    const settlementCheckValues = Object.values(settlementPlan.settlementChecks || {});
     const settlementChecksPassed = settlementPlan.ready
       && Object.values(settlementPlan.evidenceValidation.checks).every(Boolean)
       && Object.values(settlementPlan.onchainChecks).every(Boolean)
-      && settlementPlan.broadcast === false;
+      && settlementPlan.broadcast === true
+      && settlementCheckValues.length >= 7
+      && settlementCheckValues.every(Boolean);
     const verified = result.passed && portablePassed && settlementChecksPassed;
-    output.textContent = `$ LIVE V2 RECOVERY VERIFICATION\n\nPrimary payment tx:  ${evidence.primaryPayment.transactionHash}\nPrimary result:      ${evidence.recovered.primary.verification.status}\nBackup result:       ${evidence.recovered.backup.verification.status}\nFinal state:         ${evidence.recovered.task.state}\nBuyer paid once:     ${result.checks.buyerPaidOnce}\nIndependent backup: ${result.checks.independentProviders}\nRecovery from bond: ${result.checks.recoveryCoveredByBond}\nContinuity signer:  ${result.continuitySigner}\nRecovery signer:    ${result.recoverySigner}\nEvidence Keccak:    ${result.evidenceHashPassed ? "VERIFIED" : "FAILED"}\nPortable SHA-256:   ${portablePassed ? "VERIFIED" : "FAILED"}\nSettlement checks:  ${settlementChecksPassed ? "ALL PASSED · NOT BROADCAST" : "FAILED"}\n\n${verified ? "✓ LIVE RECOVERY VERIFIED — real payment, objective breach, authenticated Backup and buyer-paid-once economics are bound." : "✗ FAILED — live recovery evidence or settlement readiness did not verify."}`;
+    output.textContent = `$ LIVE V2 RECOVERY VERIFICATION\n\nPrimary payment tx:  ${evidence.primaryPayment.transactionHash}\nPrimary result:      ${evidence.recovered.primary.verification.status}\nBackup result:       ${evidence.recovered.backup.verification.status}\nFinal state:         ${evidence.recovered.task.state}\nBuyer paid once:     ${result.checks.buyerPaidOnce}\nIndependent backup: ${result.checks.independentProviders}\nRecovery from bond: ${result.checks.recoveryCoveredByBond}\nContinuity signer:  ${result.continuitySigner}\nRecovery signer:    ${result.recoverySigner}\nEvidence Keccak:    ${result.evidenceHashPassed ? "VERIFIED" : "FAILED"}\nPortable SHA-256:   ${portablePassed ? "VERIFIED" : "FAILED"}\nSettlement checks:  ${settlementChecksPassed ? "ALL PASSED · SETTLED ONCHAIN" : "FAILED"}\nSettlement tx:      ${settlementPlan.transactionHash}\nBuyer balance:      ${(Number(settlementPlan.balancesBefore.buyerAtomic) / 1_000_000).toFixed(2)} → ${(Number(settlementPlan.balancesAfter.buyerAtomic) / 1_000_000).toFixed(2)} USD₮0\nPrimary bond:       ${(Number(settlementPlan.balancesBefore.primaryBondAtomic) / 1_000_000).toFixed(2)} → ${(Number(settlementPlan.balancesAfter.primaryBondAtomic) / 1_000_000).toFixed(2)} USD₮0\nBackup wallet:      ${(Number(settlementPlan.balancesBefore.backupAtomic) / 1_000_000).toFixed(2)} → ${(Number(settlementPlan.balancesAfter.backupAtomic) / 1_000_000).toFixed(2)} USD₮0\n\n${verified ? "✓ LIVE RECOVERY SETTLED — real payment, objective breach, authenticated Backup, bond-funded compensation and buyer-paid-once economics are independently bound." : "✗ FAILED — live recovery or onchain settlement evidence did not verify."}`;
     officialState.textContent = verified ? "LIVE V2 RECOVERY VERIFIED" : "LIVE VERIFY FAILED";
   } catch (error) {
     output.textContent = `$ LIVE V2 verification error\n${error.message}`;

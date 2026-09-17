@@ -20,7 +20,9 @@ export { createProviderService } from "./provider-service.js";
 export { parseProviderConfiguration, providerConfigurationStatus } from "./provider-config.js";
 export { validateLiveRecoveryEvidence } from "./v2-settlement.js";
 export { assertLiveProviderProfiles, validatePaidPrimaryBinding, createLiveCoordinatorEvidence } from "./live-coordinator.js";
+export { officialV2Settlement } from "./official-settlement.js";
 export type { ProviderConfigurationStatus } from "./provider-config.js";
+export type { OfficialV2Settlement } from "./official-settlement.js";
 export type { LiveRecoveryEvidence, LiveRecoveryValidationContext } from "./v2-settlement.js";
 export type {
   BondedProviderProfile,

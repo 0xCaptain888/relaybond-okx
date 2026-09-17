@@ -89,6 +89,13 @@ paths:
       responses:
         "200":
           description: Official-period LOCAL coordinator evidence with RECOVERED and FROZEN runs
+  /v1/official/settlement:
+    get:
+      operationId: getOfficialV2Settlement
+      summary: Inspect the completed X Layer Testnet bond-funded recovery settlement
+      responses:
+        "200":
+          description: Transaction, balances and seven independently checked post-settlement invariants
   /v1/official/readiness:
     get:
       operationId: getOfficialProviderRuntimeReadiness
