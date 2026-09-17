@@ -1,0 +1,219 @@
+{
+  "evidenceVersion": "official-v2-bond-plan-1",
+  "mode": "XLAYER_TESTNET",
+  "chainId": 1952,
+  "vaultAddress": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+  "tokenAddress": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+  "verifier": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
+  "providers": [
+    {
+      "role": "primary",
+      "serviceName": "official-market-primary-v1",
+      "serviceId": "0x904674d09c6660688ac90e2579ab4f011a2a187626cc2e252c1c9c81210530f8",
+      "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+      "minimumBondAtomic": "5000000",
+      "maximumRecoveryAtomic": "10000",
+      "depositAmountAtomic": "5000000",
+      "tokenBalanceAtomic": "14990000",
+      "nativeBalanceAtomic": "399993901959695098",
+      "allowanceAtomic": "0",
+      "alreadyRegistered": false,
+      "currentProvider": "0x0000000000000000000000000000000000000000",
+      "currentBondAtomic": "0",
+      "missingDepositAtomic": "5000000",
+      "tokenFundingGapAtomic": "0",
+      "active": false,
+      "plannedTransactions": [
+        {
+          "action": "REGISTER_SERVICE",
+          "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+          "valueAtomic": "0"
+        },
+        {
+          "action": "APPROVE_USDT0",
+          "to": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+          "valueAtomic": "0",
+          "approvalAtomic": "5000000"
+        },
+        {
+          "action": "DEPOSIT_BOND",
+          "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+          "valueAtomic": "0",
+          "depositAtomic": "5000000"
+        }
+      ],
+      "transactionCount": 3,
+      "registrationMatches": true,
+      "ready": true
+    },
+    {
+      "role": "backup",
+      "serviceName": "official-market-backup-v1",
+      "serviceId": "0xcfce271178fef9854db1bd9bf325cc67a0e61d877ba74f79ff9390148c9ca522",
+      "provider": "0x3d5462243c7c69914Bfa0d2d4089cef79482ee03",
+      "minimumBondAtomic": "3000000",
+      "maximumRecoveryAtomic": "10000",
+      "depositAmountAtomic": "3000000",
+      "tokenBalanceAtomic": "10000000",
+      "nativeBalanceAtomic": "200000000000000000",
+      "allowanceAtomic": "0",
+      "alreadyRegistered": false,
+      "currentProvider": "0x0000000000000000000000000000000000000000",
+      "currentBondAtomic": "0",
+      "missingDepositAtomic": "3000000",
+      "tokenFundingGapAtomic": "0",
+      "active": false,
+      "plannedTransactions": [
+        {
+          "action": "REGISTER_SERVICE",
+          "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+          "valueAtomic": "0"
+        },
+        {
+          "action": "APPROVE_USDT0",
+          "to": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+          "valueAtomic": "0",
+          "approvalAtomic": "3000000"
+        },
+        {
+          "action": "DEPOSIT_BOND",
+          "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+          "valueAtomic": "0",
+          "depositAtomic": "3000000"
+        }
+      ],
+      "transactionCount": 3,
+      "registrationMatches": true,
+      "ready": true
+    }
+  ],
+  "totalTransactionCount": 6,
+  "fundingRequired": [
+    {
+      "role": "primary",
+      "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+      "tokenFundingGapAtomic": "0",
+      "nativeGasRequired": false
+    },
+    {
+      "role": "backup",
+      "provider": "0x3d5462243c7c69914Bfa0d2d4089cef79482ee03",
+      "tokenFundingGapAtomic": "0",
+      "nativeGasRequired": false
+    }
+  ],
+  "independentProviders": true,
+  "ready": true,
+  "broadcast": true,
+  "requiredConfirmation": "REGISTER_AND_BOND_V2_PROVIDERS_XLAYER_TESTNET",
+  "generatedAt": "2026-09-17T08:41:07.846Z",
+  "transactions": {
+    "primary": {
+      "register": {
+        "hash": "0x3243c2b9d7e54d0f6e8ed0c05edc3ea5b8dbcf98e57f4fa82f7847a472cced3a",
+        "blockNumber": 41175632
+      },
+      "approve": {
+        "hash": "0xefd63abd709d3f33103122339263ceafcb6aabb3a7b4aa9cb74a57b86091c5bc",
+        "blockNumber": 41175632
+      },
+      "deposit": {
+        "hash": "0xcc50997e2614fabf9cdcbbdde1aec228a773c33b2705ca1aa65fd03dc3f956bf",
+        "blockNumber": 41175634
+      }
+    },
+    "backup": {
+      "register": {
+        "hash": "0x00692058206167eb896b5940c582c3b8d59f05a8b017ba04bdc05144e92ceaa0",
+        "blockNumber": 41175637
+      },
+      "approve": {
+        "hash": "0xb7f64c7e69b96d557376c4180198601aba857f1f06aeefe8962723e796e9732e",
+        "blockNumber": 41175640
+      },
+      "deposit": {
+        "hash": "0x15470010df05569c9d6eb5abe604511177b595e2f6bd7afe7265f10afdc0a32b",
+        "blockNumber": 41175643
+      }
+    }
+  },
+  "final": {
+    "primary": {
+      "serviceId": "0x904674d09c6660688ac90e2579ab4f011a2a187626cc2e252c1c9c81210530f8",
+      "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+      "bondBalanceAtomic": "5000000",
+      "minimumBondAtomic": "5000000",
+      "maximumRecoveryAtomic": "10000",
+      "active": true
+    },
+    "backup": {
+      "serviceId": "0xcfce271178fef9854db1bd9bf325cc67a0e61d877ba74f79ff9390148c9ca522",
+      "provider": "0x3d5462243c7c69914Bfa0d2d4089cef79482ee03",
+      "bondBalanceAtomic": "3000000",
+      "minimumBondAtomic": "3000000",
+      "maximumRecoveryAtomic": "10000",
+      "active": true
+    }
+  },
+  "completedAt": "2026-09-17T08:41:19.008Z",
+  "receiptVerification": {
+    "primary": {
+      "register": {
+        "hash": "0x3243c2b9d7e54d0f6e8ed0c05edc3ea5b8dbcf98e57f4fa82f7847a472cced3a",
+        "status": "success",
+        "blockNumber": "41175632",
+        "gasUsed": "91631"
+      },
+      "approve": {
+        "hash": "0xefd63abd709d3f33103122339263ceafcb6aabb3a7b4aa9cb74a57b86091c5bc",
+        "status": "success",
+        "blockNumber": "41175632",
+        "gasUsed": "51218"
+      },
+      "deposit": {
+        "hash": "0xcc50997e2614fabf9cdcbbdde1aec228a773c33b2705ca1aa65fd03dc3f956bf",
+        "status": "success",
+        "blockNumber": "41175634",
+        "gasUsed": "79750"
+      }
+    },
+    "backup": {
+      "register": {
+        "hash": "0x00692058206167eb896b5940c582c3b8d59f05a8b017ba04bdc05144e92ceaa0",
+        "status": "success",
+        "blockNumber": "41175637",
+        "gasUsed": "91631"
+      },
+      "approve": {
+        "hash": "0xb7f64c7e69b96d557376c4180198601aba857f1f06aeefe8962723e796e9732e",
+        "status": "success",
+        "blockNumber": "41175640",
+        "gasUsed": "51218"
+      },
+      "deposit": {
+        "hash": "0x15470010df05569c9d6eb5abe604511177b595e2f6bd7afe7265f10afdc0a32b",
+        "status": "success",
+        "blockNumber": "41175643",
+        "gasUsed": "62650"
+      }
+    }
+  },
+  "checks": {
+    "correctChain": true,
+    "primaryRegisterSucceeded": true,
+    "primaryApproveSucceeded": true,
+    "primaryDepositSucceeded": true,
+    "backupRegisterSucceeded": true,
+    "backupApproveSucceeded": true,
+    "backupDepositSucceeded": true,
+    "primaryProviderBound": true,
+    "primaryBondExact": true,
+    "primaryActive": true,
+    "backupProviderBound": true,
+    "backupBondExact": true,
+    "backupActive": true,
+    "independentProviders": true
+  },
+  "verificationPassed": true,
+  "verifiedAt": "2026-09-17T08:43:26.041Z"
+}

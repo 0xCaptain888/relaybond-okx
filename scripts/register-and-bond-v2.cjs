@@ -4,6 +4,16 @@ const { mkdir, writeFile } = require("node:fs/promises");
 const EXPECTED_CHAIN_ID = 1952n;
 const CONFIRMATION = "REGISTER_AND_BOND_V2_PROVIDERS_XLAYER_TESTNET";
 
+async function waitForService(vault, serviceId, predicate, label) {
+  let latest;
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    latest = await vault.services(serviceId);
+    if (predicate(latest)) return latest;
+    await new Promise((resolve) => setTimeout(resolve, 1_000));
+  }
+  throw new Error(`${label} state did not become observable before the verification timeout.`);
+}
+
 function configuration() {
   return {
     primary: {
@@ -142,26 +152,36 @@ async function main() {
     if (service.provider === hre.ethers.ZeroAddress) {
       const register = await connectedVault.registerService(serviceId, item.minimumBond, item.maximumRecovery);
       const receipt = await register.wait();
-      transactions[item.label].register = { hash: register.hash, blockNumber: receipt.blockNumber };
+      if (receipt.status !== 1) throw new Error(`${item.label} registration reverted.`);
+      transactions[item.label].register = { hash: register.hash, blockNumber: receipt.blockNumber, status: "success", gasUsed: receipt.gasUsed.toString() };
     }
     const allowance = await connectedToken.allowance(signer.address, vaultAddress);
     if (allowance < item.depositAmount) {
       const approve = await connectedToken.approve(vaultAddress, item.depositAmount);
       const receipt = await approve.wait();
-      transactions[item.label].approve = { hash: approve.hash, blockNumber: receipt.blockNumber };
+      if (receipt.status !== 1) throw new Error(`${item.label} approval reverted.`);
+      transactions[item.label].approve = { hash: approve.hash, blockNumber: receipt.blockNumber, status: "success", gasUsed: receipt.gasUsed.toString() };
     }
     const latest = await connectedVault.services(serviceId);
     const missing = item.depositAmount > latest.bondBalance ? item.depositAmount - latest.bondBalance : 0n;
     if (missing > 0n) {
       const deposit = await connectedVault.depositBond(serviceId, missing);
       const receipt = await deposit.wait();
-      transactions[item.label].deposit = { hash: deposit.hash, blockNumber: receipt.blockNumber };
+      if (receipt.status !== 1) throw new Error(`${item.label} bond deposit reverted.`);
+      transactions[item.label].deposit = { hash: deposit.hash, blockNumber: receipt.blockNumber, status: "success", gasUsed: receipt.gasUsed.toString() };
     }
   }
   const final = {};
   for (const item of Object.values(config)) {
     const serviceId = hre.ethers.id(item.serviceName);
-    const service = await vault.services(serviceId);
+    const service = await waitForService(
+      vault,
+      serviceId,
+      (candidate) => candidate.provider.toLowerCase() === item.address.toLowerCase()
+        && candidate.bondBalance >= item.depositAmount
+        && candidate.active,
+      item.label,
+    );
     final[item.label] = { serviceId, provider: service.provider, bondBalanceAtomic: service.bondBalance.toString(), active: service.active };
   }
   const evidence = { ...plan, mode: "XLAYER_TESTNET", broadcast: true, transactions, final, completedAt: new Date().toISOString() };

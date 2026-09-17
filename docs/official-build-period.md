@@ -34,11 +34,12 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 | 2026-09-17 15:56:07 UTC+8 | `2b4f7ad` | Guarded live V2 settlement executor; strict LIVE Evidence Pack binding; LOCAL-evidence rejection; onchain replay/bond checks; simulation and post-settlement buyer-balance invariants; exact six-transaction Provider registration plan | 47 unit tests; 8 contract tests; HTTP integration; `v2-bond-plan.json`; `v2-settlement-plan.json` | LOCAL / TESTED + TESTNET / READ-ONLY |
 | 2026-09-17 16:05 UTC+8 | `13ae6f0` | Fail-closed missing-evidence readiness: `settlement:v2:plan` now returns structured `ready: false` output instead of a filesystem exception and never broadcasts | 48 unit tests; CLI rehearsal with LIVE Evidence Pack absent | LOCAL / TESTED |
 | 2026-09-17 16:29 UTC+8 | `3ac31f0` | LIVE coordinator bridge between a real paid Primary breach and guarded V2 settlement; rejects LOCAL profiles, rechecks payment and Provider bonds onchain, calls the HTTPS Backup and emits evidence only after verified recovery | 50 unit tests; 8 contract tests; two-process HTTP integration; production build | LOCAL / TESTED + TESTNET / READ-ONLY |
+| 2026-09-17 16:41 UTC+8 | pending commit | Registered two independent V2 Provider services, approved exact USD₮0 amounts and activated 5 + 3 USD₮0 bonds; added receipt-by-receipt independent verification and RPC-consistency retry | six successful receipts; `v2-bonding.json`; both services active and identity-bound | TESTNET / BONDED / VERIFIED |
 
 ## Target official-period delta
 
 - [x] Deploy and source-verify `RecoveryBondVaultV2` after the official start.
-- [ ] Register and bond independent primary and backup providers.
+- [x] Register and bond independent primary and backup providers.
 - [ ] Publish or integrate live OKX AI/A2MCP provider services.
 - [ ] Execute a paid primary delivery and independently verify `BREACH`.
 - [ ] Automatically dispatch the same task to the backup provider.

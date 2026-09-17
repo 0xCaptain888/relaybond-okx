@@ -4,7 +4,7 @@
 
 **[Live Judge Demo + API](https://relaybond-okx.vercel.app/)** · **[GitHub Pages mirror](https://0xcaptain888.github.io/relaybond-okx/)** · **[Source](https://github.com/0xCaptain888/relaybond-okx)** · **[V2 X Layer contract](https://www.okx.com/web3/explorer/xlayer-test/address/0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f)** · **Video:** pending
 
-RelayBond routes paid tasks to bonded Agent providers, verifies delivery and recovers failed work through an independent backup without charging the buyer twice. The deployed V1 proves real Testnet payment, breach verification and buyer rebate. The source-verified V2 settlement is now deployed on X Layer Testnet; independent Provider registration, bonding and the first real backup settlement remain pending.
+RelayBond routes paid tasks to bonded Agent providers, verifies delivery and recovers failed work through an independent backup without charging the buyer twice. The deployed V1 proves real Testnet payment, breach verification and buyer rebate. The source-verified V2 settlement is deployed on X Layer Testnet, with independent Primary and Backup providers registered and bonded; the first real backup settlement remains pending.
 
 ## Official Build Delta — September 17, 2026 onward
 
@@ -22,7 +22,7 @@ The first post-start feature is an automatic Continuity Coordinator that:
 
 The official-period runtime now also passes an opt-in end-to-end test using two separate loopback HTTP services and two signing identities: Primary returns a signed stale quote, Backup returns a signed fresh quote, and the coordinator reaches `RECOVERED` with one buyer payment. This is **LOCAL / TESTED**, not a claim of two deployed public Providers.
 
-Current status: coordinator **LOCAL / TESTED / BROWSER VERIFIED**; `RecoveryBondVaultV2` **TESTNET / DEPLOYED / SOURCE VERIFIED**. The generated coordinator evidence still honestly records `onchainSettlement: false` because independent Provider registration, bonding and a real backup settlement remain **PENDING**.
+Current status: coordinator **LOCAL / TESTED / BROWSER VERIFIED**; `RecoveryBondVaultV2` **TESTNET / DEPLOYED / SOURCE VERIFIED**; independent Providers **TESTNET / REGISTERED / BONDED**. The generated coordinator evidence still honestly records `onchainSettlement: false` because a real paid V2 Primary breach, HTTPS Backup delivery and recovery settlement remain **PENDING**.
 
 ```bash
 npm run demo:official-coordinator
@@ -184,6 +184,9 @@ npm run rebate:live-breach -- --confirm
 - Verified source: `QualityBondVault`, Solidity `0.8.28`, optimizer `200`, EVM `paris`
 - RecoveryBondVaultV2 deployment: [`0x4353…d9d0`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x43531981582981657566ff26a25427f5313381487062f398719d2f4a096ad9d0), block `41168978`, contract [`0xBa15…b73f`](https://www.okx.com/web3/explorer/xlayer-test/address/0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f), zero token value transferred.
 - RecoveryBondVaultV2 source: **VERIFIED** as `RecoveryBondVaultV2`, Solidity `0.8.28`, optimizer `200`, EVM `paris`; constructor getters independently match Testnet USD₮0 and the expected verifier.
+- V2 Primary Provider: registration [`0x3243…ed3a`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x3243c2b9d7e54d0f6e8ed0c05edc3ea5b8dbcf98e57f4fa82f7847a472cced3a), approval [`0xefd6…c5bc`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xefd63abd709d3f33103122339263ceafcb6aabb3a7b4aa9cb74a57b86091c5bc), 5 USD₮0 deposit [`0xcc50…56bf`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xcc50997e2614fabf9cdcbbdde1aec228a773c33b2705ca1aa65fd03dc3f956bf); active and identity-bound.
+- V2 Backup Provider: registration [`0x0069…eaa0`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x00692058206167eb896b5940c582c3b8d59f05a8b017ba04bdc05144e92ceaa0), approval [`0xb7f6…732e`](https://www.okx.com/web3/explorer/xlayer-test/tx/0xb7f64c7e69b96d557376c4180198601aba857f1f06aeefe8962723e796e9732e), 3 USD₮0 deposit [`0x1547…a32b`](https://www.okx.com/web3/explorer/xlayer-test/tx/0x15470010df05569c9d6eb5abe604511177b595e2f6bd7afe7265f10afdc0a32b); active and independent from Primary.
+- V2 bonding evidence: [`v2-bonding.json`](./evidence/official-build/v2-bonding.json) independently rechecks all six successful receipts, both identities, exact bonds and active states.
 - Machine-readable evidence: [`service-promise.json`](./evidence/live/service-promise.json), [`bond.json`](./evidence/live/bond.json), [`agentic-wallet-funding.json`](./evidence/live/agentic-wallet-funding.json), [`agentic-wallet-paid-delivery.json`](./evidence/live/agentic-wallet-paid-delivery.json), [`agentic-wallet-paid-breach.json`](./evidence/live/agentic-wallet-paid-breach.json), [`rebate.json`](./evidence/live/rebate.json), [`agentic-wallet-scenario-mismatch-settlement.json`](./evidence/live/agentic-wallet-scenario-mismatch-settlement.json), [`agentic-wallet-balance.json`](./evidence/live/agentic-wallet-balance.json) and [`contract-verification.json`](./evidence/live/contract-verification.json)
 
 ## Repository map
@@ -260,14 +263,14 @@ npm run rebate:live-breach -- --confirm
 | RecoveryBondVaultV2 contract | LOCAL / TESTED | backup authorization, replay protection and balance invariants |
 | RecoveryBondVaultV2 deployment | TESTNET / DEPLOYED | tx `0x4353…d9d0`, block `41168978`, zero token value |
 | RecoveryBondVaultV2 source | VERIFIED | OKX verification API reports source + ABI present |
-| V2 Provider registration and bonding | PENDING | Primary has 4.99/5.00 USD₮0; Backup has 0/3.00 and no gas |
+| V2 Provider registration and bonding | TESTNET / BONDED | Primary 5.00 USD₮0 active; Backup 3.00 USD₮0 active; all 6 receipts independently verified |
 | Official Continuity Coordinator | LOCAL / TESTED | automatic Primary/Backup selection, independent receipt verification and monotonic state transitions |
 | Recovery Attestation | LOCAL / BROWSER VERIFIED | EIP-712 signer recovery, Solidity-compatible digest and canonical Evidence Pack integrity |
 | Double-provider failure | LOCAL / FROZEN | coordinator fails closed rather than presenting a failed backup as recovery |
 | Independent provider runtime | LOCAL / TESTED | strict configuration, endpoint binding, request/profile binding, limits and fail-closed HTTP 402 behavior |
 | Two-process Provider recovery | LOCAL / TESTED | real HTTP Primary `BREACH` → independent Backup `ACCEPTED` → `RECOVERED`; buyer payment remains singular |
 | Guarded V2 live settlement executor | LOCAL / TESTED | rejects LOCAL evidence; validates signatures/bindings/onchain state; simulates before any separately confirmed broadcast |
-| V2 deployment readiness | TESTNET / DEPLOYED | runtime bytecode, constructor getters, receipt and source verification checked; registration remains false |
+| V2 deployment readiness | TESTNET / BONDED | runtime bytecode, constructor getters, source, six registration receipts and both active bonds independently checked |
 
 See the detailed [prior-work and pre-build disclosure](./docs/prior-work-disclosure.md), the separate [official build-period record](./docs/official-build-period.md) and the [threat model](./docs/threat-model.md). The pre-build disclosure explains why feasibility work began early and lists every September 15 commit with exact UTC+8 timestamps; the official-period record contains only post-start functionality and evidence.
 Production dependencies currently pass [`npm run security:audit`](./SECURITY.md) with zero known vulnerabilities; legacy Hardhat advisories are isolated to the local development toolchain.

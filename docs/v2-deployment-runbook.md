@@ -1,6 +1,6 @@
 # RecoveryBondVaultV2 deployment runbook
 
-Status: **TESTNET / DEPLOYED / SOURCE VERIFIED**. `RecoveryBondVaultV2` was deployed after the official build start on September 17, 2026 at `0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f`. Transaction `0x43531981582981657566ff26a25427f5313381487062f398719d2f4a096ad9d0` transferred zero token value. Provider registration, bonding and backup settlement remain **PENDING** and require a separate confirmation.
+Status: **TESTNET / DEPLOYED / SOURCE VERIFIED / PROVIDERS BONDED**. `RecoveryBondVaultV2` was deployed after the official build start on September 17, 2026 at `0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f`. Transaction `0x43531981582981657566ff26a25427f5313381487062f398719d2f4a096ad9d0` transferred zero token value. The independent Primary and Backup are now registered with active 5 and 3 Testnet USD₮0 bonds. A real backup settlement remains **PENDING** and requires a separate confirmation.
 
 ## Safety sequence
 
@@ -56,6 +56,14 @@ npm run bond:v2:plan
 ```
 
 The bonding script defaults to read-only inspection and refuses duplicate Provider identities, wrong chain, wrong token, absent contract bytecode, insufficient balances and mismatched existing registrations.
+
+The six registration, approval and deposit receipts are independently rechecked with:
+
+```bash
+npm run verify:bonding:v2
+```
+
+Evidence: [`v2-bonding.json`](../evidence/official-build/v2-bonding.json). Both Provider identities, exact bond balances, active states and every receipt status must pass before the artifact is accepted.
 
 ## Source verification
 

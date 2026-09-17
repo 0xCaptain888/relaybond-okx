@@ -99,7 +99,7 @@ export function createOkxApp() {
         status: "TESTNET",
         contract: "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
         sourceVerified: true,
-        providerRegistration: "PENDING",
+        providerRegistration: "TESTNET",
         backupSettlement: "PENDING",
         guard: {
           rejectsLocalEvidence: true,

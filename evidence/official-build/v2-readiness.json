@@ -1,7 +1,7 @@
 {
   "evidenceVersion": "official-v2-readiness-1",
   "mode": "XLAYER_TESTNET_READ_ONLY",
-  "generatedAt": "2026-09-17T08:02:56.621Z",
+  "generatedAt": "2026-09-17T08:41:46.412Z",
   "chainId": 1952,
   "settlementToken": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
   "vault": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
@@ -12,14 +12,14 @@
     },
     "primary": {
       "address": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
-      "nativeBalance": "0.199993901959695098",
-      "tokenBalance": "4.99",
+      "nativeBalance": "0.399989449979472499",
+      "tokenBalance": "9.99",
       "requiredTokenBalance": "5"
     },
     "backup": {
       "address": "0x3d5462243c7c69914Bfa0d2d4089cef79482ee03",
-      "nativeBalance": "0",
-      "tokenBalance": "0",
+      "nativeBalance": "0.199995890019794501",
+      "tokenBalance": "7",
       "requiredTokenBalance": "3"
     },
     "verifier": {
@@ -37,10 +37,10 @@
     "backupConfigured": true,
     "independentProviders": true,
     "v2Deployed": true,
-    "primaryBondFunded": false,
-    "backupBondFunded": false
+    "primaryBondFunded": true,
+    "backupBondFunded": true
   },
   "readyForDeployment": true,
-  "readyForRegistration": false,
+  "readyForRegistration": true,
   "broadcastPerformed": false
 }

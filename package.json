@@ -45,6 +45,7 @@
     "readiness:v2": "node --env-file-if-exists=.env --import tsx scripts/v2-readiness.ts",
     "wallets:backup-provider": "node --env-file-if-exists=.env --import tsx scripts/bootstrap-backup-provider.ts",
     "bond:v2:plan": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/register-and-bond-v2.cjs --network xLayerTestnet",
+    "verify:bonding:v2": "node --env-file-if-exists=.env --import tsx scripts/verify-v2-bonding.ts",
     "coordinator:v2:live": "node --env-file-if-exists=.env --import tsx scripts/run-live-v2-coordinator.ts",
     "settlement:v2:plan": "node --env-file-if-exists=.env --import tsx scripts/settle-v2-recovery.ts",
     "bond:xlayer-testnet": "node --env-file-if-exists=.env ./node_modules/hardhat/internal/cli/bootstrap.js run scripts/register-and-bond.cjs --network xLayerTestnet",

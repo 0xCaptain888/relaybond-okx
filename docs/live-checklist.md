@@ -31,7 +31,8 @@
 - [x] Verifier-signed Continuity Receipt binds primary breach, backup delivery and recovery economics.
 - [x] RecoveryBondVaultV2 contract tests cover authorization, replay protection and buyer balance invariance.
 - [x] Deploy and source-verify RecoveryBondVaultV2 on X Layer Testnet.
-- [ ] Register and bond independent Providers, then execute one real backup settlement.
+- [x] Register and bond independent Providers with six independently verified Testnet receipts.
+- [ ] Execute one real paid V2 breach and backup settlement.
 - [x] Browser-side EIP-712 signer recovery, not only portable SHA-256 integrity.
 - [x] Guarded V2 settlement executor rejects LOCAL evidence, simulates before broadcast and verifies buyer balance invariance.
 - [x] LIVE coordinator bridge re-verifies paid Primary settlement, onchain Provider bonds and HTTPS Backup delivery before emitting settlement evidence.
