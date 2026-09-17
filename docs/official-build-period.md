@@ -37,6 +37,7 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 | 2026-09-17 16:41 UTC+8 | `77b90ae` | Registered two independent V2 Provider services, approved exact USD₮0 amounts and activated 5 + 3 USD₮0 bonds; added receipt-by-receipt independent verification and RPC-consistency retry | six successful receipts; `v2-bonding.json`; both services active and identity-bound | TESTNET / BONDED / VERIFIED |
 | 2026-09-17 17:13:56 UTC+8 | `9b19096` | Deployed a dedicated paid V2 Primary endpoint plus a separately signed authenticated Backup endpoint; added exact runtime identity/endpoint binding, constant-time Backup authorization, guarded evidence output and secure Vercel environment provisioning | 53 passing unit tests + 1 intentional skip; 8 contract tests; HTTP integration; Production Primary Promise signed by bonded address; unauthenticated Backup `401`; authorized Backup signed by bonded address | TESTNET / PUBLIC RUNTIME DEPLOYED |
 | 2026-09-17 18:04:03 UTC+8 | `b3f2044` | Executed a real 0.01 USD₮0 V2 Primary payment, independently verified its signed stale delivery as `BREACH`, dispatched to the authenticated bonded Backup, verified `ACCEPTED`, emitted verifier-signed `RECOVERED`, and produced a fail-closed settlement-ready plan; fixed live dispatch time so elapsed operator delay cannot be misreported as Backup latency | payment tx `0x12a5…9b3a`; `v2-primary-paid-breach.json`; `v2-live-coordinator.json`; evidence hash `0x5e70…ba26`; all evidence/onchain settlement-plan checks true; `broadcast=false`; 54 passing unit tests + 1 intentional skip; 8 contract tests; HTTP integration | TESTNET / LIVE RECOVERED / SETTLEMENT READY |
+| 2026-09-17 18:15:37 UTC+8 | `d295f3f` | Broadcast the separately confirmed V2 recovery settlement; hardened the executor against receipt/state RPC races with retry-safe pending-evidence recovery; published settlement through the Demo, API and TypeScript SDK | tx `0x4915…ea99`; block `41181054`; 0.01 USD₮0 Primary bond → Backup; buyer balance unchanged; Primary 5.00 → 4.99 USD₮0 and inactive; 7/7 post-settlement checks; 55 passing unit tests + 1 intentional skip; 8 contract tests; two-process HTTP integration; production audit 0 | TESTNET / SETTLED / VERIFIED |
 
 ## Target official-period delta
 
@@ -46,7 +47,7 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 - [ ] Publish the provider service in the OKX AI/A2MCP marketplace.
 - [x] Execute a paid primary delivery and independently verify `BREACH`.
 - [x] Automatically dispatch the same task to the backup provider.
-- [ ] Settle backup compensation from the primary bond.
+- [x] Settle backup compensation from the primary bond.
 - [x] Prove the buyer paid only once.
 - [x] Publish a real `RECOVERED` Continuity Receipt.
 - [x] Add the official-period LOCAL coordinator flow to the judge demo, API and SDK.
@@ -54,8 +55,8 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 - [x] Execute the coordinator against two independent local HTTP Provider processes and signing identities.
 - [x] Generate a post-start read-only V2 deployment plan and guarded registration workflow.
 - [x] Implement a guarded live settlement executor that rejects LOCAL evidence and verifies post-transaction economic invariants.
-- [ ] Configure and operate two independent Testnet service endpoints.
-- [ ] Add the live official-period settlement flow to the judge demo and SDK.
+- [x] Configure and operate two independent Testnet service endpoints.
+- [x] Add the live official-period settlement flow to the judge demo, API and SDK.
 
 ## Evidence directory
 
@@ -65,4 +66,4 @@ Official-period machine-readable evidence is stored under:
 evidence/official-build/
 ```
 
-The first artifact, [`coordinator-v1.json`](../evidence/official-build/coordinator-v1.json), deliberately records `onchainSettlement: false`. It proves the post-start coordinator, signatures and fail-closed state machine. The later [`v2-deployment.json`](../evidence/official-build/v2-deployment.json) separately proves contract deployment; it does not turn the LOCAL coordinator run into a settled Testnet recovery.
+The first artifact, [`coordinator-v1.json`](../evidence/official-build/coordinator-v1.json), deliberately records `onchainSettlement: false`. It proves the post-start LOCAL coordinator, signatures and fail-closed state machine. The later [`v2-deployment.json`](../evidence/official-build/v2-deployment.json) separately proves contract deployment, while [`v2-live-coordinator.json`](../evidence/official-build/v2-live-coordinator.json) and [`v2-live-settlement.json`](../evidence/official-build/v2-live-settlement.json) prove the distinct real Testnet recovery and completed bond-funded settlement.
