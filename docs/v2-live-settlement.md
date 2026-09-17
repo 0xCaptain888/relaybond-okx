@@ -4,6 +4,8 @@ Status: **IMPLEMENTED / GUARDED / NOT YET BROADCAST**.
 
 `settlement:v2:plan` is the final safety boundary between a verified live Provider recovery and `RecoveryBondVaultV2.settleRecovery`. It refuses deterministic LOCAL evidence and requires a future Evidence Pack explicitly labeled `XLAYER_TESTNET_LIVE_COORDINATOR`.
 
+If that Evidence Pack does not exist yet, the command returns a machine-readable fail-closed plan with `sourceEvidenceAvailable: false`, `ready: false` and `broadcast: false`. This is an expected readiness state, not a runtime crash. Read-only planning also exits normally when checks fail; only an operator who supplies the exact broadcast confirmation can enter the transaction path.
+
 Before producing a transaction plan it independently checks:
 
 - the chain, vault and verifier;

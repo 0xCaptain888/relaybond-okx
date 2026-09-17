@@ -1,4 +1,5 @@
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
 import {
   createPublicClient,
   createWalletClient,
@@ -17,6 +18,7 @@ import { validateLiveRecoveryEvidence, type LiveRecoveryEvidence } from "../src/
 const EXPECTED_CHAIN_ID = 1952;
 const CONFIRMATION = "SETTLE_V2_RECOVERY_XLAYER_TESTNET";
 const evidencePath = process.env.V2_LIVE_EVIDENCE_PATH || "evidence/official-build/v2-live-coordinator.json";
+const planPath = process.env.V2_SETTLEMENT_PLAN_PATH || "evidence/official-build/v2-settlement-plan.json";
 const vaultAddress = process.env.RECOVERY_BOND_VAULT_V2_ADDRESS;
 const tokenAddress = process.env.USDT0_ADDRESS;
 const verifierAddress = process.env.VERIFIER_ADDRESS;
@@ -24,7 +26,37 @@ if (!vaultAddress || !isAddress(vaultAddress)) throw new Error("RECOVERY_BOND_VA
 if (!tokenAddress || !isAddress(tokenAddress)) throw new Error("USDT0_ADDRESS is required.");
 if (!verifierAddress || !isAddress(verifierAddress)) throw new Error("VERIFIER_ADDRESS is required.");
 
-const evidence = JSON.parse(await readFile(evidencePath, "utf8")) as LiveRecoveryEvidence;
+let evidence: LiveRecoveryEvidence;
+try {
+  evidence = JSON.parse(await readFile(evidencePath, "utf8")) as LiveRecoveryEvidence;
+} catch (error) {
+  if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) throw error;
+  const unavailablePlan = {
+    evidenceVersion: "official-v2-settlement-plan-1",
+    mode: "XLAYER_TESTNET_READ_ONLY_PLAN",
+    generatedAt: new Date().toISOString(),
+    sourceEvidence: evidencePath,
+    sourceEvidenceAvailable: false,
+    chainId: EXPECTED_CHAIN_ID,
+    vaultAddress: getAddress(vaultAddress),
+    tokenAddress: getAddress(tokenAddress),
+    verifier: getAddress(verifierAddress),
+    evidenceValidation: {
+      passed: false,
+      checks: { liveMode: false },
+      reason: "A fresh XLAYER_TESTNET_LIVE_COORDINATOR Evidence Pack has not been created yet.",
+    },
+    onchainChecks: {},
+    ready: false,
+    broadcast: false,
+    requiredConfirmation: CONFIRMATION,
+    next: "Register and bond both Providers, execute a real paid Primary breach and Backup acceptance, then generate the LIVE coordinator Evidence Pack. No transaction was sent.",
+  };
+  await mkdir(dirname(planPath), { recursive: true });
+  await writeFile(planPath, `${JSON.stringify(unavailablePlan, null, 2)}\n`);
+  console.log(JSON.stringify(unavailablePlan, null, 2));
+  process.exit(0);
+}
 const chain = defineChain({
   id: EXPECTED_CHAIN_ID,
   name: "X Layer Testnet",
@@ -111,11 +143,11 @@ const plan = {
   broadcast: false,
   requiredConfirmation: CONFIRMATION,
 };
-await mkdir("evidence/official-build", { recursive: true });
-await writeFile("evidence/official-build/v2-settlement-plan.json", `${JSON.stringify(plan, null, 2)}\n`);
+await mkdir(dirname(planPath), { recursive: true });
+await writeFile(planPath, `${JSON.stringify(plan, null, 2)}\n`);
 if (process.env.V2_SETTLEMENT_CONFIRMATION !== CONFIRMATION) {
   console.log(JSON.stringify({ ...plan, next: `Review this plan, then set V2_SETTLEMENT_CONFIRMATION=${CONFIRMATION}.` }, null, 2));
-  process.exit(ready ? 0 : 2);
+  process.exit(0);
 }
 if (!ready) throw new Error("V2 recovery settlement is not ready; no transaction was sent.");
 const privateKey = process.env.XLAYER_PRIVATE_KEY;

@@ -32,6 +32,8 @@ npm run verify:contract:v2:status
 npm run settlement:v2:plan # requires a future LIVE coordinator Evidence Pack
 ```
 
+The settlement command is intentionally safe to run before that LIVE Evidence Pack exists: it emits a structured `ready: false`, `broadcast: false` plan and exits normally. It never treats missing evidence as permission to fall back to the LOCAL coordinator fixture.
+
 Open the Judge Demo and select **Run official coordinator**, then **Verify Official Build**. The browser independently recovers both verifier signatures and checks the Recovery Attestation digest, `RECOVERED` and `FROZEN` terminal states, canonical Keccak evidence hash and portable SHA-256 integrity.
 
 ## The five-second problem
