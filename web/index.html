@@ -31,8 +31,9 @@
             <button id="verify-live" class="secondary">Recover live EIP-712 signer</button>
             <button id="run" class="tertiary">Run continuity recovery</button>
             <button id="run-official" class="official-cta">Run official coordinator</button>
+            <button id="verify-v2-live" class="official-cta">Verify live V2 recovery</button>
           </div>
-          <p class="honesty">LIVE / TESTNET V1: x402 payment, signed delivery, verified breach and real buyer rebate. TESTNET / BONDED V2: source-verified contract, active 5 and 3 USD₮0 bonds, public Primary x402 and privately authenticated Backup endpoints. Real V2 payment and settlement remain PENDING; deterministic recovery remains LOCAL / TESTED.</p>
+          <p class="honesty">LIVE / TESTNET V1: x402 payment, signed delivery, verified breach and real buyer rebate. LIVE / TESTNET V2: a real 0.01 USD₮0 Primary payment breached freshness, the authenticated Backup was accepted and the task reached RECOVERED without a second buyer payment. Bond-funded settlement is validated and remains PENDING confirmation.</p>
         </div>
         <aside class="bond-card">
           <div class="card-head"><span>Provider Quality Bond</span><span id="bond-status" class="paused">AUTO-PAUSED</span></div>
@@ -58,7 +59,7 @@
       <section class="official-shell" aria-label="Official build coordinator">
         <div class="section-heading">
           <div><p class="eyebrow">OFFICIAL BUILD DELTA · POST-START</p><h2>Automatic recovery. Fail closed.</h2></div>
-          <span id="official-state">PUBLIC PROVIDERS · LOCAL RECOVERY</span>
+          <span id="official-state">LIVE RECOVERY · SETTLEMENT PENDING</span>
         </div>
         <p class="official-intro">New after the official start: an auditable coordinator selects providers, verifies both signed deliveries, emits a Solidity-compatible Recovery Attestation, and freezes the task if the backup also fails.</p>
         <div class="official-steps">
@@ -69,10 +70,10 @@
           <article data-official-step="4"><b>05</b><h3>Recover / Freeze</h3><span>WAITING</span></article>
         </div>
         <div class="official-proof-grid">
-          <div><span>RECOVERY PATH</span><strong>RECOVERED</strong><small>Primary breach → independent backup accepted</small></div>
+          <div><span>RECOVERY PATH</span><strong>LIVE / RECOVERED</strong><small>Paid Primary breach → independent HTTPS Backup accepted</small></div>
           <div><span>DOUBLE FAILURE</span><strong>FROZEN</strong><small>No false success when the backup breaches</small></div>
           <div><span>V2 CONTRACT</span><strong id="v2-plan-status">LOADING</strong><small id="v2-plan-detail">Checking X Layer Testnet evidence</small></div>
-          <div><span>ONCHAIN EXECUTOR</span><strong id="v2-settlement-status">FAIL-CLOSED</strong><small id="v2-readiness-detail">Provider bonds verified; LIVE recovery evidence remains pending</small></div>
+          <div><span>ONCHAIN EXECUTOR</span><strong id="v2-settlement-status">READY / NOT SENT</strong><small id="v2-readiness-detail">LIVE recovery verified; separate settlement confirmation required</small></div>
         </div>
       </section>
 

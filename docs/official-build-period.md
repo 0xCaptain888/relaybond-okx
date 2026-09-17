@@ -36,6 +36,7 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 | 2026-09-17 16:29 UTC+8 | `3ac31f0` | LIVE coordinator bridge between a real paid Primary breach and guarded V2 settlement; rejects LOCAL profiles, rechecks payment and Provider bonds onchain, calls the HTTPS Backup and emits evidence only after verified recovery | 50 unit tests; 8 contract tests; two-process HTTP integration; production build | LOCAL / TESTED + TESTNET / READ-ONLY |
 | 2026-09-17 16:41 UTC+8 | `77b90ae` | Registered two independent V2 Provider services, approved exact USD₮0 amounts and activated 5 + 3 USD₮0 bonds; added receipt-by-receipt independent verification and RPC-consistency retry | six successful receipts; `v2-bonding.json`; both services active and identity-bound | TESTNET / BONDED / VERIFIED |
 | 2026-09-17 17:13:56 UTC+8 | `9b19096` | Deployed a dedicated paid V2 Primary endpoint plus a separately signed authenticated Backup endpoint; added exact runtime identity/endpoint binding, constant-time Backup authorization, guarded evidence output and secure Vercel environment provisioning | 53 passing unit tests + 1 intentional skip; 8 contract tests; HTTP integration; Production Primary Promise signed by bonded address; unauthenticated Backup `401`; authorized Backup signed by bonded address | TESTNET / PUBLIC RUNTIME DEPLOYED |
+| 2026-09-17 18:04:03 UTC+8 | `b3f2044` | Executed a real 0.01 USD₮0 V2 Primary payment, independently verified its signed stale delivery as `BREACH`, dispatched to the authenticated bonded Backup, verified `ACCEPTED`, emitted verifier-signed `RECOVERED`, and produced a fail-closed settlement-ready plan; fixed live dispatch time so elapsed operator delay cannot be misreported as Backup latency | payment tx `0x12a5…9b3a`; `v2-primary-paid-breach.json`; `v2-live-coordinator.json`; evidence hash `0x5e70…ba26`; all evidence/onchain settlement-plan checks true; `broadcast=false`; 54 passing unit tests + 1 intentional skip; 8 contract tests; HTTP integration | TESTNET / LIVE RECOVERED / SETTLEMENT READY |
 
 ## Target official-period delta
 
@@ -43,11 +44,11 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 - [x] Register and bond independent primary and backup providers.
 - [x] Deploy the bonded Primary and authenticated Backup HTTPS Provider services.
 - [ ] Publish the provider service in the OKX AI/A2MCP marketplace.
-- [ ] Execute a paid primary delivery and independently verify `BREACH`.
-- [ ] Automatically dispatch the same task to the backup provider.
+- [x] Execute a paid primary delivery and independently verify `BREACH`.
+- [x] Automatically dispatch the same task to the backup provider.
 - [ ] Settle backup compensation from the primary bond.
-- [ ] Prove the buyer paid only once.
-- [ ] Publish a real `RECOVERED` Continuity Receipt.
+- [x] Prove the buyer paid only once.
+- [x] Publish a real `RECOVERED` Continuity Receipt.
 - [x] Add the official-period LOCAL coordinator flow to the judge demo, API and SDK.
 - [x] Implement the configuration and fail-closed HTTP runtime required to replace LOCAL provider fixtures.
 - [x] Execute the coordinator against two independent local HTTP Provider processes and signing identities.

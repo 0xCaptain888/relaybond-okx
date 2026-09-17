@@ -4,6 +4,7 @@ const probeButton = document.querySelector("#probe");
 const verifyLiveButton = document.querySelector("#verify-live");
 const runOfficialButton = document.querySelector("#run-official");
 const verifyOfficialButton = document.querySelector("#verify-official");
+const verifyV2LiveButton = document.querySelector("#verify-v2-live");
 const output = document.querySelector("#output");
 const bond = document.querySelector("#bond");
 const runState = document.querySelector("#run-state");
@@ -56,8 +57,14 @@ async function loadOfficialEvidence() {
   return response.json();
 }
 
+async function loadLiveV2Evidence() {
+  const response = await fetch("./evidence/official-build/v2-live-coordinator.json", { cache: "no-store" });
+  if (!response.ok) throw new Error("LIVE V2 coordinator evidence is not published yet");
+  return response.json();
+}
+
 async function loadV2Readiness() {
-  const [planResponse, readinessResponse, deploymentResponse, verificationResponse, bondPlanResponse, bondingResponse, settlementPlanResponse] = await Promise.all([
+  const [planResponse, readinessResponse, deploymentResponse, verificationResponse, bondPlanResponse, bondingResponse, settlementPlanResponse, liveCoordinatorResponse] = await Promise.all([
     fetch("./evidence/official-build/v2-deployment-plan.json", { cache: "no-store" }),
     fetch("./evidence/official-build/v2-readiness.json", { cache: "no-store" }),
     fetch("./evidence/official-build/v2-deployment.json", { cache: "no-store" }),
@@ -65,8 +72,9 @@ async function loadV2Readiness() {
     fetch("./evidence/official-build/v2-bond-plan.json", { cache: "no-store" }),
     fetch("./evidence/official-build/v2-bonding.json", { cache: "no-store" }),
     fetch("./evidence/official-build/v2-settlement-plan.json", { cache: "no-store" }),
+    fetch("./evidence/official-build/v2-live-coordinator.json", { cache: "no-store" }),
   ]);
-  if (!planResponse.ok || !readinessResponse.ok || !deploymentResponse.ok || !verificationResponse.ok || !bondPlanResponse.ok || !bondingResponse.ok || !settlementPlanResponse.ok) {
+  if (!planResponse.ok || !readinessResponse.ok || !deploymentResponse.ok || !verificationResponse.ok || !bondPlanResponse.ok || !bondingResponse.ok || !settlementPlanResponse.ok || !liveCoordinatorResponse.ok) {
     throw new Error("V2 deployment evidence is not published yet");
   }
   return {
@@ -77,6 +85,7 @@ async function loadV2Readiness() {
     bondPlan: await bondPlanResponse.json(),
     bonding: await bondingResponse.json(),
     settlementPlan: await settlementPlanResponse.json(),
+    liveCoordinator: await liveCoordinatorResponse.json(),
   };
 }
 
@@ -283,13 +292,13 @@ async function loadLiveStatus() {
 
 async function loadV2Status() {
   try {
-    const [{ readiness, deployment, verification, bonding, settlementPlan }, runtime] = await Promise.all([loadV2Readiness(), loadV2Runtime()]);
+    const [{ readiness, deployment, verification, bonding, settlementPlan, liveCoordinator }, runtime] = await Promise.all([loadV2Readiness(), loadV2Runtime()]);
     const publicRuntimeReady = runtime.health.status === "ok" && runtime.providers.providers?.length === 2 && runtime.readiness.configuration?.configured;
     v2PlanStatus.textContent = publicRuntimeReady ? "PUBLIC / BONDED" : bonding.verificationPassed ? "TESTNET / BONDED" : readiness.checks.v2Deployed && verification.verified ? "TESTNET / DEPLOYED" : "VERIFYING";
     v2PlanDetail.textContent = `${deployment.chainId} · block ${deployment.blockNumber.toLocaleString()} · ${deployment.address.slice(0, 6)}…${deployment.address.slice(-4)} · source ${verification.verified ? "verified" : "pending"} · 5 + 3 USD₮0 active bonds · ${runtime.providers.providers.length} endpoints`;
     const configured = [readiness.checks.primaryConfigured, readiness.checks.backupConfigured].filter(Boolean).length;
-    v2SettlementStatus.textContent = settlementPlan.ready ? "READY TO SIMULATE" : "FAIL-CLOSED";
-    v2ReadinessDetail.textContent = `${configured}/2 identities · Primary x402 live · Backup auth required · bonds ${bonding.verificationPassed ? "verified" : "unverified"} · paid recovery pending`;
+    v2SettlementStatus.textContent = settlementPlan.ready ? "READY / NOT SENT" : "FAIL-CLOSED";
+    v2ReadinessDetail.textContent = `${configured}/2 identities · ${liveCoordinator.recovered.task.state} · Primary ${liveCoordinator.recovered.primary.verification.status} · Backup ${liveCoordinator.recovered.backup.verification.status} · settlement confirmation required`;
   } catch {
     v2PlanStatus.textContent = "PENDING";
     v2SettlementStatus.textContent = "PENDING";
@@ -334,12 +343,35 @@ async function verifyOfficialEvidence() {
   }
 }
 
+async function verifyLiveV2Evidence() {
+  verifyV2LiveButton.disabled = true;
+  try {
+    const [evidence, { settlementPlan }] = await Promise.all([loadLiveV2Evidence(), loadV2Readiness()]);
+    const result = await window.RelayBondVerifier.verifyLiveCoordinatorEvidence(evidence);
+    const { portableIntegrity, ...portablePayload } = evidence;
+    const portablePassed = await sha256(portablePayload) === portableIntegrity.hash;
+    const settlementChecksPassed = settlementPlan.ready
+      && Object.values(settlementPlan.evidenceValidation.checks).every(Boolean)
+      && Object.values(settlementPlan.onchainChecks).every(Boolean)
+      && settlementPlan.broadcast === false;
+    const verified = result.passed && portablePassed && settlementChecksPassed;
+    output.textContent = `$ LIVE V2 RECOVERY VERIFICATION\n\nPrimary payment tx:  ${evidence.primaryPayment.transactionHash}\nPrimary result:      ${evidence.recovered.primary.verification.status}\nBackup result:       ${evidence.recovered.backup.verification.status}\nFinal state:         ${evidence.recovered.task.state}\nBuyer paid once:     ${result.checks.buyerPaidOnce}\nIndependent backup: ${result.checks.independentProviders}\nRecovery from bond: ${result.checks.recoveryCoveredByBond}\nContinuity signer:  ${result.continuitySigner}\nRecovery signer:    ${result.recoverySigner}\nEvidence Keccak:    ${result.evidenceHashPassed ? "VERIFIED" : "FAILED"}\nPortable SHA-256:   ${portablePassed ? "VERIFIED" : "FAILED"}\nSettlement checks:  ${settlementChecksPassed ? "ALL PASSED · NOT BROADCAST" : "FAILED"}\n\n${verified ? "✓ LIVE RECOVERY VERIFIED — real payment, objective breach, authenticated Backup and buyer-paid-once economics are bound." : "✗ FAILED — live recovery evidence or settlement readiness did not verify."}`;
+    officialState.textContent = verified ? "LIVE V2 RECOVERY VERIFIED" : "LIVE VERIFY FAILED";
+  } catch (error) {
+    output.textContent = `$ LIVE V2 verification error\n${error.message}`;
+    officialState.textContent = "LIVE VERIFY FAILED";
+  } finally {
+    verifyV2LiveButton.disabled = false;
+  }
+}
+
 runButton.addEventListener("click", () => runFlow().catch((error) => { output.textContent = `$ Run failed\n${error.message}`; runButton.disabled = false; }));
 verifyButton.addEventListener("click", verifyEvidence);
 probeButton.addEventListener("click", probeLivePayment);
 verifyLiveButton.addEventListener("click", verifyLiveSignatures);
 runOfficialButton.addEventListener("click", runOfficialFlow);
 verifyOfficialButton.addEventListener("click", verifyOfficialEvidence);
+verifyV2LiveButton.addEventListener("click", verifyLiveV2Evidence);
 loadPassport().catch(() => {});
 loadLiveStatus().catch(() => {});
 loadV2Status().catch(() => {});

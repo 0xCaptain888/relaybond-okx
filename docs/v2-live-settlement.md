@@ -1,6 +1,6 @@
 # V2 live recovery settlement
 
-Status: **IMPLEMENTED / GUARDED / NOT YET BROADCAST**.
+Status: **LIVE EVIDENCE VERIFIED / READY / NOT YET BROADCAST**.
 
 `settlement:v2:plan` is the final safety boundary between a verified live Provider recovery and `RecoveryBondVaultV2.settleRecovery`. It refuses deterministic LOCAL evidence and requires a future Evidence Pack explicitly labeled `XLAYER_TESTNET_LIVE_COORDINATOR`.
 
@@ -34,4 +34,4 @@ The command re-queries the exact USD₮0 payment transaction, confirms both Prov
 V2_LIVE_EVIDENCE_PATH=evidence/official-build/v2-live-coordinator.json npm run settlement:v2:plan
 ```
 
-The current repository does not contain that live Evidence Pack. The deterministic coordinator artifact is deliberately rejected and cannot be used to trigger the Testnet contract.
+The repository now contains the real [`v2-primary-paid-breach.json`](../evidence/official-build/v2-primary-paid-breach.json) and [`v2-live-coordinator.json`](../evidence/official-build/v2-live-coordinator.json) Evidence Packs. The read-only settlement plan passes every evidence and onchain check and reports `ready: true`, `broadcast: false`. The deterministic coordinator artifact remains deliberately rejected and cannot trigger the Testnet contract.

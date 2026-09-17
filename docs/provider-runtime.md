@@ -1,6 +1,6 @@
 # Independent provider runtime
 
-Status: **TESTNET / PUBLIC RUNTIME DEPLOYED / SETTLEMENT PENDING**. This runtime was implemented after the official OKX Dev Day build start. The V2 contract is source-verified, both independent Provider identities are registered and bonded, the Primary x402 route and authenticated Backup delivery route are deployed on Vercel, and production identity checks pass. A real paid V2 breach and bond-funded recovery settlement are still pending.
+Status: **TESTNET / LIVE RECOVERY VERIFIED / SETTLEMENT PENDING**. This runtime was implemented after the official OKX Dev Day build start. The V2 contract is source-verified, both independent Provider identities are registered and bonded, the Primary x402 route and authenticated Backup delivery route are deployed on Vercel, and production identity checks pass. A real paid Primary breach now reaches an authenticated Backup `ACCEPTED` delivery and verifier-signed `RECOVERED`; bond-funded settlement remains separately gated and not broadcast.
 
 ## Why this layer exists
 

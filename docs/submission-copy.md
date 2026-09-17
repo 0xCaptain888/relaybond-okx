@@ -14,7 +14,7 @@ OKX AI supplies Agent discovery, A2MCP and x402 supply the paid call, Agentic Wa
 
 ## Current live proof
 
-The X Layer Testnet V1 vault is deployed and source-verified, the provider locked 5 Testnet USD₮0, and the public API returns the official payment challenge. One real paid call was verified `ACCEPTED`; a second was verified `BREACH`; transaction `0x21c3…03f` transferred exactly 0.01 USD₮0 from the provider bond back to the buyer. The official-period `RecoveryBondVaultV2` deployment is source-verified on X Layer Testnet. Independent Primary and Backup services are now registered with active 5 and 3 Testnet USD₮0 bonds, with all six receipts independently verified. The LOCAL / TESTED coordinator demonstrates `BREACH → BACKUP_DELIVERED → RECOVERED` with no second buyer charge; the first real V2 paid breach and backup settlement remain pending.
+The X Layer Testnet V1 vault is deployed and source-verified, the provider locked 5 Testnet USD₮0, and the public API returns the official payment challenge. One real paid call was verified `ACCEPTED`; a second was verified `BREACH`; transaction `0x21c3…03f` transferred exactly 0.01 USD₮0 from the provider bond back to the buyer. The official-period `RecoveryBondVaultV2` deployment is source-verified on X Layer Testnet. Independent Primary and Backup services are registered with active 5 and 3 Testnet USD₮0 bonds. A new real 0.01 USD₮0 V2 Primary payment was independently verified `BREACH`, the authenticated Backup was independently verified `ACCEPTED`, and the verifier issued `RECOVERED` without a second buyer charge. The settlement plan passes every evidence and onchain check; the bond-funded transfer remains explicitly not broadcast pending separate confirmation.
 
 ## Demo opening
 

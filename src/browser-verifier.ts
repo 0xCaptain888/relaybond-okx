@@ -154,6 +154,60 @@ async function verifyOfficialCoordinatorEvidence(evidence: OfficialCoordinatorEv
   };
 }
 
+async function verifyLiveCoordinatorEvidence(evidence: {
+  mode: string;
+  chainId: number;
+  vault: `0x${string}`;
+  buyer: `0x${string}`;
+  verifier: `0x${string}`;
+  primaryPayment: { status: string; payer: `0x${string}`; amountAtomic: string };
+  recovered: {
+    task: { state: string; events: Array<{ state: string }> };
+    primary: { verification: { status: string } };
+    backup?: { verification: { status: string } };
+    continuityReceipt?: ContinuityEvidence["continuityReceipt"];
+    recoveryAttestation?: OfficialCoordinatorEvidence["recovered"]["recoveryAttestation"];
+  };
+  evidenceHash: Hex;
+  portableIntegrity: { hash: Hex };
+}) {
+  if (!evidence.recovered.recoveryAttestation || !evidence.recovered.continuityReceipt || !evidence.recovered.backup) {
+    throw new Error("LIVE coordinator evidence is missing recovery artifacts.");
+  }
+  const context = { chainId: evidence.chainId, vault: evidence.vault };
+  const [recoverySigner, continuitySigner] = await Promise.all([
+    recoverRecoveryAttestationSigner(context, evidence.recovered.recoveryAttestation),
+    recoverContinuitySigner(context, evidence.recovered.continuityReceipt),
+  ]);
+  const receipt = evidence.recovered.continuityReceipt.payload;
+  const trail = evidence.recovered.task.events.map((event) => event.state);
+  const checks = {
+    liveMode: evidence.mode === "XLAYER_TESTNET_LIVE_COORDINATOR",
+    recoverySigner: recoverySigner.toLowerCase() === evidence.verifier.toLowerCase(),
+    continuitySigner: continuitySigner.toLowerCase() === evidence.verifier.toLowerCase(),
+    recoveredTerminal: evidence.recovered.task.state === "RECOVERED" && trail.at(-1) === "RECOVERED",
+    primaryBreached: evidence.recovered.primary.verification.status === "BREACH",
+    backupAccepted: evidence.recovered.backup.verification.status === "ACCEPTED",
+    buyerPaymentBound: evidence.primaryPayment.status === "success"
+      && evidence.primaryPayment.payer.toLowerCase() === evidence.buyer.toLowerCase()
+      && evidence.recovered.recoveryAttestation.payload.buyer.toLowerCase() === evidence.buyer.toLowerCase(),
+    buyerPaidOnce: receipt.buyerPaidAtomic === evidence.primaryPayment.amountAtomic
+      && receipt.primaryPaymentAtomic === evidence.primaryPayment.amountAtomic,
+    recoveryCoveredByBond: BigInt(receipt.recoveryPaidFromBondAtomic) <= BigInt(receipt.primaryPaymentAtomic),
+    independentProviders: receipt.primaryProvider.toLowerCase() !== receipt.backupProvider.toLowerCase(),
+  };
+  const { evidenceHash, portableIntegrity, ...unsigned } = evidence;
+  const evidenceHashPassed = hashCanonicalBrowser(unsigned) === evidenceHash;
+  return {
+    passed: Object.values(checks).every(Boolean) && evidenceHashPassed,
+    checks,
+    recoverySigner,
+    continuitySigner,
+    evidenceHashPassed,
+    portableHash: portableIntegrity.hash,
+  };
+}
+
 declare global {
   interface Window {
     RelayBondVerifier: {
@@ -162,6 +216,7 @@ declare global {
       verifyPaidEvidenceHash: typeof verifyPaidEvidenceHash;
       verifyContinuityEvidence: typeof verifyContinuityEvidence;
       verifyOfficialCoordinatorEvidence: typeof verifyOfficialCoordinatorEvidence;
+      verifyLiveCoordinatorEvidence: typeof verifyLiveCoordinatorEvidence;
     };
   }
 }
@@ -172,4 +227,5 @@ window.RelayBondVerifier = {
   verifyPaidEvidenceHash,
   verifyContinuityEvidence,
   verifyOfficialCoordinatorEvidence,
+  verifyLiveCoordinatorEvidence,
 };
