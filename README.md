@@ -1,4 +1,4 @@
-# RelayBond v0.4.0-rc.2
+# RelayBond v0.4.0-rc.3
 
 > **The reliability clearing layer for the Agent economy.**
 
@@ -7,6 +7,8 @@
 RelayBond routes paid tasks to bonded Agent providers, verifies delivery and recovers failed work through an independent backup without charging the buyer twice. The deployed V1 proves real Testnet payment, breach verification and buyer rebate. V2 now proves the complete live path on X Layer Testnet: paid Primary breach, authenticated independent Backup delivery, verifier-signed `RECOVERED`, and a real bond-funded Backup settlement with the buyer balance unchanged.
 
 The RelayBond ASP identity and free `RelayBond Recovery Proof` A2MCP service were registered as OKX.AI Agent `#13776` and submitted for Marketplace review on September 17, 2026. The public `GET /v1/official/settlement` endpoint returns the completed settlement, before/after balances and seven verification checks.
+
+For the fastest review, open the public Demo and click **Run 60-second Judge Proof**. One read-only browser flow validates the live OKX x402 boundary, paid Primary `BREACH`, independent Backup `ACCEPTED`, EIP-712 recovery evidence and all seven completed X Layer settlement checks. It never creates a new payment or presents a replay as a new transaction.
 
 ## Official Build Delta — September 17, 2026 onward
 
@@ -40,7 +42,7 @@ The settlement command is intentionally safe: it emits a structured read-only pl
 
 Once both Providers are bonded, `coordinator:v2:live` closes the gap between payment and settlement without manufacturing a LIVE label. It re-queries the exact Primary USD₮0 transfer, rejects `LOCAL`/`DESIGN` Provider profiles, confirms both service identities and bonds onchain, replays only the recorded paid Primary delivery, calls the independent HTTPS Backup, re-verifies both signatures and publishes `v2-live-coordinator.json` only after a real `BREACH → ACCEPTED → RECOVERED` result. It signs no payment and broadcasts no settlement.
 
-Open the Judge Demo and select **Run official coordinator**, then **Verify Official Build**. The browser independently recovers both verifier signatures and checks the Recovery Attestation digest, `RECOVERED` and `FROZEN` terminal states, canonical Keccak evidence hash and portable SHA-256 integrity.
+Open the Judge Demo and select **Run 60-second Judge Proof** for the complete live path. The deeper controls remain available: **Run official coordinator** demonstrates both `RECOVERED` and fail-closed `FROZEN`, while **Verify Official Build** independently recovers both verifier signatures and checks the Recovery Attestation digest, terminal states, canonical Keccak evidence hash and portable SHA-256 integrity.
 
 ## The five-second problem
 

@@ -5,6 +5,8 @@ const verifyLiveButton = document.querySelector("#verify-live");
 const runOfficialButton = document.querySelector("#run-official");
 const verifyOfficialButton = document.querySelector("#verify-official");
 const verifyV2LiveButton = document.querySelector("#verify-v2-live");
+const judgeRunButton = document.querySelector("#judge-run");
+const judgeRunSecondaryButton = document.querySelector("#judge-run-secondary");
 const output = document.querySelector("#output");
 const bond = document.querySelector("#bond");
 const runState = document.querySelector("#run-state");
@@ -22,6 +24,12 @@ const v2PlanStatus = document.querySelector("#v2-plan-status");
 const v2PlanDetail = document.querySelector("#v2-plan-detail");
 const v2SettlementStatus = document.querySelector("#v2-settlement-status");
 const v2ReadinessDetail = document.querySelector("#v2-readiness-detail");
+const judgeRunState = document.querySelector("#judge-run-state");
+const judgeSteps = [...document.querySelectorAll("[data-judge-step]")];
+
+const LIVE_API_BASE = window.location.hostname === "relaybond-okx.vercel.app"
+  ? ""
+  : "https://relaybond-okx.vercel.app";
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -60,6 +68,12 @@ async function loadOfficialEvidence() {
 async function loadLiveV2Evidence() {
   const response = await fetch("./evidence/official-build/v2-live-coordinator.json", { cache: "no-store" });
   if (!response.ok) throw new Error("LIVE V2 coordinator evidence is not published yet");
+  return response.json();
+}
+
+async function loadOfficialSettlement() {
+  const response = await fetch(`${LIVE_API_BASE}/v1/official/settlement`, { cache: "no-store" });
+  if (!response.ok) throw new Error(`Official settlement endpoint returned HTTP ${response.status}`);
   return response.json();
 }
 
@@ -117,21 +131,26 @@ function decodeBase64Json(value) {
   return JSON.parse(new TextDecoder().decode(bytes));
 }
 
+async function inspectLivePaymentBoundary() {
+  const response = await fetch(`${LIVE_API_BASE}/v1/provider/quote`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ symbol: "BTC-USDT", scenario: "accepted" }),
+  });
+  if (response.status !== 402) throw new Error(`Expected HTTP 402, received ${response.status}`);
+  const header = response.headers.get("payment-required");
+  if (!header) throw new Error("PAYMENT-REQUIRED header is missing");
+  const challenge = decodeBase64Json(header);
+  const terms = challenge.accepts?.[0];
+  if (!terms) throw new Error("No payment terms were returned");
+  return { challenge, terms };
+}
+
 async function probeLivePayment() {
   probeButton.disabled = true;
   runState.textContent = "PROBING LIVE";
   try {
-    const response = await fetch("/v1/provider/quote", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ symbol: "BTC-USDT", scenario: "accepted" }),
-    });
-    if (response.status !== 402) throw new Error(`Expected HTTP 402, received ${response.status}`);
-    const header = response.headers.get("payment-required");
-    if (!header) throw new Error("PAYMENT-REQUIRED header is missing");
-    const challenge = decodeBase64Json(header);
-    const terms = challenge.accepts?.[0];
-    if (!terms) throw new Error("No payment terms were returned");
+    const { challenge, terms } = await inspectLivePaymentBoundary();
     output.textContent = `$ LIVE x402 PAYMENT BOUNDARY\n\nHTTP:      402 Payment Required\nScheme:    ${terms.scheme}\nNetwork:   ${terms.network}\nAmount:    ${terms.amount} atomic (${Number(terms.amount) / 1_000_000} ${terms.extra?.name || "token"})\nAsset:     ${terms.asset}\nPayee:     ${terms.payTo}\nTimeout:   ${terms.maxTimeoutSeconds}s\nResource:  ${challenge.resource?.url}\n\n✓ No payment was signed. The browser inspected the live production challenge.`;
     runState.textContent = "LIVE 402 VERIFIED";
   } catch (error) {
@@ -139,6 +158,84 @@ async function probeLivePayment() {
     runState.textContent = "PROBE FAILED";
   } finally {
     probeButton.disabled = false;
+  }
+}
+
+function resetJudgeProof() {
+  judgeSteps.forEach((step) => {
+    step.className = "";
+    step.lastElementChild.textContent = "WAITING";
+  });
+}
+
+async function completeJudgeStep(index, status, className = "done") {
+  const step = judgeSteps[index];
+  step.classList.add("active");
+  step.lastElementChild.textContent = "VERIFYING";
+  await wait(480);
+  step.classList.remove("active");
+  step.classList.add(className);
+  step.lastElementChild.textContent = status;
+}
+
+async function runJudgeProof() {
+  const buttons = [judgeRunButton, judgeRunSecondaryButton].filter(Boolean);
+  buttons.forEach((button) => { button.disabled = true; });
+  resetJudgeProof();
+  judgeRunState.textContent = "LIVE VERIFICATION RUNNING";
+  document.querySelector("#judge-proof")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  output.textContent = "$ RELAYBOND 60-SECOND JUDGE PROOF\n\nRead-only verification started. No wallet prompt. No new transaction.";
+
+  try {
+    const { challenge, terms } = await inspectLivePaymentBoundary();
+    await completeJudgeStep(0, "HTTP 402 VERIFIED");
+
+    const [evidence, settlement, runtime] = await Promise.all([
+      loadLiveV2Evidence(),
+      loadOfficialSettlement(),
+      loadV2Runtime(),
+    ]);
+
+    const primaryBreached = evidence.recovered?.primary?.verification?.status === "BREACH"
+      && evidence.primaryPayment?.status === "success";
+    if (!primaryBreached) throw new Error("The paid Primary breach is not fully bound");
+    await completeJudgeStep(1, "PAID BREACH", "breach");
+
+    const liveVerification = await window.RelayBondVerifier.verifyLiveCoordinatorEvidence(evidence);
+    const { portableIntegrity, ...portablePayload } = evidence;
+    const portablePassed = await sha256(portablePayload) === portableIntegrity.hash;
+    const backupAccepted = evidence.recovered?.backup?.verification?.status === "ACCEPTED";
+    if (!liveVerification.passed || !portablePassed || !backupAccepted) {
+      throw new Error("Backup delivery or verifier signatures did not verify");
+    }
+    await completeJudgeStep(2, "ACCEPTED + SIGNED");
+
+    const settlementChecks = Object.values(settlement.checks || {});
+    const buyerUnchanged = settlement.balancesBefore?.buyerAtomic === settlement.balancesAfter?.buyerAtomic;
+    const settlementPassed = settlement.status === "SETTLED_AND_VERIFIED"
+      && settlementChecks.length === 7
+      && settlementChecks.every(Boolean)
+      && buyerUnchanged;
+    if (!settlementPassed) throw new Error("The X Layer settlement invariants did not all pass");
+    await completeJudgeStep(3, "7/7 ONCHAIN");
+
+    const publicRuntimeReady = runtime.health?.status === "ok"
+      && runtime.providers?.providers?.length === 2
+      && runtime.readiness?.configuration?.configured === true;
+    if (!publicRuntimeReady) throw new Error("The public Provider runtime is not ready");
+    await completeJudgeStep(4, "JUDGE PASS");
+
+    output.textContent = `$ RELAYBOND JUDGE PROOF — 5/5 VERIFIED\n\n1. LIVE PAYMENT BOUNDARY\n   HTTP 402 · ${terms.scheme} · ${terms.network}\n   Price: ${Number(terms.amount) / 1_000_000} ${terms.extra?.name || "USD₮0"}\n\n2. PAID PRIMARY BREACH\n   Payment: ${evidence.primaryPayment.status.toUpperCase()}\n   Result: ${evidence.recovered.primary.verification.status}\n   Transaction: ${evidence.primaryPayment.transactionHash}\n\n3. INDEPENDENT RECOVERY\n   Backup: ${evidence.recovered.backup.verification.status}\n   Final state: ${evidence.recovered.task.state}\n   Recovery signer: VERIFIED\n   Continuity signer: VERIFIED\n   Portable SHA-256: ${portablePassed ? "VERIFIED" : "FAILED"}\n\n4. X LAYER SETTLEMENT\n   Status: ${settlement.status}\n   Checks: ${settlementChecks.filter(Boolean).length}/7\n   Buyer balance unchanged: ${buyerUnchanged}\n   Settlement tx: ${settlement.transactionHash}\n\n5. VERDICT\n   ✓ Buyer paid once\n   ✓ Failed provider funded the Backup\n   ✓ Independent evidence verified in this browser\n   ✓ No new payment or transaction was created by this Judge Run\n\nResource: ${challenge.resource?.url}`;
+    judgeRunState.textContent = "5/5 VERIFIED · BUYER PAID ONCE";
+    officialState.textContent = "LIVE V2 RECOVERY VERIFIED";
+    runState.textContent = "JUDGE PROOF PASSED";
+    document.querySelector(".terminal")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  } catch (error) {
+    output.textContent = `$ JUDGE PROOF FAILED\n\n${error.message}\n\nNo success state was shown.`;
+    judgeRunState.textContent = "FAIL-CLOSED";
+    runState.textContent = "JUDGE PROOF FAILED";
+  } finally {
+    buttons.forEach((button) => { button.disabled = false; });
   }
 }
 
@@ -382,6 +479,12 @@ verifyLiveButton.addEventListener("click", verifyLiveSignatures);
 runOfficialButton.addEventListener("click", runOfficialFlow);
 verifyOfficialButton.addEventListener("click", verifyOfficialEvidence);
 verifyV2LiveButton.addEventListener("click", verifyLiveV2Evidence);
+judgeRunButton.addEventListener("click", runJudgeProof);
+judgeRunSecondaryButton.addEventListener("click", runJudgeProof);
 loadPassport().catch(() => {});
 loadLiveStatus().catch(() => {});
 loadV2Status().catch(() => {});
+
+if (new URLSearchParams(window.location.search).get("autorun") === "judge") {
+  window.setTimeout(() => runJudgeProof(), 900);
+}

@@ -88,7 +88,7 @@ main {
   grid-template-columns: 1.45fr 0.75fr;
   gap: 64px;
   align-items: center;
-  padding-bottom: 94px;
+  padding-bottom: 36px;
 }
 .eyebrow {
   color: var(--lime);

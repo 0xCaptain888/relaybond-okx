@@ -30,12 +30,14 @@
           <h1>The agent failed.<br /><em>The task still finishes.</em></h1>
           <p class="lede">RelayBond routes paid tasks to bonded Agent providers, verifies delivery, and funds an independent backup from the failed provider’s bond—without charging the buyer twice.</p>
           <div class="hero-actions">
+            <button id="judge-run" class="judge-cta">Run 60-second Judge Proof</button>
             <button id="probe">Probe live x402</button>
             <button id="verify-live" class="secondary">Recover live EIP-712 signer</button>
             <button id="run" class="tertiary">Run continuity recovery</button>
             <button id="run-official" class="official-cta">Run official coordinator</button>
             <button id="verify-v2-live" class="official-cta">Verify live V2 recovery</button>
           </div>
+          <p class="judge-note">No wallet prompt. No new payment. Replays and independently verifies the completed live recovery.</p>
           <p class="honesty">LIVE / TESTNET V1: x402 payment, signed delivery, verified breach and real buyer rebate. LIVE / TESTNET V2: a real 0.01 USD₮0 Primary payment breached freshness, the authenticated Backup was accepted, and <a href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x49150b2ec1eafece6e8c11a03ecb70b3562725f8153a18f237b5dafb9ec5ea99" target="_blank" rel="noreferrer">the Primary bond paid the Backup onchain ↗</a> while the buyer paid only once.</p>
         </div>
         <aside class="bond-card">
@@ -49,6 +51,25 @@
             <div><dt>Rebate per breach</dt><dd>0.01 USDT0</dd></div>
           </dl>
         </aside>
+      </section>
+
+      <section id="judge-proof" class="judge-proof" aria-label="One-click judge proof">
+        <div class="judge-proof-copy">
+          <p class="eyebrow">ONE-CLICK JUDGE PROOF · LIVE / READ-ONLY</p>
+          <h2>Verify the whole claim in under 60 seconds.</h2>
+          <p>Inspect the live OKX x402 boundary, verify the paid Primary breach, recover the independent Backup and verifier signatures, then re-check all seven X Layer settlement invariants.</p>
+        </div>
+        <div class="judge-proof-head">
+          <span id="judge-run-state">READY</span>
+          <button id="judge-run-secondary">Run judge proof</button>
+        </div>
+        <div class="judge-proof-steps">
+          <article data-judge-step="0"><b>01</b><span>LIVE x402</span><strong>WAITING</strong></article>
+          <article data-judge-step="1"><b>02</b><span>PRIMARY</span><strong>WAITING</strong></article>
+          <article data-judge-step="2"><b>03</b><span>BACKUP</span><strong>WAITING</strong></article>
+          <article data-judge-step="3"><b>04</b><span>SETTLEMENT</span><strong>WAITING</strong></article>
+          <article data-judge-step="4"><b>05</b><span>VERDICT</span><strong>WAITING</strong></article>
+        </div>
       </section>
 
       <section class="live-grid" aria-label="Live deployment evidence">
@@ -135,7 +156,7 @@
         <pre id="output">$ Ready. Probe the live payment boundary, recover the provider signer, or run the double-pay-free recovery flow.</pre>
       </section>
     </main>
-    <footer><span>OKX Dev Day 2026 · Official build branch · v0.4.0-rc.2</span><span>Evidence first. Claims second.</span></footer>
+    <footer><span>OKX Dev Day 2026 · Official build branch · v0.4.0-rc.3</span><span>Evidence first. Claims second.</span></footer>
     <script src="./relaybond-verifier.js"></script>
     <script src="./app.js" type="module"></script>
   </body>
