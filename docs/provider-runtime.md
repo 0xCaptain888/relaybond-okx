@@ -1,6 +1,6 @@
 # Independent provider runtime
 
-Status: **LOCAL / TESTED**. This runtime was implemented after the official OKX Dev Day build start. The V2 contract is deployed and source-verified, but this runtime does not claim that two independent Testnet services are registered or that a V2 recovery has settled.
+Status: **TESTNET / PUBLIC RUNTIME DEPLOYED / SETTLEMENT PENDING**. This runtime was implemented after the official OKX Dev Day build start. The V2 contract is source-verified, both independent Provider identities are registered and bonded, the Primary x402 route and authenticated Backup delivery route are deployed on Vercel, and production identity checks pass. A real paid V2 breach and bond-funded recovery settlement are still pending.
 
 ## Why this layer exists
 
@@ -10,6 +10,7 @@ The Continuity Coordinator must be able to replace deterministic fixtures with i
 2. `HttpProviderExecutor` sends the exact coordinator request to the selected audited endpoint.
 3. The coordinator independently verifies the returned signatures, request, profile, SLA and response.
 4. A provider `402` stops execution. No wallet signs, pays or replays automatically.
+5. The Backup endpoint requires a high-entropy private coordinator authorization token compared in constant time.
 
 ## Configuration
 
@@ -64,3 +65,13 @@ GET /v1/official/readiness
 ```
 
 The endpoint exposes configuration count, modes, transport limits, automatic-payment status and V2 broadcast status. It never returns the environment JSON or any secret.
+
+## Production routes
+
+```text
+GET  /v1/service/v2-primary/promise
+POST /v1/provider/v2-primary
+POST /v1/provider/v2-backup/deliver  # private coordinator authorization required
+```
+
+The Primary route intentionally accepts only the `stale` test scenario and remains behind a normal OKX x402 payment confirmation. The Backup is not another buyer-paid endpoint: it is invoked only by the coordinator with `paymentSource=PRIMARY_BOND`, exact task bindings and the private authorization header. Production validation confirms that an unauthenticated Backup request receives `401`, while the authorized route returns a receipt signed by the independently bonded Backup identity.

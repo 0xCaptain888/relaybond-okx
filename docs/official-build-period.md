@@ -35,12 +35,14 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 | 2026-09-17 16:05 UTC+8 | `13ae6f0` | Fail-closed missing-evidence readiness: `settlement:v2:plan` now returns structured `ready: false` output instead of a filesystem exception and never broadcasts | 48 unit tests; CLI rehearsal with LIVE Evidence Pack absent | LOCAL / TESTED |
 | 2026-09-17 16:29 UTC+8 | `3ac31f0` | LIVE coordinator bridge between a real paid Primary breach and guarded V2 settlement; rejects LOCAL profiles, rechecks payment and Provider bonds onchain, calls the HTTPS Backup and emits evidence only after verified recovery | 50 unit tests; 8 contract tests; two-process HTTP integration; production build | LOCAL / TESTED + TESTNET / READ-ONLY |
 | 2026-09-17 16:41 UTC+8 | `77b90ae` | Registered two independent V2 Provider services, approved exact USD₮0 amounts and activated 5 + 3 USD₮0 bonds; added receipt-by-receipt independent verification and RPC-consistency retry | six successful receipts; `v2-bonding.json`; both services active and identity-bound | TESTNET / BONDED / VERIFIED |
+| 2026-09-17 17:13:56 UTC+8 | `9b19096` | Deployed a dedicated paid V2 Primary endpoint plus a separately signed authenticated Backup endpoint; added exact runtime identity/endpoint binding, constant-time Backup authorization, guarded evidence output and secure Vercel environment provisioning | 53 passing unit tests + 1 intentional skip; 8 contract tests; HTTP integration; Production Primary Promise signed by bonded address; unauthenticated Backup `401`; authorized Backup signed by bonded address | TESTNET / PUBLIC RUNTIME DEPLOYED |
 
 ## Target official-period delta
 
 - [x] Deploy and source-verify `RecoveryBondVaultV2` after the official start.
 - [x] Register and bond independent primary and backup providers.
-- [ ] Publish or integrate live OKX AI/A2MCP provider services.
+- [x] Deploy the bonded Primary and authenticated Backup HTTPS Provider services.
+- [ ] Publish the provider service in the OKX AI/A2MCP marketplace.
 - [ ] Execute a paid primary delivery and independently verify `BREACH`.
 - [ ] Automatically dispatch the same task to the backup provider.
 - [ ] Settle backup compensation from the primary bond.

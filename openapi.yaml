@@ -35,6 +35,25 @@ paths:
           description: Paid result plus signed promise and delivery receipt
         "402":
           description: x402 challenge in the PAYMENT-REQUIRED header
+  /v1/provider/v2-primary:
+    post:
+      operationId: getBondedV2PrimaryBreach
+      summary: Purchase the intentionally stale V2 Primary delivery used for a reviewed recovery test
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [symbol, scenario]
+              properties:
+                symbol: { type: string, examples: [BTC-USDT] }
+                scenario: { type: string, const: stale }
+      responses:
+        "200":
+          description: Paid signed stale delivery for independent breach verification
+        "402":
+          description: x402 challenge in the PAYMENT-REQUIRED header
   /v1/service/promise:
     get:
       operationId: getRelayBondServicePromise
@@ -42,13 +61,20 @@ paths:
       responses:
         "200":
           description: EIP-712 signed Service Promise and typed-data digest
+  /v1/service/v2-primary/promise:
+    get:
+      operationId: getBondedV2PrimaryPromise
+      summary: Inspect the bonded V2 Primary SLA before payment
+      responses:
+        "200":
+          description: Testnet-bonded Primary EIP-712 Service Promise
   /v1/providers:
     get:
       operationId: listBondedProviders
       summary: List providers ranked by bond, SLA and verified reliability
       responses:
         "200":
-          description: Honest LOCAL V2 provider registry used by the recovery judge flow
+          description: Public routing metadata for the two independently bonded TESTNET Providers
   /v1/recovery/demo:
     get:
       operationId: getContinuityRecoveryDemo

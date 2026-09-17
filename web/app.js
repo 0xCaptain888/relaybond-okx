@@ -80,6 +80,21 @@ async function loadV2Readiness() {
   };
 }
 
+async function loadV2Runtime() {
+  const base = "https://relaybond-okx.vercel.app";
+  const [healthResponse, providersResponse, readinessResponse] = await Promise.all([
+    fetch(`${base}/health`, { cache: "no-store" }),
+    fetch(`${base}/v1/providers`, { cache: "no-store" }),
+    fetch(`${base}/v1/official/readiness`, { cache: "no-store" }),
+  ]);
+  if (!healthResponse.ok || !providersResponse.ok || !readinessResponse.ok) throw new Error("Public V2 runtime is unavailable");
+  return {
+    health: await healthResponse.json(),
+    providers: await providersResponse.json(),
+    readiness: await readinessResponse.json(),
+  };
+}
+
 async function loadLiveEvidence(name) {
   const response = await fetch(`./evidence/live/${name}.json`, { cache: "no-store" });
   if (!response.ok) throw new Error(`${name} evidence is not published yet`);
@@ -268,12 +283,13 @@ async function loadLiveStatus() {
 
 async function loadV2Status() {
   try {
-    const { readiness, deployment, verification, bondPlan, bonding, settlementPlan } = await loadV2Readiness();
-    v2PlanStatus.textContent = bonding.verificationPassed ? "TESTNET / BONDED" : readiness.checks.v2Deployed && verification.verified ? "TESTNET / DEPLOYED" : "VERIFYING";
-    v2PlanDetail.textContent = `${deployment.chainId} · block ${deployment.blockNumber.toLocaleString()} · ${deployment.address.slice(0, 6)}…${deployment.address.slice(-4)} · source ${verification.verified ? "verified" : "pending"} · 5 + 3 USD₮0 active bonds`;
+    const [{ readiness, deployment, verification, bonding, settlementPlan }, runtime] = await Promise.all([loadV2Readiness(), loadV2Runtime()]);
+    const publicRuntimeReady = runtime.health.status === "ok" && runtime.providers.providers?.length === 2 && runtime.readiness.configuration?.configured;
+    v2PlanStatus.textContent = publicRuntimeReady ? "PUBLIC / BONDED" : bonding.verificationPassed ? "TESTNET / BONDED" : readiness.checks.v2Deployed && verification.verified ? "TESTNET / DEPLOYED" : "VERIFYING";
+    v2PlanDetail.textContent = `${deployment.chainId} · block ${deployment.blockNumber.toLocaleString()} · ${deployment.address.slice(0, 6)}…${deployment.address.slice(-4)} · source ${verification.verified ? "verified" : "pending"} · 5 + 3 USD₮0 active bonds · ${runtime.providers.providers.length} endpoints`;
     const configured = [readiness.checks.primaryConfigured, readiness.checks.backupConfigured].filter(Boolean).length;
     v2SettlementStatus.textContent = settlementPlan.ready ? "READY TO SIMULATE" : "FAIL-CLOSED";
-    v2ReadinessDetail.textContent = `${configured}/2 identities · ${bondPlan.totalTransactionCount} registration tx pending · bonds ${bonding.verificationPassed ? "verified" : "unverified"} · LIVE recovery pending`;
+    v2ReadinessDetail.textContent = `${configured}/2 identities · Primary x402 live · Backup auth required · bonds ${bonding.verificationPassed ? "verified" : "unverified"} · paid recovery pending`;
   } catch {
     v2PlanStatus.textContent = "PENDING";
     v2SettlementStatus.textContent = "PENDING";

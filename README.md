@@ -20,15 +20,16 @@ The first post-start feature is an automatic Continuity Coordinator that:
 - exposes its Evidence Pack through the browser, API and TypeScript SDK;
 - loads independent provider metadata from a strict secret-free configuration and executes bound HTTPS deliveries without automatic payment.
 
-The official-period runtime now also passes an opt-in end-to-end test using two separate loopback HTTP services and two signing identities: Primary returns a signed stale quote, Backup returns a signed fresh quote, and the coordinator reaches `RECOVERED` with one buyer payment. This is **LOCAL / TESTED**, not a claim of two deployed public Providers.
+The official-period runtime now passes an opt-in end-to-end test using two separate loopback HTTP services and two signing identities. Its production counterpart is also deployed: the bonded Primary exposes a dedicated x402 endpoint and signed Service Promise, while the independent bonded Backup exposes a private authenticated HTTPS delivery endpoint. The paid `BREACH → RECOVERED` run itself is still pending and is not inferred from deployment.
 
-Current status: coordinator **LOCAL / TESTED / BROWSER VERIFIED**; `RecoveryBondVaultV2` **TESTNET / DEPLOYED / SOURCE VERIFIED**; independent Providers **TESTNET / REGISTERED / BONDED**. The generated coordinator evidence still honestly records `onchainSettlement: false` because a real paid V2 Primary breach, HTTPS Backup delivery and recovery settlement remain **PENDING**.
+Current status: coordinator **LOCAL / TESTED / BROWSER VERIFIED**; `RecoveryBondVaultV2` **TESTNET / DEPLOYED / SOURCE VERIFIED**; independent Providers **TESTNET / REGISTERED / BONDED / PUBLIC RUNTIME DEPLOYED**. Production checks confirm two published Provider profiles, a Primary Promise signed by the bonded Primary, `401` without Backup authorization and a signed Backup delivery with the private coordinator credential. A real paid V2 Primary breach and recovery settlement remain **PENDING**.
 
 ```bash
 npm run demo:official-coordinator
 npm run test:integration:http
 npm run readiness:v2
 npm run verify:contract:v2:status
+npm run runtime:v2:configure # writes runtime metadata + private Backup auth only to gitignored .env
 npm run coordinator:v2:live # requires real paid Primary breach evidence + bonded HTTPS Backup
 npm run settlement:v2:plan # requires a future LIVE coordinator Evidence Pack
 ```
@@ -62,7 +63,7 @@ Rank bonded providers
 
 The public build exposes a live OKX payment boundary, browser-verifiable EIP-712 promises and the complete Testnet V1 warranty lifecycle. `QualityBondVault` is deployed and source-verified on X Layer Testnet at `0x15b18Fb8C1E29287B57EbBE30bd10ef165dc9eD5`. One real **0.01 Testnet USD₮0** Agentic Wallet delivery was independently verified `ACCEPTED`; a second was verified `BREACH` for stale data; transaction `0x21c3…03f` then returned **0.01 Testnet USD₮0** from the provider bond to the buyer.
 
-The same demo includes a deterministic LOCAL V2 Judge Run: Atlas fails its signed freshness SLA, Harbor independently completes the task, and a verifier-signed Continuity Receipt proves the buyer paid exactly once while the failed provider bond funded recovery. The contract that will enforce that settlement is deployed and source-verified at `0xBa15…b73f`; the simulated run is not relabeled as onchain until two funded Providers are registered and a real recovery is settled.
+The same demo includes a deterministic LOCAL V2 Judge Run: Atlas fails its signed freshness SLA, Harbor independently completes the task, and a verifier-signed Continuity Receipt proves the buyer paid exactly once while the failed provider bond funded recovery. The contract and two bonded Provider identities are live on X Layer Testnet, and their bound HTTPS service endpoints are deployed; the deterministic run is not relabeled as onchain until a real paid V2 breach and recovery are settled.
 
 ## Why this is different
 
@@ -128,15 +129,17 @@ Public read-only integration endpoints:
 ```text
 GET  /health
 GET  /v1/service/promise
+GET  /v1/service/v2-primary/promise
 GET  /v1/providers
 GET  /v1/recovery/demo
 GET  /v1/official/coordinator
 GET  /v1/official/readiness
 POST /v1/verify
 POST /v1/provider/quote
+POST /v1/provider/v2-primary
 ```
 
-`/v1/providers`, `/v1/recovery/demo` and `/v1/official/coordinator` are explicitly labeled `LOCAL`; the API exposes them for judge inspection without claiming an onchain V2 recovery. `/v1/official/readiness` reports the deployed V2 address and source-verification status plus whether independent Provider configuration is present, while keeping configuration contents and all secrets private.
+`/v1/providers` now publishes the exact two TESTNET bonded Provider profiles used by the production runtime, and `/v1/service/v2-primary/promise` returns the Primary's EIP-712 signed SLA. `/v1/recovery/demo` and `/v1/official/coordinator` remain explicitly labeled `LOCAL`; the API exposes them for judge inspection without claiming an onchain V2 recovery. The Backup delivery route is intentionally absent from the public list because it requires a private coordinator authorization header. `/v1/official/readiness` reports endpoint binding and runtime readiness while keeping every secret private.
 
 The provider route never trusts a caller-supplied buyer address. After the facilitator accepts the payment authorization, RelayBond derives the payer from that verified authorization, checks its token, amount and recipient against the advertised terms, and binds the payer plus normalized request input into the signed Delivery Receipt. The buyer runner independently confirms the exact USD₮0 `Transfer` event on X Layer even when the facilitator's first receipt is still pending.
 
@@ -267,7 +270,7 @@ npm run rebate:live-breach -- --confirm
 | Official Continuity Coordinator | LOCAL / TESTED | automatic Primary/Backup selection, independent receipt verification and monotonic state transitions |
 | Recovery Attestation | LOCAL / BROWSER VERIFIED | EIP-712 signer recovery, Solidity-compatible digest and canonical Evidence Pack integrity |
 | Double-provider failure | LOCAL / FROZEN | coordinator fails closed rather than presenting a failed backup as recovery |
-| Independent provider runtime | LOCAL / TESTED | strict configuration, endpoint binding, request/profile binding, limits and fail-closed HTTP 402 behavior |
+| Independent provider runtime | TESTNET / LIVE ENDPOINTS | bonded Primary x402 + signed Promise; private authenticated Backup HTTPS delivery; identity and endpoint bindings verified in production |
 | Two-process Provider recovery | LOCAL / TESTED | real HTTP Primary `BREACH` → independent Backup `ACCEPTED` → `RECOVERED`; buyer payment remains singular |
 | Guarded V2 live settlement executor | LOCAL / TESTED | rejects LOCAL evidence; validates signatures/bindings/onchain state; simulates before any separately confirmed broadcast |
 | V2 deployment readiness | TESTNET / BONDED | runtime bytecode, constructor getters, source, six registration receipts and both active bonds independently checked |

@@ -32,7 +32,7 @@
             <button id="run" class="tertiary">Run continuity recovery</button>
             <button id="run-official" class="official-cta">Run official coordinator</button>
           </div>
-          <p class="honesty">LIVE / TESTNET V1: x402 payment, signed delivery, verified breach and real buyer rebate. TESTNET / BONDED V2: source-verified settlement contract plus independent active 5 and 3 USD₮0 Provider bonds. Real backup settlement remains PENDING; the coordinator path remains LOCAL / TESTED.</p>
+          <p class="honesty">LIVE / TESTNET V1: x402 payment, signed delivery, verified breach and real buyer rebate. TESTNET / BONDED V2: source-verified contract, active 5 and 3 USD₮0 bonds, public Primary x402 and privately authenticated Backup endpoints. Real V2 payment and settlement remain PENDING; deterministic recovery remains LOCAL / TESTED.</p>
         </div>
         <aside class="bond-card">
           <div class="card-head"><span>Provider Quality Bond</span><span id="bond-status" class="paused">AUTO-PAUSED</span></div>
@@ -52,12 +52,13 @@
         <article><span>QUALITY BOND</span><strong><i id="live-bond">4.99</i> USD₮0</strong><p>Real bond after rebate; service is paused until rebonded.</p><b class="paused">AUTO-PAUSED</b></article>
         <article><span>AGENTIC WALLET</span><strong><i id="wallet-funding">0.02</i> USD₮0</strong><p>Current balance after four paid calls and one verified rebate.</p><b class="ok">TESTNET</b></article>
         <article><span>V1 PAID WARRANTY</span><strong id="paid-proof">ACCEPTED → BREACH → REBATED</strong><p><a href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x53b813b9a86849bd7480b07eafab9bd17c01bea2c2b386a0a121baf6b70e449a" target="_blank" rel="noreferrer">Breach ↗</a> · <a id="rebate-tx" href="https://www.okx.com/web3/explorer/xlayer-test/tx/0x21c3e459c868efdb35da90b2976a73738347e90a38a591cff49e219101b7c03f" target="_blank" rel="noreferrer">Rebate ↗</a></p><b class="ok">TESTNET</b></article>
+        <article><span>V2 PROVIDER RUNTIME</span><strong>PRIMARY + BACKUP</strong><p>Bonded identities, endpoint-bound Promise and private Backup authorization.</p><b class="ok">LIVE ENDPOINTS</b></article>
       </section>
 
       <section class="official-shell" aria-label="Official build coordinator">
         <div class="section-heading">
           <div><p class="eyebrow">OFFICIAL BUILD DELTA · POST-START</p><h2>Automatic recovery. Fail closed.</h2></div>
-          <span id="official-state">LOCAL / TESTED</span>
+          <span id="official-state">PUBLIC PROVIDERS · LOCAL RECOVERY</span>
         </div>
         <p class="official-intro">New after the official start: an auditable coordinator selects providers, verifies both signed deliveries, emits a Solidity-compatible Recovery Attestation, and freezes the task if the backup also fails.</p>
         <div class="official-steps">
@@ -77,26 +78,26 @@
 
       <section class="registry-shell" aria-label="Bonded provider registry">
         <div class="section-heading">
-          <div><p class="eyebrow">BONDED PROVIDER REGISTRY · LOCAL V2</p><h2>Route by proof, not promises.</h2></div>
+          <div><p class="eyebrow">BONDED PROVIDER REGISTRY · TESTNET / PUBLIC</p><h2>Route by proof, not promises.</h2></div>
           <span>2 ELIGIBLE PROVIDERS</span>
         </div>
         <div class="provider-grid">
           <article>
-            <div><b>#1 PRIMARY</b><span>Atlas Market Agent</span></div>
-            <strong>95.0% <small>verified acceptance</small></strong>
-            <dl><div><dt>Bond</dt><dd>5.00 USD₮0</dd></div><div><dt>SLA</dt><dd>1.5s / 20s fresh</dd></div><div><dt>Price</dt><dd>0.01 USD₮0</dd></div></dl>
+            <div><b>#1 PRIMARY</b><span>RelayBond OKX Market Primary</span></div>
+            <strong>PUBLIC <small>x402 endpoint</small></strong>
+            <dl><div><dt>Bond</dt><dd>5.00 USD₮0</dd></div><div><dt>SLA</dt><dd>2.0s / 30s fresh</dd></div><div><dt>Price</dt><dd>0.01 USD₮0</dd></div></dl>
           </article>
           <article>
-            <div><b>#2 BACKUP</b><span>Harbor Quote Agent</span></div>
-            <strong>3 <small>verified recoveries</small></strong>
-            <dl><div><dt>Bond</dt><dd>3.00 USD₮0</dd></div><div><dt>SLA</dt><dd>1.8s / 25s fresh</dd></div><div><dt>Price</dt><dd>0.01 USD₮0</dd></div></dl>
+            <div><b>#2 BACKUP</b><span>RelayBond OKX Market Backup</span></div>
+            <strong>PRIVATE <small>coordinator endpoint</small></strong>
+            <dl><div><dt>Bond</dt><dd>3.00 USD₮0</dd></div><div><dt>SLA</dt><dd>2.0s / 30s fresh</dd></div><div><dt>Price</dt><dd>0.01 USD₮0</dd></div></dl>
           </article>
         </div>
       </section>
 
       <section class="flow-shell">
         <div class="section-heading">
-          <div><p class="eyebrow">CONTINUITY RECOVERY · LOCAL V2</p><h2>One buyer payment. A finished task.</h2></div>
+          <div><p class="eyebrow">CONTINUITY RECOVERY · LOCAL VERIFIED RUN</p><h2>One buyer payment. A finished task.</h2></div>
           <span id="run-state">READY</span>
         </div>
         <div class="steps">
