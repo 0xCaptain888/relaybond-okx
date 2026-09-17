@@ -5,7 +5,7 @@ import {
   type Hex,
   type LocalAccount,
 } from "viem";
-import type { ContinuityReceipt, DeliveryReceipt, ServicePromise, Signed } from "./types.js";
+import type { ContinuityReceipt, DeliveryReceipt, RecoveryAttestation, ServicePromise, Signed } from "./types.js";
 
 export const promiseTypes = {
   ServicePromise: [
@@ -56,10 +56,33 @@ export const continuityTypes = {
   ],
 } as const;
 
+export const recoveryAttestationTypes = {
+  RecoveryAttestation: [
+    { name: "primaryServiceId", type: "bytes32" },
+    { name: "backupServiceId", type: "bytes32" },
+    { name: "requestHash", type: "bytes32" },
+    { name: "failedReceiptHash", type: "bytes32" },
+    { name: "recoveredReceiptHash", type: "bytes32" },
+    { name: "buyer", type: "address" },
+    { name: "recoveryAmount", type: "uint256" },
+    { name: "deadline", type: "uint256" },
+    { name: "nonce", type: "uint256" },
+  ],
+} as const;
+
 function domain(chainId: number, vault: Address) {
   return {
     name: "RelayBond",
     version: "1",
+    chainId,
+    verifyingContract: vault,
+  } as const;
+}
+
+function recoveryDomain(chainId: number, vault: Address) {
+  return {
+    name: "RelayBond Recovery",
+    version: "2",
     chainId,
     verifyingContract: vault,
   } as const;
@@ -119,6 +142,15 @@ export async function continuityMessage(receipt: ContinuityReceipt) {
   } as const;
 }
 
+export function recoveryAttestationMessage(attestation: RecoveryAttestation) {
+  return {
+    ...attestation,
+    recoveryAmount: BigInt(attestation.recoveryAmount),
+    deadline: BigInt(attestation.deadline),
+    nonce: BigInt(attestation.nonce),
+  } as const;
+}
+
 export async function signPromise(
   account: LocalAccount,
   promise: ServicePromise,
@@ -166,6 +198,22 @@ export async function signContinuityReceipt(
   };
 }
 
+export async function signRecoveryAttestation(
+  account: LocalAccount,
+  context: { chainId: number; vault: Address },
+  attestation: RecoveryAttestation,
+): Promise<Signed<RecoveryAttestation>> {
+  return {
+    payload: attestation,
+    signature: await account.signTypedData({
+      domain: recoveryDomain(context.chainId, context.vault),
+      types: recoveryAttestationTypes,
+      primaryType: "RecoveryAttestation",
+      message: recoveryAttestationMessage(attestation),
+    }),
+  };
+}
+
 export async function recoverPromiseSigner(signed: Signed<ServicePromise>): Promise<Address> {
   const promise = signed.payload;
   return recoverTypedDataAddress({
@@ -200,6 +248,31 @@ export async function recoverContinuitySigner(
     primaryType: "ContinuityReceipt",
     message: await continuityMessage(signed.payload),
     signature: signed.signature,
+  });
+}
+
+export async function recoverRecoveryAttestationSigner(
+  context: { chainId: number; vault: Address },
+  signed: Signed<RecoveryAttestation>,
+): Promise<Address> {
+  return recoverTypedDataAddress({
+    domain: recoveryDomain(context.chainId, context.vault),
+    types: recoveryAttestationTypes,
+    primaryType: "RecoveryAttestation",
+    message: recoveryAttestationMessage(signed.payload),
+    signature: signed.signature,
+  });
+}
+
+export function hashRecoveryAttestation(
+  context: { chainId: number; vault: Address },
+  attestation: RecoveryAttestation,
+): Hex {
+  return hashTypedData({
+    domain: recoveryDomain(context.chainId, context.vault),
+    types: recoveryAttestationTypes,
+    primaryType: "RecoveryAttestation",
+    message: recoveryAttestationMessage(attestation),
   });
 }
 

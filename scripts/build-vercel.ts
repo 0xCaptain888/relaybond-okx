@@ -9,5 +9,6 @@ await cp("evidence/judge-run.json", `${output}/evidence/judge-run.json`);
 await cp("evidence/continuity-judge-run.json", `${output}/evidence/continuity-judge-run.json`);
 await cp("evidence/reliability-passport.json", `${output}/evidence/reliability-passport.json`);
 await cp("evidence/live", `${output}/evidence/live`, { recursive: true });
+await cp("evidence/official-build", `${output}/evidence/official-build`, { recursive: true });
 
-console.log("Vercel judge site assembled in public/ with local and live evidence.");
+console.log("Vercel judge site assembled in public/ with pre-build, live and official-period evidence.");

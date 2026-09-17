@@ -1,0 +1,484 @@
+{
+  "evidenceVersion": "official-build-1",
+  "mode": "OFFICIAL_PERIOD_LOCAL_COORDINATOR",
+  "generatedAt": "2026-09-17T00:00:00.000Z",
+  "buildPeriod": {
+    "officialStart": "2026-09-17T00:00:00.000Z",
+    "baselineTag": "v0.3.0",
+    "baselineCommit": "aa4bc8d508d690bc2599be88e6c49011fb589e69",
+    "status": "POST_START_LOCAL_IMPLEMENTATION"
+  },
+  "chainId": 1952,
+  "vault": "0x4444444444444444444444444444444444440404",
+  "buyer": "0x45dE2eDdbE199F4FE133B728A40e8ed516D1B015",
+  "verifier": "0x083ED08F75C4cb12e97C13c07F9d836e93DF5E60",
+  "providers": [
+    {
+      "providerId": "official-atlas-primary",
+      "name": "Atlas Market Agent",
+      "serviceId": "official-market-primary-v1",
+      "endpoint": "https://relaybond-okx.vercel.app/v1/provider/quote",
+      "provider": "0xfA17c5B66A985F44Bc249C8E8faBD64767f414B1",
+      "mode": "LOCAL",
+      "active": true,
+      "priceAtomic": "10000",
+      "bondAtomic": "5000000",
+      "minimumBondAtomic": "5000000",
+      "maximumLatencyMs": 1500,
+      "maximumDataAgeSeconds": 20,
+      "supportedSchemas": [
+        "market-quote-v1"
+      ],
+      "reliability": {
+        "verifiedCalls": 21,
+        "acceptedCalls": 20,
+        "recoveredCalls": 0
+      }
+    },
+    {
+      "providerId": "official-harbor-backup",
+      "name": "Harbor Recovery Agent",
+      "serviceId": "official-market-backup-v1",
+      "endpoint": "https://relaybond-okx.vercel.app/v1/continuity/backup",
+      "provider": "0x83279FAE0994Aa1A563377E889Cc2a1d96ADb3B1",
+      "mode": "LOCAL",
+      "active": true,
+      "priceAtomic": "10000",
+      "bondAtomic": "3000000",
+      "minimumBondAtomic": "2000000",
+      "maximumLatencyMs": 1800,
+      "maximumDataAgeSeconds": 25,
+      "supportedSchemas": [
+        "market-quote-v1"
+      ],
+      "reliability": {
+        "verifiedCalls": 16,
+        "acceptedCalls": 15,
+        "recoveredCalls": 4
+      }
+    }
+  ],
+  "recovered": {
+    "task": {
+      "taskId": "0xa9bcd7c790ff2f6e1dc57b0a409510d4dbbc89cb425ca8df68545ac1cf32d99b",
+      "buyer": "0x45dE2eDdbE199F4FE133B728A40e8ed516D1B015",
+      "requestHash": "0x6bb31a012cd722c2c2efcf9a3db441944ef942ccd45d55ea0d9e39b8c61decf1",
+      "input": {
+        "symbol": "BTC-USDT",
+        "officialBuild": true
+      },
+      "state": "RECOVERED",
+      "createdAt": 1789606800,
+      "updatedAt": 1789606805,
+      "events": [
+        {
+          "state": "QUEUED",
+          "at": 1789606800,
+          "description": "Continuity task accepted by the coordinator."
+        },
+        {
+          "state": "PRIMARY_SELECTED",
+          "at": 1789606801,
+          "providerId": "official-atlas-primary",
+          "description": "Primary selected with score 72."
+        },
+        {
+          "state": "PRIMARY_BREACH",
+          "at": 1789606802,
+          "providerId": "official-atlas-primary",
+          "evidenceHash": "0xf9bc1158d9c6e6eefbf62ab6c7e07c719af564c45aea95410dbe8fc1f2eeddd1",
+          "description": "Primary delivery breached: freshnessMet."
+        },
+        {
+          "state": "BACKUP_SELECTED",
+          "at": 1789606803,
+          "providerId": "official-harbor-backup",
+          "description": "Independent backup selected with score 63."
+        },
+        {
+          "state": "RECOVERED",
+          "at": 1789606805,
+          "providerId": "official-harbor-backup",
+          "evidenceHash": "0x1a75589ca99ecb854c618f42b5b4d57d9d7c0ec5fdd767ff47097225dd7563fc",
+          "description": "Backup delivery accepted; verifier authorized bond-funded settlement."
+        }
+      ],
+      "primaryProviderId": "official-atlas-primary",
+      "backupProviderId": "official-harbor-backup"
+    },
+    "primary": {
+      "request": {
+        "serviceId": "official-market-primary-v1",
+        "requestedAt": 1789606800,
+        "input": {
+          "symbol": "BTC-USDT",
+          "officialBuild": true
+        },
+        "buyer": "0x45dE2eDdbE199F4FE133B728A40e8ed516D1B015"
+      },
+      "response": {
+        "symbol": "BTC-USDT",
+        "price": 62500.25,
+        "observedAt": 1789606681,
+        "source": "Atlas Market Agent"
+      },
+      "servicePromise": {
+        "payload": {
+          "version": "1",
+          "chainId": 1952,
+          "vault": "0x4444444444444444444444444444444444440404",
+          "serviceId": "official-market-primary-v1",
+          "endpoint": "https://relaybond-okx.vercel.app/v1/provider/quote",
+          "responseTimeMs": 1500,
+          "maxDataAgeSeconds": 20,
+          "requiredSchema": "market-quote-v1",
+          "minimumRecords": 1,
+          "priceAtomic": "10000",
+          "bondAmountAtomic": "5000000",
+          "rebateAtomic": "10000",
+          "refundOnBreach": true,
+          "validUntil": 1789689600,
+          "provider": "0xfA17c5B66A985F44Bc249C8E8faBD64767f414B1"
+        },
+        "signature": "0x07cccbb55b01c1d0f3a4d8862b9b20c4b0ccf037e1522ebe06dc650d157818be1a35b86fbb58149d0680e711dc0d93f81ef0d78a8b0b9011eb6f59e160f736ec1c"
+      },
+      "deliveryReceipt": {
+        "payload": {
+          "version": "1",
+          "serviceId": "official-market-primary-v1",
+          "requestHash": "0xbb2f1465b1be8b1b5a5d80545a704b7298ae69a2fe4bf7aacd64e521076df838",
+          "responseHash": "0xbf52b526620ee195d26f3b38497ec40b8c14d4fd3d7b43485bf0861a52461987",
+          "paymentId": "0xac98eb6552cb68a9ec329c42d5c2135a1069fbab07ff031252b602d3b7739d6d",
+          "deliveredAt": 1789606801,
+          "servicePromiseHash": "0x8bb41192fe528b2cf89b6e2f627ef02745a9e79e52d6c8d7918c7291c23d6089",
+          "provider": "0xfA17c5B66A985F44Bc249C8E8faBD64767f414B1"
+        },
+        "signature": "0x19d2066f28cb0919011693cf035683c6e7e1ef305788044078daefc1fe096d94246ba60c8d1bcda67f1d0c26e29151f855106339fe26a1064a022692362cc2ba1b"
+      },
+      "verification": {
+        "status": "BREACH",
+        "checkedAt": 1789606801,
+        "violations": [
+          "freshnessMet"
+        ],
+        "checks": {
+          "promiseSignature": true,
+          "receiptSignature": true,
+          "promiseBound": true,
+          "requestBound": true,
+          "responseBound": true,
+          "deadlineMet": true,
+          "freshnessMet": false,
+          "schemaMet": true,
+          "recordCountMet": true
+        },
+        "evidenceHash": "0xf9bc1158d9c6e6eefbf62ab6c7e07c719af564c45aea95410dbe8fc1f2eeddd1"
+      }
+    },
+    "backup": {
+      "request": {
+        "serviceId": "official-market-backup-v1",
+        "requestedAt": 1789606804,
+        "input": {
+          "symbol": "BTC-USDT",
+          "officialBuild": true,
+          "continuityTaskId": "0xa9bcd7c790ff2f6e1dc57b0a409510d4dbbc89cb425ca8df68545ac1cf32d99b"
+        },
+        "buyer": "0x45dE2eDdbE199F4FE133B728A40e8ed516D1B015"
+      },
+      "response": {
+        "symbol": "BTC-USDT",
+        "price": 62501.1,
+        "observedAt": 1789606805,
+        "source": "Harbor Recovery Agent"
+      },
+      "servicePromise": {
+        "payload": {
+          "version": "1",
+          "chainId": 1952,
+          "vault": "0x4444444444444444444444444444444444440404",
+          "serviceId": "official-market-backup-v1",
+          "endpoint": "https://relaybond-okx.vercel.app/v1/continuity/backup",
+          "responseTimeMs": 1800,
+          "maxDataAgeSeconds": 25,
+          "requiredSchema": "market-quote-v1",
+          "minimumRecords": 1,
+          "priceAtomic": "10000",
+          "bondAmountAtomic": "3000000",
+          "rebateAtomic": "10000",
+          "refundOnBreach": true,
+          "validUntil": 1789689600,
+          "provider": "0x83279FAE0994Aa1A563377E889Cc2a1d96ADb3B1"
+        },
+        "signature": "0x4e5bd27e7fc69682b773ad3c669c00eb62b0e60c3fbda4470a5c7c048a40f0f97336147cbf977b1315a61a5a6b6cf2f437d5577edefa75e731ce902ce29ec5f81c"
+      },
+      "deliveryReceipt": {
+        "payload": {
+          "version": "1",
+          "serviceId": "official-market-backup-v1",
+          "requestHash": "0x929ae1ca14702a4177c93c45c8cc7fa99a27057d206e551487f95f324ccee75a",
+          "responseHash": "0x968ca583fb318a732ded365d7110a769d70c7c0adebcc6b6de349ac491f59e37",
+          "paymentId": "0x9862eec840a9f117756cf9c31f7e4aa2e08ae73deb08371a6a1b0fe51732b559",
+          "deliveredAt": 1789606805,
+          "servicePromiseHash": "0x4fdb2f9c07b90e47a9657752e7066873a3a2ec19f351ea0adf5035a49fb01e04",
+          "provider": "0x83279FAE0994Aa1A563377E889Cc2a1d96ADb3B1"
+        },
+        "signature": "0x0d70f6f95d7afd41455a5ac966105805c258eaa9397fb89e0e3733fe7c7a21af1b330cb198dd568d3bcfb0c77c37042cbb83b22786e2c19d0b23544040e7a7fd1c"
+      },
+      "verification": {
+        "status": "ACCEPTED",
+        "checkedAt": 1789606805,
+        "violations": [],
+        "checks": {
+          "promiseSignature": true,
+          "receiptSignature": true,
+          "promiseBound": true,
+          "requestBound": true,
+          "responseBound": true,
+          "deadlineMet": true,
+          "freshnessMet": true,
+          "schemaMet": true,
+          "recordCountMet": true
+        },
+        "evidenceHash": "0xd7bd4591f3c52a797728b4caf191cf4dfeed5fb516312d23138d77ac9647e914"
+      }
+    },
+    "continuityReceipt": {
+      "payload": {
+        "version": "2",
+        "taskId": "0xa9bcd7c790ff2f6e1dc57b0a409510d4dbbc89cb425ca8df68545ac1cf32d99b",
+        "requestHash": "0x6bb31a012cd722c2c2efcf9a3db441944ef942ccd45d55ea0d9e39b8c61decf1",
+        "primaryProvider": "0xfA17c5B66A985F44Bc249C8E8faBD64767f414B1",
+        "backupProvider": "0x83279FAE0994Aa1A563377E889Cc2a1d96ADb3B1",
+        "primaryPaymentAtomic": "10000",
+        "buyerPaidAtomic": "10000",
+        "recoveryPaidFromBondAtomic": "10000",
+        "primaryStatus": "BREACH",
+        "backupStatus": "ACCEPTED",
+        "finalStatus": "RECOVERED",
+        "breachReason": "freshnessMet",
+        "primaryEvidenceHash": "0xf9bc1158d9c6e6eefbf62ab6c7e07c719af564c45aea95410dbe8fc1f2eeddd1",
+        "recoveryEvidenceHash": "0xd7bd4591f3c52a797728b4caf191cf4dfeed5fb516312d23138d77ac9647e914",
+        "completedAt": 1789606805,
+        "verifier": "0x083ED08F75C4cb12e97C13c07F9d836e93DF5E60"
+      },
+      "signature": "0xeca0f526af640ab29a7e6f5430058dd94651c01074b15f3f808bf5f02ff01555621c98b511c3ee8de9ea5ce37221310c614e82772f3c28fc84a2ab8bbb914d2b1b"
+    },
+    "recoveryAttestation": {
+      "payload": {
+        "primaryServiceId": "0x904674d09c6660688ac90e2579ab4f011a2a187626cc2e252c1c9c81210530f8",
+        "backupServiceId": "0xcfce271178fef9854db1bd9bf325cc67a0e61d877ba74f79ff9390148c9ca522",
+        "requestHash": "0x6bb31a012cd722c2c2efcf9a3db441944ef942ccd45d55ea0d9e39b8c61decf1",
+        "failedReceiptHash": "0x96fec03541a47bc66c0dc5abab1dd7b5d99e8229032af11f0f6a493390874ee1",
+        "recoveredReceiptHash": "0x103b808b0afdabf7be1e8e4af2692cae821a5463d981f760c1d2551a5e2b4c49",
+        "buyer": "0x45dE2eDdbE199F4FE133B728A40e8ed516D1B015",
+        "recoveryAmount": "10000",
+        "deadline": 1789610405,
+        "nonce": "76774527914514249756345786265349053015329112378875894165557723933842036939163"
+      },
+      "signature": "0xf9afd2d526f0d65435af4529012b2a697ee2f30307669eb2b9e26bf26d80f4f04f2f1f5725106d3bfc903d4882b00c30e7ca3079c5bf3958cc1124b3abaef8c31b"
+    }
+  },
+  "frozen": {
+    "task": {
+      "taskId": "0x00316171593e69fc31802d61fb1b0b603dbfff34ebaedec6f24a8c96ea974a05",
+      "buyer": "0x45dE2eDdbE199F4FE133B728A40e8ed516D1B015",
+      "requestHash": "0xa89ec8dcb759634ef4aac28b464bc0469a8274d0395b87db42af76f1fff7791f",
+      "input": {
+        "symbol": "BTC-USDT",
+        "officialBuild": true
+      },
+      "state": "FROZEN",
+      "createdAt": 1789610400,
+      "updatedAt": 1789610405,
+      "events": [
+        {
+          "state": "QUEUED",
+          "at": 1789610400,
+          "description": "Continuity task accepted by the coordinator."
+        },
+        {
+          "state": "PRIMARY_SELECTED",
+          "at": 1789610401,
+          "providerId": "official-atlas-primary",
+          "description": "Primary selected with score 72."
+        },
+        {
+          "state": "PRIMARY_BREACH",
+          "at": 1789610402,
+          "providerId": "official-atlas-primary",
+          "evidenceHash": "0xea90f928616691a7616b4fb27bb49e8d6c6f1eaaea3bba9183d3a1550044c536",
+          "description": "Primary delivery breached: freshnessMet."
+        },
+        {
+          "state": "BACKUP_SELECTED",
+          "at": 1789610403,
+          "providerId": "official-harbor-backup",
+          "description": "Independent backup selected with score 63."
+        },
+        {
+          "state": "FROZEN",
+          "at": 1789610405,
+          "providerId": "official-harbor-backup",
+          "evidenceHash": "0xedafb6b869a06b9f291861adf8ff4d633e34f3193b9d974ba7c7cf612c8c0c16",
+          "description": "Backup delivery also breached: freshnessMet."
+        }
+      ],
+      "primaryProviderId": "official-atlas-primary",
+      "backupProviderId": "official-harbor-backup"
+    },
+    "primary": {
+      "request": {
+        "serviceId": "official-market-primary-v1",
+        "requestedAt": 1789610400,
+        "input": {
+          "symbol": "BTC-USDT",
+          "officialBuild": true
+        },
+        "buyer": "0x45dE2eDdbE199F4FE133B728A40e8ed516D1B015"
+      },
+      "response": {
+        "symbol": "BTC-USDT",
+        "price": 62500.25,
+        "observedAt": 1789610281,
+        "source": "Atlas Market Agent"
+      },
+      "servicePromise": {
+        "payload": {
+          "version": "1",
+          "chainId": 1952,
+          "vault": "0x4444444444444444444444444444444444440404",
+          "serviceId": "official-market-primary-v1",
+          "endpoint": "https://relaybond-okx.vercel.app/v1/provider/quote",
+          "responseTimeMs": 1500,
+          "maxDataAgeSeconds": 20,
+          "requiredSchema": "market-quote-v1",
+          "minimumRecords": 1,
+          "priceAtomic": "10000",
+          "bondAmountAtomic": "5000000",
+          "rebateAtomic": "10000",
+          "refundOnBreach": true,
+          "validUntil": 1789689600,
+          "provider": "0xfA17c5B66A985F44Bc249C8E8faBD64767f414B1"
+        },
+        "signature": "0x07cccbb55b01c1d0f3a4d8862b9b20c4b0ccf037e1522ebe06dc650d157818be1a35b86fbb58149d0680e711dc0d93f81ef0d78a8b0b9011eb6f59e160f736ec1c"
+      },
+      "deliveryReceipt": {
+        "payload": {
+          "version": "1",
+          "serviceId": "official-market-primary-v1",
+          "requestHash": "0xefe0c92159a7d3fd856441306093842e792dbf035e558a690931b3646a066341",
+          "responseHash": "0x615da030dd47096bfebe6da0c7132def1b9907b5319495b6190d32ab9b3916f4",
+          "paymentId": "0x407426da70d500b5f7ae134c2641a5f298ba0555200d2a47641d653c2b404865",
+          "deliveredAt": 1789610401,
+          "servicePromiseHash": "0x8bb41192fe528b2cf89b6e2f627ef02745a9e79e52d6c8d7918c7291c23d6089",
+          "provider": "0xfA17c5B66A985F44Bc249C8E8faBD64767f414B1"
+        },
+        "signature": "0x396da978018012dc31f9b7ef0ad01c026e612c45942986f2d75732dfaf80bb9c7908a426225711acfd9ed5d89cd5aa874e36f7f15d294f4a387f0492c0f1673d1c"
+      },
+      "verification": {
+        "status": "BREACH",
+        "checkedAt": 1789610401,
+        "violations": [
+          "freshnessMet"
+        ],
+        "checks": {
+          "promiseSignature": true,
+          "receiptSignature": true,
+          "promiseBound": true,
+          "requestBound": true,
+          "responseBound": true,
+          "deadlineMet": true,
+          "freshnessMet": false,
+          "schemaMet": true,
+          "recordCountMet": true
+        },
+        "evidenceHash": "0xea90f928616691a7616b4fb27bb49e8d6c6f1eaaea3bba9183d3a1550044c536"
+      }
+    },
+    "backup": {
+      "request": {
+        "serviceId": "official-market-backup-v1",
+        "requestedAt": 1789610404,
+        "input": {
+          "symbol": "BTC-USDT",
+          "officialBuild": true,
+          "continuityTaskId": "0x00316171593e69fc31802d61fb1b0b603dbfff34ebaedec6f24a8c96ea974a05"
+        },
+        "buyer": "0x45dE2eDdbE199F4FE133B728A40e8ed516D1B015"
+      },
+      "response": {
+        "symbol": "BTC-USDT",
+        "price": 62501.1,
+        "observedAt": 1789610285,
+        "source": "Harbor Recovery Agent"
+      },
+      "servicePromise": {
+        "payload": {
+          "version": "1",
+          "chainId": 1952,
+          "vault": "0x4444444444444444444444444444444444440404",
+          "serviceId": "official-market-backup-v1",
+          "endpoint": "https://relaybond-okx.vercel.app/v1/continuity/backup",
+          "responseTimeMs": 1800,
+          "maxDataAgeSeconds": 25,
+          "requiredSchema": "market-quote-v1",
+          "minimumRecords": 1,
+          "priceAtomic": "10000",
+          "bondAmountAtomic": "3000000",
+          "rebateAtomic": "10000",
+          "refundOnBreach": true,
+          "validUntil": 1789689600,
+          "provider": "0x83279FAE0994Aa1A563377E889Cc2a1d96ADb3B1"
+        },
+        "signature": "0x4e5bd27e7fc69682b773ad3c669c00eb62b0e60c3fbda4470a5c7c048a40f0f97336147cbf977b1315a61a5a6b6cf2f437d5577edefa75e731ce902ce29ec5f81c"
+      },
+      "deliveryReceipt": {
+        "payload": {
+          "version": "1",
+          "serviceId": "official-market-backup-v1",
+          "requestHash": "0xf1e0e93e575138878fed972709bf78e38df2ea56c107a05e306e7fd20fe19f7e",
+          "responseHash": "0x59737852cee2d5dd4771bc707fffec084c10845648af545b315816b4b38dc102",
+          "paymentId": "0x944d38fb518cb9cb5d7810146c6116d56fac4a9721afecbeb941855951cb762d",
+          "deliveredAt": 1789610405,
+          "servicePromiseHash": "0x4fdb2f9c07b90e47a9657752e7066873a3a2ec19f351ea0adf5035a49fb01e04",
+          "provider": "0x83279FAE0994Aa1A563377E889Cc2a1d96ADb3B1"
+        },
+        "signature": "0xd7f68052eb4478f05dc9baba14cbab9e7ca676bd278286ebcdeed648e79f678d5fe3b039f3b6e3301330b4874c9c272c5523be1b8d0ede568d1871ccb022806e1c"
+      },
+      "verification": {
+        "status": "BREACH",
+        "checkedAt": 1789610405,
+        "violations": [
+          "freshnessMet"
+        ],
+        "checks": {
+          "promiseSignature": true,
+          "receiptSignature": true,
+          "promiseBound": true,
+          "requestBound": true,
+          "responseBound": true,
+          "deadlineMet": true,
+          "freshnessMet": false,
+          "schemaMet": true,
+          "recordCountMet": true
+        },
+        "evidenceHash": "0xedafb6b869a06b9f291861adf8ff4d633e34f3193b9d974ba7c7cf612c8c0c16"
+      }
+    }
+  },
+  "recoveryAttestationDigest": "0x64f33f0db0ba4d4e0ff067e160325c2fb9f08a66ec46a4be505c216ed1287a2f",
+  "claims": {
+    "automaticPrimarySelection": true,
+    "automaticBackupSelection": true,
+    "primaryPaidByBuyer": true,
+    "backupAuthorizedFromPrimaryBond": true,
+    "doubleFailureFreezes": true,
+    "onchainSettlement": false
+  },
+  "evidenceHash": "0x250a9792c6ea793d03ec37c0cd52390da268134bd200f90ae105612023defc20",
+  "portableIntegrity": {
+    "algorithm": "SHA-256",
+    "hash": "0x2178973206a55dc43708348ef8ed4e466118f7214ff24e591d6c53ffbac01a38"
+  }
+}

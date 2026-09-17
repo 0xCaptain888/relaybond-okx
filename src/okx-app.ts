@@ -13,6 +13,7 @@ import { buildScenarioResponse, normalizeServiceInput, paymentContextFromVerifie
 import { verifyDelivery, type VerificationInput } from "./verifier.js";
 import { APP_VERSION } from "./version.js";
 import { createContinuityEvidence } from "./continuity-simulator.js";
+import { createOfficialCoordinatorEvidence } from "./official-build-simulator.js";
 
 export function createOkxApp() {
   const required = ["OKX_API_KEY", "OKX_SECRET_KEY", "OKX_PASSPHRASE", "X402_PAY_TO", "PROVIDER_SIGNING_KEY"] as const;
@@ -66,6 +67,13 @@ export function createOkxApp() {
   app.get("/v1/recovery/demo", async (_request, response, next) => {
     try {
       response.json(await createContinuityEvidence());
+    } catch (error) {
+      next(error);
+    }
+  });
+  app.get("/v1/official/coordinator", async (_request, response, next) => {
+    try {
+      response.json(await createOfficialCoordinatorEvidence());
     } catch (error) {
       next(error);
     }

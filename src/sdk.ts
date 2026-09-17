@@ -2,6 +2,7 @@ import type { VerificationInput } from "./verifier.js";
 import type { VerificationResult } from "./types.js";
 import type { ServicePromise, Signed } from "./types.js";
 import type { BondedProviderProfile, ContinuityEvidence } from "./types.js";
+import type { OfficialCoordinatorEvidence } from "./official-build-simulator.js";
 
 export class RelayBondClient {
   private readonly baseUrl: string;
@@ -36,6 +37,12 @@ export class RelayBondClient {
     const response = await fetch(`${this.baseUrl}/v1/recovery/demo`);
     if (!response.ok) throw new Error(`RelayBond recovery demo failed: ${response.status}`);
     return response.json() as Promise<ContinuityEvidence>;
+  }
+
+  async officialCoordinator(): Promise<OfficialCoordinatorEvidence> {
+    const response = await fetch(`${this.baseUrl}/v1/official/coordinator`);
+    if (!response.ok) throw new Error(`RelayBond official coordinator lookup failed: ${response.status}`);
+    return response.json() as Promise<OfficialCoordinatorEvidence>;
   }
 
   async paymentChallenge(input: { symbol: string; scenario?: "accepted" | "empty" | "stale" }) {

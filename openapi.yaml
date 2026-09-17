@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: RelayBond API
-  version: 0.3.0
+  version: 0.4.0-rc.1
   description: Bond-backed paid Agent services with portable delivery evidence and double-pay-free recovery.
 servers:
   - url: https://relaybond-okx.vercel.app
@@ -56,6 +56,13 @@ paths:
       responses:
         "200":
           description: Deterministic LOCAL Continuity Receipt and recovery economics
+  /v1/official/coordinator:
+    get:
+      operationId: getOfficialBuildCoordinatorEvidence
+      summary: Inspect the post-start automatic routing and fail-closed recovery evidence
+      responses:
+        "200":
+          description: Official-period LOCAL coordinator evidence with RECOVERED and FROZEN runs
   /v1/verify:
     post:
       operationId: verifyRelayBondDelivery

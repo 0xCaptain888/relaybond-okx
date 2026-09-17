@@ -68,6 +68,48 @@ export type BondedProviderProfile = {
 
 export type ContinuityStatus = "ACCEPTED" | "RECOVERED" | "FROZEN";
 
+export type RecoveryAttestation = {
+  primaryServiceId: Hex;
+  backupServiceId: Hex;
+  requestHash: Hex;
+  failedReceiptHash: Hex;
+  recoveredReceiptHash: Hex;
+  buyer: Address;
+  recoveryAmount: string;
+  deadline: number;
+  nonce: string;
+};
+
+export type ContinuityTaskState =
+  | "QUEUED"
+  | "PRIMARY_SELECTED"
+  | "ACCEPTED"
+  | "PRIMARY_BREACH"
+  | "BACKUP_SELECTED"
+  | "RECOVERED"
+  | "FROZEN";
+
+export type ContinuityTaskEvent = {
+  state: ContinuityTaskState;
+  at: number;
+  description: string;
+  providerId?: string;
+  evidenceHash?: Hex;
+};
+
+export type ContinuityTaskRecord = {
+  taskId: Hex;
+  buyer: Address;
+  requestHash: Hex;
+  input: Record<string, unknown>;
+  state: ContinuityTaskState;
+  createdAt: number;
+  updatedAt: number;
+  primaryProviderId?: string;
+  backupProviderId?: string;
+  events: ContinuityTaskEvent[];
+};
+
 export type ContinuityReceipt = {
   version: "2";
   taskId: Hex;
