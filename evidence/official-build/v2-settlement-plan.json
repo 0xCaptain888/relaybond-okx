@@ -1,23 +1,70 @@
 {
   "evidenceVersion": "official-v2-settlement-plan-1",
   "mode": "XLAYER_TESTNET_READ_ONLY_PLAN",
-  "generatedAt": "2026-09-17T08:04:15.218Z",
+  "generatedAt": "2026-09-17T10:02:51.625Z",
   "sourceEvidence": "evidence/official-build/v2-live-coordinator.json",
-  "sourceEvidenceAvailable": false,
   "chainId": 1952,
   "vaultAddress": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
   "tokenAddress": "0x9e29b3AaDa05Bf2D2c827Af80Bd28Dc0b9b4FB0c",
   "verifier": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
-  "evidenceValidation": {
-    "passed": false,
-    "checks": {
-      "liveMode": false
-    },
-    "reason": "A fresh XLAYER_TESTNET_LIVE_COORDINATOR Evidence Pack has not been created yet."
+  "requestHash": "0x8bae99c2752698fb5a20138e6e1d62e9cc0bb8c22b490d87509d5d5adb3d300c",
+  "buyer": "0xcb83AF485c066add3eca9041a78Ea7c14e3F15F4",
+  "primaryProvider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+  "backupProvider": "0x3d5462243c7c69914Bfa0d2d4089cef79482ee03",
+  "recoveryAmountAtomic": "10000",
+  "transaction": {
+    "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+    "valueAtomic": "0",
+    "callDataHash": "0x35086a48943c2bb0a4d14025310d557a6637cb97fe8fb7f69011db2dedef4935"
   },
-  "onchainChecks": {},
-  "ready": false,
+  "balancesBefore": {
+    "buyerAtomic": "10000",
+    "backupAtomic": "7000000",
+    "primaryBondAtomic": "5000000"
+  },
+  "evidenceValidation": {
+    "passed": true,
+    "checks": {
+      "liveMode": true,
+      "expectedChain": true,
+      "expectedVault": true,
+      "expectedVerifier": true,
+      "recoveredTerminal": true,
+      "primaryBreached": true,
+      "backupAccepted": true,
+      "independentProviders": true,
+      "taskIdBound": true,
+      "requestHashBound": true,
+      "buyerBound": true,
+      "serviceIdsBound": true,
+      "deliveryEvidenceBound": true,
+      "providersBound": true,
+      "recoveryAmountBound": true,
+      "attestationNotExpired": true,
+      "continuitySigner": true,
+      "recoverySigner": true,
+      "economics": true
+    },
+    "continuitySigner": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
+    "recoverySigner": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
+    "primaryServiceId": "0x904674d09c6660688ac90e2579ab4f011a2a187626cc2e252c1c9c81210530f8",
+    "backupServiceId": "0xcfce271178fef9854db1bd9bf325cc67a0e61d877ba74f79ff9390148c9ca522",
+    "requestHash": "0x8bae99c2752698fb5a20138e6e1d62e9cc0bb8c22b490d87509d5d5adb3d300c",
+    "recoveryAmountAtomic": "10000"
+  },
+  "onchainChecks": {
+    "correctChain": true,
+    "tokenBound": true,
+    "verifierBound": true,
+    "requestUnused": true,
+    "primaryRegistered": true,
+    "backupRegistered": true,
+    "primaryActive": true,
+    "backupActive": true,
+    "primaryBondCoversRecovery": true,
+    "maximumRecoveryCoversAmount": true
+  },
+  "ready": true,
   "broadcast": false,
-  "requiredConfirmation": "SETTLE_V2_RECOVERY_XLAYER_TESTNET",
-  "next": "Register and bond both Providers, execute a real paid Primary breach and Backup acceptance, then generate the LIVE coordinator Evidence Pack. No transaction was sent."
+  "requiredConfirmation": "SETTLE_V2_RECOVERY_XLAYER_TESTNET"
 }

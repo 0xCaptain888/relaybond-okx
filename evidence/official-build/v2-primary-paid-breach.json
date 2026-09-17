@@ -1,0 +1,99 @@
+{
+  "evidenceVersion": "1",
+  "mode": "OKX_AGENTIC_WALLET_XLAYER_TESTNET",
+  "capturedAt": "2026-09-17T09:59:04.192Z",
+  "payment": {
+    "status": "success",
+    "transactionHash": "0x12a5976b3a0d82870644d87bca481ce99130a481bf39557437bbfd5af2ed9b3a",
+    "facilitatorReceipt": {
+      "amount": "",
+      "chainId": "eip155:1952",
+      "payer": "0xcb83af485c066add3eca9041a78ea7c14e3f15f4",
+      "status": "pending",
+      "transaction": "0x12a5976b3a0d82870644d87bca481ce99130a481bf39557437bbfd5af2ed9b3a"
+    },
+    "onchainSettlement": {
+      "status": "success",
+      "transactionHash": "0x12a5976b3a0d82870644d87bca481ce99130a481bf39557437bbfd5af2ed9b3a",
+      "blockNumber": "41180307",
+      "token": "0x9e29b3AaDa05Bf2D2c827Af80Bd28Dc0b9b4FB0c",
+      "payer": "0xcb83AF485c066add3eca9041a78Ea7c14e3F15F4",
+      "payTo": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+      "amountAtomic": "10000"
+    }
+  },
+  "delivery": {
+    "deliveryReceipt": {
+      "payload": {
+        "deliveredAt": 1789639143,
+        "paymentId": "0xd3c6c874fd9a84e930acf5fc833d6ce28584fafffa990522a9a1ee380f9b1efb",
+        "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+        "requestHash": "0x17b8290c153198d82db04b365c9a47d776b7c5c29bf29d25fbd8c95eb8c52a63",
+        "responseHash": "0x8e0b2d99f7cc7b9a1be1ae896f2d6ef014406d520b71ba822c608c4ede54fa7b",
+        "serviceId": "official-market-primary-v1",
+        "servicePromiseHash": "0x1e4fa471d9728fee8ffdf88401b8f497014a0953a54d1eef6d25fc68b5e2dba6",
+        "version": "1"
+      },
+      "signature": "0xe77f6e617b347d35ae5d05cc78f89df7cda57e4c7bbfe6332116dea30e41d6ec17d603570224994d3d5e427db67493b17c433dc1f0d33833b1a9fa2ca373d5841b"
+    },
+    "request": {
+      "buyer": "0xcb83AF485c066add3eca9041a78Ea7c14e3F15F4",
+      "input": {
+        "scenario": "stale",
+        "symbol": "BTC-USDT"
+      },
+      "requestedAt": 1789639143,
+      "serviceId": "official-market-primary-v1"
+    },
+    "result": {
+      "observedAt": 1789639052,
+      "price": 76486.7,
+      "source": "OKX_MARKET_API",
+      "symbol": "BTC-USDT"
+    },
+    "servicePromise": {
+      "payload": {
+        "bondAmountAtomic": "5000000",
+        "chainId": 1952,
+        "endpoint": "https://relaybond-okx.vercel.app/v1/provider/v2-primary",
+        "maxDataAgeSeconds": 30,
+        "minimumRecords": 1,
+        "priceAtomic": "10000",
+        "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+        "rebateAtomic": "10000",
+        "refundOnBreach": true,
+        "requiredSchema": "market-quote-v1",
+        "responseTimeMs": 2000,
+        "serviceId": "official-market-primary-v1",
+        "validUntil": 1798761599,
+        "vault": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+        "version": "1"
+      },
+      "signature": "0x3ad4d0bf2806e767e7e455bba84e3412adee9c1c17c85c733bf22ad1700b99f86d88cacf0ce82e4ba46effe10426e8427af6f0acbdde19e13ab6b264a3665cfe1c"
+    }
+  },
+  "verification": {
+    "status": "BREACH",
+    "checkedAt": 1789639144,
+    "violations": [
+      "freshnessMet"
+    ],
+    "checks": {
+      "promiseSignature": true,
+      "receiptSignature": true,
+      "promiseBound": true,
+      "requestBound": true,
+      "responseBound": true,
+      "deadlineMet": true,
+      "freshnessMet": false,
+      "schemaMet": true,
+      "recordCountMet": true
+    },
+    "evidenceHash": "0xdfa724486e457b74706f66dec895949b19c36f5374ccc36ad2d00decce5846ab"
+  },
+  "evidenceHash": "0xe0e3765d5c9e3d557a0247fd416a105046c677ad3fe925b180661cd14e577e8c",
+  "portableIntegrity": {
+    "algorithm": "SHA-256",
+    "hash": "0xec211df874c3b6d035f1b137637c0cd97252838df0839834d8864fb35323ab32"
+  }
+}

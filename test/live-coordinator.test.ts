@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { privateKeyToAccount } from "viem/accounts";
 import type { ProviderDelivery } from "../src/coordinator.js";
-import { assertLiveProviderProfiles, validatePaidPrimaryBinding } from "../src/live-coordinator.js";
+import { assertLiveProviderProfiles, createLiveCoordinatorClock, validatePaidPrimaryBinding } from "../src/live-coordinator.js";
 import type { BondedProviderProfile } from "../src/types.js";
 
 const primaryAccount = privateKeyToAccount(`0x${"91".repeat(32)}`);
@@ -69,4 +69,15 @@ test("paid primary binding requires exact buyer, provider, service and price", (
       amountAtomic: primary.priceAtomic,
     },
   }), /recipient/);
+});
+
+test("LIVE coordinator clock catches up to wall time without inventing backup latency", () => {
+  let wall = 200;
+  const now = createLiveCoordinatorClock(100, () => wall);
+  assert.equal(now(), 200);
+  assert.equal(now(), 200);
+  wall = 199;
+  assert.equal(now(), 200);
+  wall = 201;
+  assert.equal(now(), 201);
 });

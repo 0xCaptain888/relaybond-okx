@@ -43,6 +43,14 @@ export function validatePaidPrimaryBinding(input: {
   }
 }
 
+export function createLiveCoordinatorClock(seed: number, wallClock = () => Math.floor(Date.now() / 1_000)): () => number {
+  let current = seed;
+  return () => {
+    current = Math.max(current, wallClock());
+    return current;
+  };
+}
+
 class RecordedPrimaryExecutor implements ProviderExecutor {
   constructor(
     private readonly primaryProviderId: string,
@@ -90,7 +98,7 @@ export async function createLiveCoordinatorEvidence(input: {
     settlement: input.primarySettlement,
   });
   const request = input.primaryDelivery.request;
-  let clock = Math.max(request.requestedAt, input.primaryDelivery.deliveryReceipt.payload.deliveredAt);
+  const now = createLiveCoordinatorClock(Math.max(request.requestedAt, input.primaryDelivery.deliveryReceipt.payload.deliveredAt));
   const coordinator = new ContinuityCoordinator({
     chainId: input.chainId,
     vault: input.vault,
@@ -98,7 +106,7 @@ export async function createLiveCoordinatorEvidence(input: {
     providers: input.providers,
     executor: new RecordedPrimaryExecutor(selection.primary.providerId, input.primaryDelivery, input.backupExecutor),
     store: new MemoryContinuityTaskStore(),
-    now: () => ++clock,
+    now,
   });
   const recovered = await coordinator.execute({
     buyer: request.buyer,
