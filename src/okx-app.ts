@@ -101,6 +101,12 @@ export function createOkxApp() {
         sourceVerified: true,
         providerRegistration: "PENDING",
         backupSettlement: "PENDING",
+        guard: {
+          rejectsLocalEvidence: true,
+          simulationRequired: true,
+          separateConfirmationRequired: true,
+          buyerBalanceInvariantChecked: true,
+        },
       },
     });
   });

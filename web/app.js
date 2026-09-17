@@ -19,6 +19,7 @@ const officialSteps = [...document.querySelectorAll("[data-official-step]")];
 const officialState = document.querySelector("#official-state");
 const v2PlanStatus = document.querySelector("#v2-plan-status");
 const v2PlanDetail = document.querySelector("#v2-plan-detail");
+const v2SettlementStatus = document.querySelector("#v2-settlement-status");
 const v2ReadinessDetail = document.querySelector("#v2-readiness-detail");
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -56,13 +57,15 @@ async function loadOfficialEvidence() {
 }
 
 async function loadV2Readiness() {
-  const [planResponse, readinessResponse, deploymentResponse, verificationResponse] = await Promise.all([
+  const [planResponse, readinessResponse, deploymentResponse, verificationResponse, bondPlanResponse, settlementPlanResponse] = await Promise.all([
     fetch("./evidence/official-build/v2-deployment-plan.json", { cache: "no-store" }),
     fetch("./evidence/official-build/v2-readiness.json", { cache: "no-store" }),
     fetch("./evidence/official-build/v2-deployment.json", { cache: "no-store" }),
     fetch("./evidence/official-build/v2-contract-verification.json", { cache: "no-store" }),
+    fetch("./evidence/official-build/v2-bond-plan.json", { cache: "no-store" }),
+    fetch("./evidence/official-build/v2-settlement-plan.json", { cache: "no-store" }),
   ]);
-  if (!planResponse.ok || !readinessResponse.ok || !deploymentResponse.ok || !verificationResponse.ok) {
+  if (!planResponse.ok || !readinessResponse.ok || !deploymentResponse.ok || !verificationResponse.ok || !bondPlanResponse.ok || !settlementPlanResponse.ok) {
     throw new Error("V2 deployment evidence is not published yet");
   }
   return {
@@ -70,6 +73,8 @@ async function loadV2Readiness() {
     readiness: await readinessResponse.json(),
     deployment: await deploymentResponse.json(),
     verification: await verificationResponse.json(),
+    bondPlan: await bondPlanResponse.json(),
+    settlementPlan: await settlementPlanResponse.json(),
   };
 }
 
@@ -204,8 +209,8 @@ async function runOfficialFlow() {
     }
     let readinessText = "V2 deployment plan: unavailable";
     try {
-      const { readiness, deployment, verification } = await loadV2Readiness();
-      readinessText = `V2 contract: TESTNET / DEPLOYED\nChain: ${deployment.chainId}\nAddress: ${deployment.address}\nDeployment tx: ${deployment.transactionHash}\nSource verified: ${verification.verified}\nIndependent Provider identities: ${readiness.checks.independentProviders}\nReady for registration: ${readiness.readyForRegistration}`;
+      const { readiness, deployment, verification, bondPlan, settlementPlan } = await loadV2Readiness();
+      readinessText = `V2 contract: TESTNET / DEPLOYED\nChain: ${deployment.chainId}\nAddress: ${deployment.address}\nDeployment tx: ${deployment.transactionHash}\nSource verified: ${verification.verified}\nIndependent Provider identities: ${readiness.checks.independentProviders}\nRegistration transactions: ${bondPlan.totalTransactionCount}\nReady for registration: ${readiness.readyForRegistration}\nLOCAL evidence accepted for settlement: ${settlementPlan.evidenceValidation.checks.liveMode}\nSettlement broadcast: ${settlementPlan.broadcast}`;
     } catch {}
     output.textContent += `\n\nRecovered trail\n${events.map((event) => event.state).join(" → ")}\n\nFail-closed trail\n${evidence.frozen.task.events.map((event) => event.state).join(" → ")}\n\nRecovery Attestation digest\n${evidence.recoveryAttestationDigest}\n\nEvidence hash\n${evidence.evidenceHash}\n\n${readinessText}\n\nOnchain settlement: ${evidence.claims.onchainSettlement}\nMode: ${evidence.mode}`;
     officialState.textContent = "RECOVERED + FROZEN VERIFIED";
@@ -261,13 +266,15 @@ async function loadLiveStatus() {
 
 async function loadV2Status() {
   try {
-    const { readiness, deployment, verification } = await loadV2Readiness();
+    const { readiness, deployment, verification, bondPlan, settlementPlan } = await loadV2Readiness();
     v2PlanStatus.textContent = readiness.checks.v2Deployed && verification.verified ? "TESTNET / DEPLOYED" : "VERIFYING";
     v2PlanDetail.textContent = `${deployment.chainId} · block ${deployment.blockNumber.toLocaleString()} · ${deployment.address.slice(0, 6)}…${deployment.address.slice(-4)} · source ${verification.verified ? "verified" : "pending"}`;
     const configured = [readiness.checks.primaryConfigured, readiness.checks.backupConfigured].filter(Boolean).length;
-    v2ReadinessDetail.textContent = `${configured}/2 identities · registration ${readiness.readyForRegistration ? "ready" : "pending funding"}`;
+    v2SettlementStatus.textContent = settlementPlan.ready ? "READY TO SIMULATE" : "FAIL-CLOSED";
+    v2ReadinessDetail.textContent = `${configured}/2 identities · ${bondPlan.totalTransactionCount} registration tx · LOCAL evidence rejected · ${readiness.readyForRegistration ? "funded" : "funding pending"}`;
   } catch {
     v2PlanStatus.textContent = "PENDING";
+    v2SettlementStatus.textContent = "PENDING";
   }
 }
 

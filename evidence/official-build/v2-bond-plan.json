@@ -1,0 +1,110 @@
+{
+  "evidenceVersion": "official-v2-bond-plan-1",
+  "mode": "XLAYER_TESTNET_READ_ONLY_PLAN",
+  "chainId": 1952,
+  "vaultAddress": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+  "tokenAddress": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+  "verifier": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
+  "providers": [
+    {
+      "role": "primary",
+      "serviceName": "official-market-primary-v1",
+      "serviceId": "0x904674d09c6660688ac90e2579ab4f011a2a187626cc2e252c1c9c81210530f8",
+      "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+      "minimumBondAtomic": "5000000",
+      "maximumRecoveryAtomic": "10000",
+      "depositAmountAtomic": "5000000",
+      "tokenBalanceAtomic": "4990000",
+      "nativeBalanceAtomic": "199993901959695098",
+      "allowanceAtomic": "0",
+      "alreadyRegistered": false,
+      "currentProvider": "0x0000000000000000000000000000000000000000",
+      "currentBondAtomic": "0",
+      "missingDepositAtomic": "5000000",
+      "tokenFundingGapAtomic": "10000",
+      "active": false,
+      "plannedTransactions": [
+        {
+          "action": "REGISTER_SERVICE",
+          "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+          "valueAtomic": "0"
+        },
+        {
+          "action": "APPROVE_USDT0",
+          "to": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+          "valueAtomic": "0",
+          "approvalAtomic": "5000000"
+        },
+        {
+          "action": "DEPOSIT_BOND",
+          "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+          "valueAtomic": "0",
+          "depositAtomic": "5000000"
+        }
+      ],
+      "transactionCount": 3,
+      "registrationMatches": true,
+      "ready": false
+    },
+    {
+      "role": "backup",
+      "serviceName": "official-market-backup-v1",
+      "serviceId": "0xcfce271178fef9854db1bd9bf325cc67a0e61d877ba74f79ff9390148c9ca522",
+      "provider": "0x3d5462243c7c69914Bfa0d2d4089cef79482ee03",
+      "minimumBondAtomic": "3000000",
+      "maximumRecoveryAtomic": "10000",
+      "depositAmountAtomic": "3000000",
+      "tokenBalanceAtomic": "0",
+      "nativeBalanceAtomic": "0",
+      "allowanceAtomic": "0",
+      "alreadyRegistered": false,
+      "currentProvider": "0x0000000000000000000000000000000000000000",
+      "currentBondAtomic": "0",
+      "missingDepositAtomic": "3000000",
+      "tokenFundingGapAtomic": "3000000",
+      "active": false,
+      "plannedTransactions": [
+        {
+          "action": "REGISTER_SERVICE",
+          "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+          "valueAtomic": "0"
+        },
+        {
+          "action": "APPROVE_USDT0",
+          "to": "0x9e29b3aada05bf2d2c827af80bd28dc0b9b4fb0c",
+          "valueAtomic": "0",
+          "approvalAtomic": "3000000"
+        },
+        {
+          "action": "DEPOSIT_BOND",
+          "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+          "valueAtomic": "0",
+          "depositAtomic": "3000000"
+        }
+      ],
+      "transactionCount": 3,
+      "registrationMatches": true,
+      "ready": false
+    }
+  ],
+  "totalTransactionCount": 6,
+  "fundingRequired": [
+    {
+      "role": "primary",
+      "provider": "0x917b04d30478E9405445CfF208eaA9d61e2EC44d",
+      "tokenFundingGapAtomic": "10000",
+      "nativeGasRequired": false
+    },
+    {
+      "role": "backup",
+      "provider": "0x3d5462243c7c69914Bfa0d2d4089cef79482ee03",
+      "tokenFundingGapAtomic": "3000000",
+      "nativeGasRequired": true
+    }
+  ],
+  "independentProviders": true,
+  "ready": false,
+  "broadcast": false,
+  "requiredConfirmation": "REGISTER_AND_BOND_V2_PROVIDERS_XLAYER_TESTNET",
+  "generatedAt": "2026-09-17T07:52:25.270Z"
+}

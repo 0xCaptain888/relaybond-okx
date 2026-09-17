@@ -64,6 +64,20 @@ async function main() {
       token.allowance(item.address, vaultAddress),
       hre.ethers.provider.getBalance(item.address),
     ]);
+    const missingDeposit = item.depositAmount > service.bondBalance ? item.depositAmount - service.bondBalance : 0n;
+    const tokenFundingGap = missingDeposit > tokenBalance ? missingDeposit - tokenBalance : 0n;
+    const plannedTransactions = [];
+    if (service.provider === hre.ethers.ZeroAddress) {
+      plannedTransactions.push({ action: "REGISTER_SERVICE", to: vaultAddress, valueAtomic: "0" });
+    }
+    if (missingDeposit > 0n && allowance < item.depositAmount) {
+      plannedTransactions.push({ action: "APPROVE_USDT0", to: tokenAddress, valueAtomic: "0", approvalAtomic: item.depositAmount.toString() });
+    }
+    if (missingDeposit > 0n) {
+      plannedTransactions.push({ action: "DEPOSIT_BOND", to: vaultAddress, valueAtomic: "0", depositAtomic: missingDeposit.toString() });
+    }
+    const registrationMatches = service.provider === hre.ethers.ZeroAddress
+      || service.provider.toLowerCase() === item.address.toLowerCase();
     planItems.push({
       role: item.label,
       serviceName: item.serviceName,
@@ -78,8 +92,13 @@ async function main() {
       alreadyRegistered: service.provider !== hre.ethers.ZeroAddress,
       currentProvider: service.provider,
       currentBondAtomic: service.bondBalance.toString(),
+      missingDepositAtomic: missingDeposit.toString(),
+      tokenFundingGapAtomic: tokenFundingGap.toString(),
       active: service.active,
-      ready: tokenBalance >= item.depositAmount && nativeBalance > 0n,
+      plannedTransactions,
+      transactionCount: plannedTransactions.length,
+      registrationMatches,
+      ready: registrationMatches && tokenFundingGap === 0n && (plannedTransactions.length === 0 || nativeBalance > 0n),
     });
   }
   const plan = {
@@ -90,8 +109,15 @@ async function main() {
     tokenAddress,
     verifier,
     providers: planItems,
+    totalTransactionCount: planItems.reduce((total, item) => total + item.transactionCount, 0),
+    fundingRequired: planItems.map((item) => ({
+      role: item.role,
+      provider: item.provider,
+      tokenFundingGapAtomic: item.tokenFundingGapAtomic,
+      nativeGasRequired: item.transactionCount > 0 && item.nativeBalanceAtomic === "0",
+    })),
     independentProviders: config.primary.address.toLowerCase() !== config.backup.address.toLowerCase(),
-    ready: planItems.every((item) => item.ready && (!item.alreadyRegistered || item.currentProvider.toLowerCase() === item.provider.toLowerCase())),
+    ready: planItems.every((item) => item.ready),
     broadcast: false,
     requiredConfirmation: CONFIRMATION,
     generatedAt: new Date().toISOString(),

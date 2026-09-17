@@ -29,6 +29,7 @@ npm run demo:official-coordinator
 npm run test:integration:http
 npm run readiness:v2
 npm run verify:contract:v2:status
+npm run settlement:v2:plan # requires a future LIVE coordinator Evidence Pack
 ```
 
 Open the Judge Demo and select **Run official coordinator**, then **Verify Official Build**. The browser independently recovers both verifier signatures and checks the Recovery Attestation digest, `RECOVERED` and `FROZEN` terminal states, canonical Keccak evidence hash and portable SHA-256 integrity.
@@ -205,6 +206,7 @@ npm run rebate:live-breach -- --confirm
 - [`docs/okx-a2mcp-listing.md`](./docs/okx-a2mcp-listing.md) — copy-ready OKX AI listing package.
 - [`docs/provider-runtime.md`](./docs/provider-runtime.md) — provider endpoint contract, safety boundary and production configuration.
 - [`docs/v2-deployment-runbook.md`](./docs/v2-deployment-runbook.md) — guarded deployment, verification, bonding and settlement sequence.
+- [`docs/v2-live-settlement.md`](./docs/v2-live-settlement.md) — fail-closed live Evidence Pack validation, simulation, broadcast guard and post-settlement invariants.
 - [`web/`](./web) — judge-facing interactive proof narrative.
 - [`docs/architecture.md`](./docs/architecture.md) — system and trust boundaries.
 - [`docs/live-checklist.md`](./docs/live-checklist.md) — honest path from local foundation to live submission.
@@ -259,6 +261,7 @@ npm run rebate:live-breach -- --confirm
 | Double-provider failure | LOCAL / FROZEN | coordinator fails closed rather than presenting a failed backup as recovery |
 | Independent provider runtime | LOCAL / TESTED | strict configuration, endpoint binding, request/profile binding, limits and fail-closed HTTP 402 behavior |
 | Two-process Provider recovery | LOCAL / TESTED | real HTTP Primary `BREACH` → independent Backup `ACCEPTED` → `RECOVERED`; buyer payment remains singular |
+| Guarded V2 live settlement executor | LOCAL / TESTED | rejects LOCAL evidence; validates signatures/bindings/onchain state; simulates before any separately confirmed broadcast |
 | V2 deployment readiness | TESTNET / DEPLOYED | runtime bytecode, constructor getters, receipt and source verification checked; registration remains false |
 
 See the detailed [prior-work and pre-build disclosure](./docs/prior-work-disclosure.md), the separate [official build-period record](./docs/official-build-period.md) and the [threat model](./docs/threat-model.md). The pre-build disclosure explains why feasibility work began early and lists every September 15 commit with exact UTC+8 timestamps; the official-period record contains only post-start functionality and evidence.

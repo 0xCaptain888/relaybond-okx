@@ -58,6 +58,12 @@ export class RelayBondClient {
       sourceVerified?: boolean;
       providerRegistration?: "PENDING" | "TESTNET" | "LIVE";
       backupSettlement?: "PENDING" | "TESTNET" | "LIVE";
+      guard?: {
+        rejectsLocalEvidence: boolean;
+        simulationRequired: boolean;
+        separateConfirmationRequired: boolean;
+        buyerBalanceInvariantChecked: boolean;
+      };
     };
   }> {
     const response = await fetch(`${this.baseUrl}/v1/official/readiness`);

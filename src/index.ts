@@ -18,7 +18,9 @@ export { MemoryContinuityTaskStore } from "./task-store.js";
 export { HttpProviderExecutor, ProviderPaymentRequiredError, ProviderTransportError } from "./http-provider-executor.js";
 export { createProviderService } from "./provider-service.js";
 export { parseProviderConfiguration, providerConfigurationStatus } from "./provider-config.js";
+export { validateLiveRecoveryEvidence } from "./v2-settlement.js";
 export type { ProviderConfigurationStatus } from "./provider-config.js";
+export type { LiveRecoveryEvidence, LiveRecoveryValidationContext } from "./v2-settlement.js";
 export type {
   BondedProviderProfile,
   ContinuityEvidence,

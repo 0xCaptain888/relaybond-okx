@@ -46,6 +46,7 @@ Routine redeployment of pre-build code will not be presented as a new feature.
 - [x] Implement the configuration and fail-closed HTTP runtime required to replace LOCAL provider fixtures.
 - [x] Execute the coordinator against two independent local HTTP Provider processes and signing identities.
 - [x] Generate a post-start read-only V2 deployment plan and guarded registration workflow.
+- [x] Implement a guarded live settlement executor that rejects LOCAL evidence and verifies post-transaction economic invariants.
 - [ ] Configure and operate two independent Testnet service endpoints.
 - [ ] Add the live official-period settlement flow to the judge demo and SDK.
 

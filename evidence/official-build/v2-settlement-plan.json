@@ -1,0 +1,70 @@
+{
+  "evidenceVersion": "official-v2-settlement-plan-1",
+  "mode": "XLAYER_TESTNET_READ_ONLY_PLAN",
+  "generatedAt": "2026-09-17T07:53:00.553Z",
+  "sourceEvidence": "evidence/official-build/coordinator-v1.json",
+  "chainId": 1952,
+  "vaultAddress": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+  "tokenAddress": "0x9e29b3AaDa05Bf2D2c827Af80Bd28Dc0b9b4FB0c",
+  "verifier": "0xB2bD8F1dcC734b428152f0eD7a962DD04309E5AE",
+  "requestHash": "0x6bb31a012cd722c2c2efcf9a3db441944ef942ccd45d55ea0d9e39b8c61decf1",
+  "buyer": "0x45dE2eDdbE199F4FE133B728A40e8ed516D1B015",
+  "primaryProvider": "0xfA17c5B66A985F44Bc249C8E8faBD64767f414B1",
+  "backupProvider": "0x83279FAE0994Aa1A563377E889Cc2a1d96ADb3B1",
+  "recoveryAmountAtomic": "10000",
+  "transaction": {
+    "to": "0xBa15362E3B52eAD97bB5bD5ce849D73376b8b73f",
+    "valueAtomic": "0",
+    "callDataHash": "0x5e79ac01101875d424877551a6e128cfae09c07032c96bbd1b9b4e0e24f9ed2f"
+  },
+  "balancesBefore": {
+    "buyerAtomic": "0",
+    "backupAtomic": "0",
+    "primaryBondAtomic": "0"
+  },
+  "evidenceValidation": {
+    "passed": false,
+    "checks": {
+      "liveMode": false,
+      "expectedChain": true,
+      "expectedVault": false,
+      "expectedVerifier": false,
+      "recoveredTerminal": true,
+      "primaryBreached": true,
+      "backupAccepted": true,
+      "independentProviders": true,
+      "taskIdBound": true,
+      "requestHashBound": true,
+      "buyerBound": true,
+      "serviceIdsBound": true,
+      "deliveryEvidenceBound": true,
+      "providersBound": true,
+      "recoveryAmountBound": true,
+      "attestationNotExpired": false,
+      "continuitySigner": false,
+      "recoverySigner": false,
+      "economics": true
+    },
+    "continuitySigner": "0x083ED08F75C4cb12e97C13c07F9d836e93DF5E60",
+    "recoverySigner": "0x083ED08F75C4cb12e97C13c07F9d836e93DF5E60",
+    "primaryServiceId": "0x904674d09c6660688ac90e2579ab4f011a2a187626cc2e252c1c9c81210530f8",
+    "backupServiceId": "0xcfce271178fef9854db1bd9bf325cc67a0e61d877ba74f79ff9390148c9ca522",
+    "requestHash": "0x6bb31a012cd722c2c2efcf9a3db441944ef942ccd45d55ea0d9e39b8c61decf1",
+    "recoveryAmountAtomic": "10000"
+  },
+  "onchainChecks": {
+    "correctChain": true,
+    "tokenBound": true,
+    "verifierBound": true,
+    "requestUnused": true,
+    "primaryRegistered": false,
+    "backupRegistered": false,
+    "primaryActive": false,
+    "backupActive": false,
+    "primaryBondCoversRecovery": false,
+    "maximumRecoveryCoversAmount": false
+  },
+  "ready": false,
+  "broadcast": false,
+  "requiredConfirmation": "SETTLE_V2_RECOVERY_XLAYER_TESTNET"
+}
