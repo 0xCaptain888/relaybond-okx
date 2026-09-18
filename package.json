@@ -34,6 +34,7 @@
     "build:sdk": "tsc -p tsconfig.build.json",
     "vercel-build": "npm run build && npm run demo:continuity && npm run demo:official-coordinator && npm run build:web && node --import tsx scripts/build-vercel.ts",
     "build:web": "node --import tsx scripts/build-browser.ts",
+    "avatar:validate": "node --import tsx scripts/validate-agent-avatar.ts",
     "verify:contract:xlayer-testnet": "node --env-file-if-exists=.env scripts/verify-xlayer-contract.cjs",
     "verify:contract:status": "node --env-file-if-exists=.env --import tsx scripts/check-contract-verification.ts",
     "verify:contract:v2:xlayer-testnet": "node --env-file-if-exists=.env scripts/verify-v2-contract.cjs",
@@ -80,7 +81,7 @@
     "provider:serve": "node --env-file-if-exists=.env --import tsx scripts/provider-node.ts",
     "serve": "npm run build:web && node --import tsx scripts/serve-demo.ts",
     "security:audit": "npm audit --omit=dev --audit-level=high",
-    "check": "npm run typecheck && npm test && npm run build:web && npm run demo && npm run demo:continuity && npm run demo:official-coordinator && npm run verify:evidence && npm run verify:live-paid && npm run passport"
+    "check": "npm run typecheck && npm test && npm run avatar:validate && npm run build:web && npm run demo && npm run demo:continuity && npm run demo:official-coordinator && npm run verify:evidence && npm run verify:live-paid && npm run passport"
   },
   "dependencies": {
     "@okxweb3/x402-core": "^0.1.0",

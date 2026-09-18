@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="440" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
   <title id="title">RelayBond Failover Switch</title>
   <desc id="desc">A broken primary route continued by an independent recovery route.</desc>
-  <rect width="1024" height="1024" rx="208" fill="#080a09"/>
+  <rect width="1024" height="1024" fill="#080a09"/>
   <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="88">
     <path d="M168 332H414" stroke="#c8ff00"/>
     <path d="M610 332H856" stroke="#c8ff00"/>

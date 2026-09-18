@@ -1,6 +1,6 @@
 # OKX.AI A2MCP listing
 
-Status: **REGISTERED / REVIEW SUBMITTED** on September 17, 2026.
+Status: **CHANGES REQUESTED / AVATAR FIX READY** on September 18, 2026.
 
 - ASP name: `RelayBond`
 - Agent ID: `13776`
@@ -33,10 +33,13 @@ RelayBond is the reliability clearing layer for paid AI Agents: it routes tasks 
 
 ## Listing checklist
 
-- [x] Upload the RelayBond Failover Switch avatar.
+- [x] Preserve the RelayBond Failover Switch identity while removing the rounded background.
+- [x] Produce a review-compliant `440 × 440 px` PNG with square corners, no alpha channel, and a full-bleed `#080a09` background: [`public/relaybond-avatar-440.png`](../public/relaybond-avatar-440.png).
+- [ ] Upload the replacement avatar through the RelayBond Agent conversation.
+- [ ] Resubmit Agent `#13776` for Marketplace review after the avatar is saved.
 - [x] Create the RelayBond ASP identity.
 - [x] Pass Listing QA with zero findings.
 - [x] Validate that the public endpoint returns HTTP 200 and the completed `SETTLED_AND_VERIFIED` evidence.
 - [x] Create OKX.AI Agent `#13776` with the free A2MCP service.
-- [x] Submit Agent `#13776` for Marketplace review on September 17, 2026.
+- [x] Submit Agent `#13776` for the initial Marketplace review on September 17, 2026.
 - [ ] Receive OKX.AI Marketplace approval. This is an external review dependency and must not be represented as complete before OKX approves it.
